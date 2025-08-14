@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>lolaelo – book better, travel fair</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 0; }
+    header { padding: 28px; }
+    .logo { font-size: 28px; font-weight: 600; letter-spacing: .5px; }
+    .hero { padding: 56px 28px; max-width: 800px; }
+    .cta { margin-top: 18px; padding: 12px 20px; border: 1px solid #000; background: #fff; cursor: pointer; }
+    footer { padding: 28px; font-size: 14px; color: #666; }
+  </style>
+</head>
+<body>
+  <header><div class="logo">lolaelo</div></header>
+  <main class="hero">
+    <h1>Discover and book verified stays—fair to travelers and partners.</h1>
+    <p>We’re building a partner-centric OTA. Join the waitlist to get early access.</p>
+    <a class="cta" href="https://forms.gle/" target="_blank" rel="noopener">Join the waitlist</a>
+  </main>
+  <footer>© <span id="y"></span> lolaelo</footer>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
