@@ -1,29 +1,178 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>lolaelo – book better, travel fair</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lolaelo — Coming Soon</title>
+  <meta name="description" content="Lolaelo: a friendlier way to book stays and experiences. Launching soon." />
+  <meta name="robots" content="index,follow" />
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Lolaelo — Coming Soon" />
+  <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
+  <meta property="og:image" content="https://picsum.photos/1200/630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <!-- Favicon placeholder -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='80'>🧭</text></svg>">
   <style>
-    body { font-family: system-ui, Arial, sans-serif; margin: 0; }
-    header { padding: 28px; }
-    .logo { font-size: 28px; font-weight: 600; letter-spacing: .5px; }
-    .hero { padding: 56px 28px; max-width: 800px; }
-    .cta { margin-top: 18px; padding: 12px 20px; border: 1px solid #000; background: #fff; cursor: pointer; }
-    footer { padding: 28px; font-size: 14px; color: #666; }
+    :root {
+      --bg: #0b1220;
+      --bg2: #0f172a;
+      --fg: #e5e7eb;
+      --muted: #94a3b8;
+      --brand: #38bdf8; /* cyan-400 */
+      --accent: #a78bfa; /* violet-400 */
+      --maxw: 880px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--fg);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(56,189,248,0.25), transparent 60%),
+                  radial-gradient(900px 600px at -10% 20%, rgba(167,139,250,0.18), transparent 60%),
+                  linear-gradient(180deg, var(--bg), var(--bg2));
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: var(--maxw);
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(148,163,184,0.15);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-decoration: none;
+      color: var(--fg);
+    }
+    .logo-badge {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+      display: grid; place-items: center;
+      color: #0b1220; font-weight: 900;
+    }
+    .pill {
+      border: 1px solid rgba(148,163,184,0.35);
+      color: var(--muted);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      text-decoration: none;
+      transition: border-color .2s ease;
+    }
+    .pill:hover { border-color: var(--fg); }
+
+    .hero { margin: 28px 0 10px; }
+    .kicker { color: var(--brand); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
+    h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.1; margin: 8px 0 12px; }
+    .sub { color: var(--muted); font-size: clamp(16px, 2vw, 18px); max-width: 58ch; }
+
+    .cta {
+      margin-top: 22px;
+      display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .btn {
+      appearance: none; border: none; cursor: pointer;
+      border-radius: 12px; padding: 12px 16px; font-weight: 600;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+      color: #0b1220;
+    }
+    .btn.secondary { background: transparent; color: var(--fg); border: 1px solid rgba(148,163,184,0.35); }
+
+    form.waitlist {
+      margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px;
+    }
+    .input {
+      flex: 1 1 260px; min-width: 220px;
+      background: rgba(2,6,23,0.5);
+      color: var(--fg);
+      border: 1px solid rgba(148,163,184,0.35);
+      border-radius: 12px; padding: 12px 14px;
+    }
+
+    footer { margin-top: 18px; color: var(--muted); font-size: 13px; display:flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    footer a { color: var(--fg); text-decoration: none; border-bottom: 1px dashed rgba(148,163,184,0.35); }
   </style>
 </head>
 <body>
-  <header>
-  <img src="https://raw.githubusercontent.com/lolaelo-web/travel/main/logo.png" alt="lolaelo logo" style="width:200px; height:auto; display:block; margin:0 auto;">
+  <main class="card" role="main">
+    <header>
+      <a class="logo" href="#" aria-label="Lolaelo home">
+        <span class="logo-badge" aria-hidden="true">Lo</span>
+        <span>Lolaelo</span>
+      </a>
+      <span class="pill" aria-live="polite">Launching soon</span>
     </header>
-  <main class="hero">
-    <h1>Discover and book verified stays—fair to travelers and partners.</h1>
-    <p>We’re building a partner-centric OTA. Join the waitlist to get early access.</p>
-    <a class="cta" href="https://forms.gle/" target="_blank" rel="noopener">Join the waitlist</a>
+
+    <section class="hero" aria-labelledby="title">
+      <div class="kicker">Travel, but kinder</div>
+      <h1 id="title">A friendlier way to book stays and experiences</h1>
+      <p class="sub">We’re building an online travel platform that puts partners and families first. Be the first to know when we launch.</p>
+
+      <form class="waitlist" id="waitlistForm" onsubmit="return handleWaitlist(event)">
+        <input class="input" id="email" name="email" type="email" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit" class="btn">Join the waitlist</button>
+        <button type="button" class="btn secondary" onclick="window.location.href='mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.'">Email us</button>
+      </form>
+
+      <div class="cta">
+        <a class="btn secondary" href="#about">About</a>
+        <a class="btn secondary" href="#partners">For Partners</a>
+      </div>
+    </section>
+
+    <section id="about" style="margin-top: 26px;">
+      <h2 style="margin:0 0 8px; font-size: 18px;">What to expect</h2>
+      <ul style="margin:0; padding-left: 18px; color: var(--fg);">
+        <li>Curated, family-friendly listings</li>
+        <li>Transparent pricing and flexible policies</li>
+        <li>Locally-owned partners prioritized</li>
+      </ul>
+    </section>
+
+    <section id="partners" style="margin-top: 18px;">
+      <h2 style="margin:0 0 8px; font-size: 18px;">For partners</h2>
+      <p class="sub" style="margin:0;">Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Lolaelo</div>
+      <div><a href="#" rel="nofollow">Privacy</a> · <a href="#" rel="nofollow">Terms</a></div>
+    </footer>
   </main>
-  <footer>© <span id="y"></span> lolaelo</footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+
+  <script>
+    // Simple mailto-based fallback for waitlist capture (no backend needed)
+    function handleWaitlist(e){
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if(!email) return false;
+      const subject = encodeURIComponent('Lolaelo Waitlist');
+      const body = encodeURIComponent('Please add ' + email + ' to the waitlist.');
+      window.location.href = `mailto:hello@lolaelo.com?subject=${subject}&body=${body}`;
+      // Optional: show a lightweight acknowledgment
+      alert('Your email app should open. If not, send us a note at hello@lolaelo.com');
+      return false;
+    }
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
