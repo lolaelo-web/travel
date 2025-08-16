@@ -12,72 +12,93 @@
   <meta property="og:image" content="/logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/logo.png">
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #ffffff;
-      --fg: #111111;
-      --muted: #444444;
-      --brand: #000000;
-      --maxw: 880px;
+    :root{
+      --bg:#ffffff; --fg:#111111; --muted:#555; --line:#e5e5e5;
+      --maxw:880px; --radius:10px;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color: var(--fg);
-      background: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 24px;
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg); background:var(--bg);
+      display:flex; flex-direction:column; align-items:center;
+      padding:32px 20px 48px;
     }
-    header {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 32px;
+    header{width:100%; text-align:center; margin-bottom:24px}
+    .logo img{
+      display:inline-block; width:auto; max-width:80vw;
+      max-height:260px; /* big by default */
     }
-    .logo img {
-      max-height: 320px; /* Enlarged ~7x */
-      width: auto;
-      display: inline-block;
-    }
-    .card {
-      width: 100%;
-      max-width: var(--maxw);
-      text-align: center;
-    }
-    .kicker { color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
-    h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 12px 0 16px; }
-    .sub { color: var(--muted); font-size: 18px; max-width: 60ch; margin: 0 auto 24px; }
-
-    .btn {
-      appearance: none; border: 1px solid var(--fg); cursor: pointer;
-      border-radius: 8px; padding: 12px 18px; font-weight: 600;
-      background: var(--fg); color: var(--bg);
-      margin: 6px;
-    }
-    .btn.secondary { background: transparent; color: var(--fg); }
-
-    form.waitlist { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-    .input {
-      flex: 1 1 260px; min-width: 220px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 12px 14px;
+    @media (max-width:640px){
+      .logo img{ max-height:200px; }
     }
 
-    footer { margin-top: 48px; color: var(--muted); font-size: 13px; text-align: center; }
-    footer a { color: var(--fg); text-decoration: underline; }
+    .container{ width:100%; max-width:var(--maxw); text-align:center; }
+
+    .kicker{
+      color:var(--muted); font-weight:600; letter-spacing:.08em;
+      text-transform:uppercase; font-size:13px;
+    }
+    h1{
+      font-family: Lora, serif;
+      font-size: clamp(28px, 4.8vw, 44px);
+      line-height:1.2; margin:12px 0 14px;
+    }
+    .sub{ color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 22px; }
+
+    /* Waitlist layout: grid prevents overlap */
+    form.waitlist{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: 1fr auto auto;
+      gap:10px;
+      align-items:center;
+      max-width:800px;
+      margin-left:auto; margin-right:auto;
+    }
+    .input{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px 14px;
+      font-size:16px;
+      outline:none;
+    }
+    .input:focus{ border-color:#111; box-shadow:0 0 0 2px #11111110; }
+
+    .btn{
+      appearance:none; border:1px solid var(--fg); cursor:pointer;
+      border-radius:var(--radius); padding:12px 16px; font-weight:600;
+      background:var(--fg); color:var(--bg);
+    }
+    .btn:hover{ filter:brightness(0.95); }
+    .btn.secondary{ background:transparent; color:var(--fg); }
+
+    @media (max-width:640px){
+      form.waitlist{ grid-template-columns: 1fr; }
+      .btn, .btn.secondary{ width:100%; }
+    }
+
+    .cta{ margin-top:18px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+
+    section{ margin-top:36px; }
+    ul{ margin:0 auto; padding-left:20px; max-width:520px; text-align:left; }
+
+    footer{ margin-top:48px; color:var(--muted); font-size:13px; text-align:center; }
+    footer a{ color:var(--fg); text-decoration:underline; }
   </style>
 </head>
 <body>
   <header>
     <a class="logo" href="#top" aria-label="Lolaelo home">
-      <img src="/logo.png" alt="Lolaelo logo" />
+      <img src="/logo.png" alt="Lolaelo logo">
     </a>
   </header>
 
-  <main class="card" role="main">
+  <div class="container" role="main">
     <section class="hero" aria-labelledby="title">
       <div class="kicker">Travel, but kinder</div>
       <h1 id="title">A friendlier way to book stays and experiences</h1>
@@ -95,17 +116,17 @@
       </div>
     </section>
 
-    <section id="about" style="margin-top: 40px;">
-      <h2 style="margin:0 0 12px; font-size: 20px;">What to expect</h2>
-      <ul style="margin:0 auto; padding-left: 20px; max-width:480px; text-align:left;">
+    <section id="about">
+      <h2 style="margin:0 0 12px; font-size:20px; font-family:Lora,serif;">What to expect</h2>
+      <ul>
         <li>Curated, family-friendly listings</li>
         <li>Transparent pricing and flexible policies</li>
         <li>Locally-owned partners prioritized</li>
       </ul>
     </section>
 
-    <section id="partners" style="margin-top: 30px;">
-      <h2 style="margin:0 0 12px; font-size: 20px;">For partners</h2>
+    <section id="partners">
+      <h2 style="margin:0 0 12px; font-size:20px; font-family:Lora,serif;">For partners</h2>
       <p class="sub" style="margin:0;">Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
     </section>
 
@@ -113,7 +134,7 @@
       <div>© <span id="year"></span> Lolaelo</div>
       <div><a href="#">Privacy</a> · <a href="#">Terms</a></div>
     </footer>
-  </main>
+  </div>
 
   <script>
     function handleWaitlist(e){
