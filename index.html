@@ -25,7 +25,7 @@
       position: fixed; inset: 0;
       background:
         linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
-        url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=80")
+        url("https://images.pexels.com/photos/1033729/pexels-photo-1033729.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
         center / cover no-repeat;
       z-index: -1;  /* behind everything */
     }
@@ -38,7 +38,7 @@
       border-radius: 16px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.08);
       padding: 24px 20px 28px;
-      margin: 18px 20px 16px; /* spacing from page edges so the photo shows around it */
+      margin: 18px 20px 16px;
       text-align: center;
     }
 
@@ -47,13 +47,11 @@
 
     h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 14px; font-weight: 500; }
 
-    /* Divider under headline */
     .divider {
       border: none; border-top: 1px solid var(--line);
       margin: 16px auto 18px; width: min(720px, 92%);
     }
 
-    /* Card CTAs (unchanged behavior; hover darkens text slightly) */
     .card-grid {
       display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
       width: min(720px, 92%); margin: 0 auto;
@@ -75,7 +73,6 @@
     }
     .card:hover p, .card:focus-within p { color: #333; }
 
-    /* Footer readable on photo (subtle white strip) */
     footer {
       width: 100%;
       text-align: center;
@@ -85,7 +82,7 @@
       background: rgba(255,255,255,0.72);
       backdrop-filter: blur(3px);
       border-top: 1px solid rgba(0,0,0,0.06);
-      margin-top: auto; /* stick to bottom */
+      margin-top: auto;
     }
     footer a { color: var(--fg); text-decoration: underline; }
 
@@ -97,10 +94,8 @@
   </style>
 </head>
 <body>
-  <!-- background image layer -->
   <div class="site-bg" aria-hidden="true"></div>
 
-  <!-- white content area -->
   <div class="paper">
     <header>
       <a class="logo" href="#top" aria-label="Lolaelo home">
@@ -132,7 +127,6 @@
     </main>
   </div>
 
-  <!-- footer sits on the photo background -->
   <footer>
     © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
