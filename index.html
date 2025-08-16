@@ -1,120 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lolaelo Travel</title>
+  <!-- v7 -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lolaelo — Coming Soon</title>
+  <meta name="description" content="Lolaelo: a friendlier way to book stays and experiences. Launching soon." />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Lolaelo — Coming Soon" />
+  <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
+  <meta property="og:image" content="/logo.png" />
+  <link rel="icon" href="/logo.png">
 
-  <!-- Daytona Light -->
+  <!-- Base fonts: Inter for everything except the H1 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Daytona Light (CDN) -->
   <link href="https://db.onlinewebfonts.com/c/79a8e1bc16f1c88fe653585925532284?family=Daytona+W01+Light" rel="stylesheet">
-
   <style>
     @font-face {
       font-family: "Daytona W01 Light";
       src: url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff2") format("woff2"),
-           url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff") format("woff"),
-           url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.ttf") format("truetype");
-      font-weight: normal;
+           url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff") format("woff");
+      font-weight: 300;
       font-style: normal;
+      font-display: swap;
     }
 
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Daytona W01 Light", sans-serif;
-      background-color: #fff;
-      color: #333;
-      text-align: center;
+    :root{
+      --bg:#ffffff; --fg:#111111; --muted:#555; --line:#e5e5e5;
+      --maxw:880px; --radius:10px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg); background:var(--bg);
+      display:flex; flex-direction:column; align-items:center;
+      padding:24px 20px 48px;
     }
 
-    header {
-      margin-top: 30px;
+    /* HEADER / LOGO */
+    header{width:100%; text-align:center; margin-bottom:12px;} /* reduced gap */
+    .logo img{
+      display:inline-block; width:auto; max-width:80vw;
+      max-height:240px;
+      margin:0;
+    }
+    @media (max-width:640px){ .logo img{ max-height:200px; } }
+
+    .container{ width:100%; max-width:var(--maxw); text-align:center; }
+
+    /* TYPOGRAPHY */
+    .kicker{
+      color:var(--muted); font-weight:600; letter-spacing:.08em;
+      text-transform:uppercase; font-size:13px; margin:0 0 6px 0;
     }
 
-    header img {
-      width: 350px; /* enlarged ~7x */
-      height: auto;
-      display: block;
-      margin: 0 auto;
+    /* Headline ONLY → Daytona Light */
+    h1{
+      font-family: "Daytona W01 Light", "Daytona Light", "Daytona", sans-serif;
+      font-size: clamp(32px, 5.2vw, 56px);
+      line-height:1.15; margin:6px 0 12px;
+      font-weight: 300;
     }
 
-    .tagline {
-      margin-top: 10px; /* tightened gap */
-      font-family: "Daytona W01 Light", sans-serif;
-      font-size: 32px;
-      font-weight: bold;
-      color: #111;
+    .sub{
+      color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px;
     }
 
-    .subtagline {
-      margin-top: 5px;
-      font-family: "Daytona W01 Light", sans-serif;
-      font-size: 20px;
-      font-style: italic;
-      color: #555;
+    /* Waitlist layout: responsive grid (prevents overlap) */
+    form.waitlist{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr auto auto;
+      gap:10px;
+      align-items:center;
+      max-width:800px;
+      margin-left:auto; margin-right:auto;
     }
-
-    nav {
-      margin-top: 25px;
+    .input{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px 14px;
+      font-size:16px;
+      outline:none;
     }
+    .input:focus{ border-color:#111; box-shadow:0 0 0 2px #11111110; }
 
-    nav a {
-      font-family: "Daytona W01 Light", sans-serif;
-      text-decoration: none;
-      color: #333;
-      margin: 0 15px;
-      font-size: 18px;
-      font-weight: normal;
+    .btn{
+      appearance:none; border:1px solid var(--fg); cursor:pointer;
+      border-radius:var(--radius); padding:12px 16px; font-weight:600;
+      background:var(--fg); color:var(--bg);
     }
-
-    nav a:hover {
-      color: #0077cc;
-    }
-
-    .email-signup {
-      margin-top: 20px;
-    }
-
-    .email-signup input[type="email"] {
-      padding: 10px;
-      font-size: 16px;
-      font-family: "Daytona W01 Light", sans-serif;
-      width: 250px;
-    }
-
-    .email-signup button {
-      padding: 10px 20px;
-      font-size: 16px;
-      font-family: "Daytona W01 Light", sans-serif;
-      background-color: #0077cc;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-
-    .email-signup button:hover {
-      background-color: #005fa3;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <img src="logo.png" alt="Lolaelo Logo">
-    <div class="tagline">Travel, but kinder</div>
-    <div class="subtagline">a friendlier way...</div>
-  </header>
-
-  <nav>
-    <a href="#about">About</a>
-    <a href="#partners">For Partners</a>
-    <a href="#contact">Contact</a>
-  </nav>
-
-  <div class="email-signup">
-    <input type="email" placeholder="Enter your email">
-    <button>Subscribe</button>
-  </div>
-
-</body>
-</html>
+    .btn:hover{ filter:brightness(0.95
