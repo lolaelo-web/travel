@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- v6 -->
+  <!-- v5 -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lolaelo — Coming Soon</title>
@@ -11,21 +11,15 @@
   <meta property="og:title" content="Lolaelo — Coming Soon" />
   <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
   <meta property="og:image" content="/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/logo.png">
 
-  <!-- Base fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+  <!-- Fonts: Inter for everything, script for headline. 
+       We try 'Baguette Script' first (if you add it later),
+       and fall back to 'Great Vibes' (Google) to guarantee script styling. -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    /* Optional: if you later add /fonts/baguette-script.woff2 this will override the fallback automatically */
-    @font-face {
-      font-family: "Baguette Script";
-      src: url("/fonts/baguette-script.woff2") format("woff2");
-      font-weight: 400;
-      font-style: normal;
-      font-display: swap;
-    }
-
     :root{
       --bg:#ffffff; --fg:#111111; --muted:#555; --line:#e5e5e5;
       --maxw:880px; --radius:10px;
@@ -40,38 +34,31 @@
     }
 
     /* HEADER / LOGO */
-    header{width:100%; text-align:center; margin-bottom:12px;} /* reduced gap */
+    header{width:100%; text-align:center; margin-bottom:12px;} /* gap reduced by ~50% */
     .logo img{
       display:inline-block; width:auto; max-width:80vw;
-      max-height:240px;
-      margin:0; /* ensure no extra spacing */
+      max-height:240px; /* adjust as needed */
     }
     @media (max-width:640px){ .logo img{ max-height:200px; } }
 
     .container{ width:100%; max-width:var(--maxw); text-align:center; }
 
     /* TYPOGRAPHY */
-    /* All non-headline text uses Inter */
     .kicker{
       color:var(--muted); font-weight:600; letter-spacing:.08em;
-      text-transform:uppercase; font-size:13px; margin:0 0 6px 0;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      text-transform:uppercase; font-size:13px; margin-bottom:6px;
     }
-
-    /* Headline only → script font: prefer local Baguette if present, else Great Vibes */
+    /* Headline only → script font */
     h1{
       font-family: "Baguette Script","Great Vibes",cursive;
       font-size: clamp(32px, 5.2vw, 56px);
       line-height:1.15; margin:6px 0 12px;
       font-weight: 400;
     }
+    /* Everything else uses Inter (same as kicker) */
+    .sub{ color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px; }
 
-    .sub{
-      color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    }
-
-    /* Waitlist layout: responsive grid (prevents overlap) */
+    /* Waitlist layout: responsive grid (no overlap) */
     form.waitlist{
       margin-top:14px;
       display:grid;
@@ -88,7 +75,6 @@
       padding:12px 14px;
       font-size:16px;
       outline:none;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     .input:focus{ border-color:#111; box-shadow:0 0 0 2px #11111110; }
 
@@ -96,7 +82,6 @@
       appearance:none; border:1px solid var(--fg); cursor:pointer;
       border-radius:var(--radius); padding:12px 16px; font-weight:600;
       background:var(--fg); color:var(--bg);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     .btn:hover{ filter:brightness(0.95); }
     .btn.secondary{ background:transparent; color:var(--fg); }
@@ -141,7 +126,7 @@
     </section>
 
     <section id="about">
-      <h2 style="margin:0 0 12px; font-size:20px; font-family: Inter, ui-sans-serif;">What to expect</h2>
+      <h2 style="margin:0 0 12px; font-size:20px;">What to expect</h2>
       <ul>
         <li>Curated, family-friendly listings</li>
         <li>Transparent pricing and flexible policies</li>
@@ -150,7 +135,7 @@
     </section>
 
     <section id="partners">
-      <h2 style="margin:0 0 12px; font-size:20px; font-family: Inter, ui-sans-serif;">For partners</h2>
+      <h2 style="margin:0 0 12px; font-size:20px;">For partners</h2>
       <p class="sub" style="margin:0;">Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
     </section>
 
