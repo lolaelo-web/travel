@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- v5 -->
+  <!-- v6 -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lolaelo — Coming Soon</title>
@@ -11,15 +11,21 @@
   <meta property="og:title" content="Lolaelo — Coming Soon" />
   <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
   <meta property="og:image" content="/logo.png" />
-  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="/logo.png">
 
-  <!-- Fonts: Inter for everything, script for headline. 
-       We try 'Baguette Script' first (if you add it later),
-       and fall back to 'Great Vibes' (Google) to guarantee script styling. -->
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Base fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
 
   <style>
+    /* Optional: if you later add /fonts/baguette-script.woff2 this will override the fallback automatically */
+    @font-face {
+      font-family: "Baguette Script";
+      src: url("/fonts/baguette-script.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root{
       --bg:#ffffff; --fg:#111111; --muted:#555; --line:#e5e5e5;
       --maxw:880px; --radius:10px;
@@ -34,31 +40,38 @@
     }
 
     /* HEADER / LOGO */
-    header{width:100%; text-align:center; margin-bottom:12px;} /* gap reduced by ~50% */
+    header{width:100%; text-align:center; margin-bottom:12px;} /* reduced gap */
     .logo img{
       display:inline-block; width:auto; max-width:80vw;
-      max-height:240px; /* adjust as needed */
+      max-height:240px;
+      margin:0; /* ensure no extra spacing */
     }
     @media (max-width:640px){ .logo img{ max-height:200px; } }
 
     .container{ width:100%; max-width:var(--maxw); text-align:center; }
 
     /* TYPOGRAPHY */
+    /* All non-headline text uses Inter */
     .kicker{
       color:var(--muted); font-weight:600; letter-spacing:.08em;
-      text-transform:uppercase; font-size:13px; margin-bottom:6px;
+      text-transform:uppercase; font-size:13px; margin:0 0 6px 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
-    /* Headline only → script font */
+
+    /* Headline only → script font: prefer local Baguette if present, else Great Vibes */
     h1{
       font-family: "Baguette Script","Great Vibes",cursive;
       font-size: clamp(32px, 5.2vw, 56px);
       line-height:1.15; margin:6px 0 12px;
       font-weight: 400;
     }
-    /* Everything else uses Inter (same as kicker) */
-    .sub{ color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px; }
 
-    /* Waitlist layout: responsive grid (no overlap) */
+    .sub{
+      color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+
+    /* Waitlist layout: responsive grid (prevents overlap) */
     form.waitlist{
       margin-top:14px;
       display:grid;
@@ -75,6 +88,7 @@
       padding:12px 14px;
       font-size:16px;
       outline:none;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     .input:focus{ border-color:#111; box-shadow:0 0 0 2px #11111110; }
 
@@ -82,6 +96,7 @@
       appearance:none; border:1px solid var(--fg); cursor:pointer;
       border-radius:var(--radius); padding:12px 16px; font-weight:600;
       background:var(--fg); color:var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
     }
     .btn:hover{ filter:brightness(0.95); }
     .btn.secondary{ background:transparent; color:var(--fg); }
@@ -94,4 +109,69 @@
     .cta{ margin-top:16px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
 
     section{ margin-top:32px; }
-    ul{ margin:0 auto; padding-left:20px; max-width:520px; text-ali
+    ul{ margin:0 auto; padding-left:20px; max-width:520px; text-align:left; }
+
+    footer{ margin-top:44px; color:var(--muted); font-size:13px; text-align:center; }
+    footer a{ color:var(--fg); text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="#top" aria-label="Lolaelo home">
+      <img src="/logo.png" alt="Lolaelo logo">
+    </a>
+  </header>
+
+  <div class="container" role="main">
+    <section class="hero" aria-labelledby="title">
+      <div class="kicker">Travel, but kinder</div>
+      <h1 id="title">A friendlier way to book stays and experiences</h1>
+      <p class="sub">We’re building an online travel platform that puts partners and families first. Be the first to know when we launch.</p>
+
+      <form class="waitlist" id="waitlistForm" onsubmit="return handleWaitlist(event)">
+        <input class="input" id="email" name="email" type="email" placeholder="your@email.com" required aria-label="Email address" />
+        <button type="submit" class="btn">Join the waitlist</button>
+        <button type="button" class="btn secondary" onclick="window.location.href='mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.'">Email us</button>
+      </form>
+
+      <div class="cta">
+        <a class="btn secondary" href="#about">About</a>
+        <a class="btn secondary" href="#partners">For Partners</a>
+      </div>
+    </section>
+
+    <section id="about">
+      <h2 style="margin:0 0 12px; font-size:20px; font-family: Inter, ui-sans-serif;">What to expect</h2>
+      <ul>
+        <li>Curated, family-friendly listings</li>
+        <li>Transparent pricing and flexible policies</li>
+        <li>Locally-owned partners prioritized</li>
+      </ul>
+    </section>
+
+    <section id="partners">
+      <h2 style="margin:0 0 12px; font-size:20px; font-family: Inter, ui-sans-serif;">For partners</h2>
+      <p class="sub" style="margin:0;">Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
+    </section>
+
+    <footer>
+      <div>© <span id="year"></span> Lolaelo</div>
+      <div><a href="#">Privacy</a> · <a href="#">Terms</a></div>
+    </footer>
+  </div>
+
+  <script>
+    function handleWaitlist(e){
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      if(!email) return false;
+      const subject = encodeURIComponent('Lolaelo Waitlist');
+      const body = encodeURIComponent('Please add ' + email + ' to the waitlist.');
+      window.location.href = `mailto:hello@lolaelo.com?subject=${subject}&body=${body}`;
+      alert('Your email app should open. If not, send us a note at hello@lolaelo.com');
+      return false;
+    }
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
