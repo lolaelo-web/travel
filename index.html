@@ -1,133 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lolaelo</title>
+  <!-- v5 -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lolaelo — Coming Soon</title>
+  <meta name="description" content="Lolaelo: a friendlier way to book stays and experiences. Launching soon." />
+  <meta name="robots" content="index,follow" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Lolaelo — Coming Soon" />
+  <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
+  <meta property="og:image" content="/logo.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/logo.png">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Baguet+Script&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts: Inter for everything, script for headline. 
+       We try 'Baguette Script' first (if you add it later),
+       and fall back to 'Great Vibes' (Google) to guarantee script styling. -->
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif; /* Default font for everything except headline */
-      text-align: center;
-      padding: 20px;
+    :root{
+      --bg:#ffffff; --fg:#111111; --muted:#555; --line:#e5e5e5;
+      --maxw:880px; --radius:10px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg); background:var(--bg);
+      display:flex; flex-direction:column; align-items:center;
+      padding:24px 20px 48px;
     }
 
-    img.logo {
-      max-width: 200px;
-      margin-top: 20px;
-      margin-bottom: 10px; /* reduced space before "TRAVEL, BUT KINDER" */
+    /* HEADER / LOGO */
+    header{width:100%; text-align:center; margin-bottom:12px;} /* gap reduced by ~50% */
+    .logo img{
+      display:inline-block; width:auto; max-width:80vw;
+      max-height:240px; /* adjust as needed */
+    }
+    @media (max-width:640px){ .logo img{ max-height:200px; } }
+
+    .container{ width:100%; max-width:var(--maxw); text-align:center; }
+
+    /* TYPOGRAPHY */
+    .kicker{
+      color:var(--muted); font-weight:600; letter-spacing:.08em;
+      text-transform:uppercase; font-size:13px; margin-bottom:6px;
+    }
+    /* Headline only → script font */
+    h1{
+      font-family: "Baguette Script","Great Vibes",cursive;
+      font-size: clamp(32px, 5.2vw, 56px);
+      line-height:1.15; margin:6px 0 12px;
+      font-weight: 400;
+    }
+    /* Everything else uses Inter (same as kicker) */
+    .sub{ color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px; }
+
+    /* Waitlist layout: responsive grid (no overlap) */
+    form.waitlist{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: 1fr auto auto;
+      gap:10px;
+      align-items:center;
+      max-width:800px;
+      margin-left:auto; margin-right:auto;
+    }
+    .input{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:12px 14px;
+      font-size:16px;
+      outline:none;
+    }
+    .input:focus{ border-color:#111; box-shadow:0 0 0 2px #11111110; }
+
+    .btn{
+      appearance:none; border:1px solid var(--fg); cursor:pointer;
+      border-radius:var(--radius); padding:12px 16px; font-weight:600;
+      background:var(--fg); color:var(--bg);
+    }
+    .btn:hover{ filter:brightness(0.95); }
+    .btn.secondary{ background:transparent; color:var(--fg); }
+
+    @media (max-width:640px){
+      form.waitlist{ grid-template-columns: 1fr; }
+      .btn, .btn.secondary{ width:100%; }
     }
 
-    .tagline {
-      font-size: 12px;
-      letter-spacing: 2px;
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
+    .cta{ margin-top:16px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
 
-    .headline {
-      font-family: 'Baguet Script', cursive; /* special font for main headline */
-      font-size: 38px;
-      font-weight: normal;
-      margin: 10px 0 20px 0;
-    }
-
-    .subtext {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 30px;
-    }
-
-    .form {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 30px;
-    }
-
-    input[type="email"] {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      width: 250px;
-    }
-
-    button {
-      padding: 10px 16px;
-      border: 1px solid #000;
-      border-radius: 6px;
-      background: #fff;
-      cursor: pointer;
-      font-family: 'Inter', sans-serif;
-    }
-
-    button.black {
-      background: #000;
-      color: #fff;
-    }
-
-    .section {
-      margin-top: 30px;
-    }
-
-    .footer {
-      margin-top: 40px;
-      font-size: 12px;
-      color: #666;
-    }
-
-    a {
-      color: #000;
-      text-decoration: none;
-    }
-  </style>
-</head>
-<body>
-
-  <img src="logo.png" alt="Lolaelo Logo" class="logo">
-
-  <div class="tagline">TRAVEL, BUT KINDER</div>
-
-  <h1 class="headline">A friendlier way to book stays and experiences</h1>
-
-  <div class="subtext">
-    We’re building an online travel platform that puts partners and families first. <br>
-    Be the first to know when we launch.
-  </div>
-
-  <div class="form">
-    <input type="email" placeholder="your@email.com">
-    <button>About</button>
-    <button>For Partners</button>
-    <button class="black">Join the waitlist</button>
-    <button>Email us</button>
-  </div>
-
-  <div class="section">
-    <h3>What to expect</h3>
-    <ul style="list-style: disc; text-align: left; max-width: 400px; margin: 0 auto; font-family: 'Inter', sans-serif;">
-      <li>Curated, family-friendly listings</li>
-      <li>Transparent pricing and flexible policies</li>
-      <li>Locally-owned partners prioritized</li>
-    </ul>
-  </div>
-
-  <div class="section">
-    <h3>For partners</h3>
-    <p>Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
-  </div>
-
-  <div class="footer">
-    © 2025 Lolaelo <br>
-    <a href="#">Privacy</a> · <a href="#">Terms</a>
-  </div>
-
-</body>
-</html>
+    section{ margin-top:32px; }
+    ul{ margin:0 auto; padding-left:20px; max-width:520px; text-ali
