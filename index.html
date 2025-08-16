@@ -7,7 +7,7 @@
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#666; --line:#e5e5e5; --radius:12px; --maxw:880px; }
+    :root { --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea; --radius:12px; --maxw:880px; }
 
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
@@ -22,57 +22,64 @@
     .logo img { display: inline-block; width: auto; max-width: 80vw; max-height: 240px; }
 
     .container { width: 100%; max-width: var(--maxw); text-align: center; }
+    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 14px; font-weight: 500; }
 
-    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 8px; font-weight: 500; }
-
-    /* Buttons row */
-    .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
-    .btn {
-      appearance: none; border: 1px solid var(--fg); cursor: pointer;
-      border-radius: var(--radius); padding: 12px 16px; font-weight: 600;
-      background: #fff; color: #000; text-decoration: none; display: inline-block;
-      transition: transform .08s ease, filter .15s ease;
-    }
-    .btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
-
-    /* Divider line under buttons */
+    /* Thin divider under headline */
     .divider {
       border: none; border-top: 1px solid var(--line);
-      margin: 26px auto 18px; width: min(720px, 92%);
+      margin: 16px auto 18px; width: min(720px, 92%);
     }
 
-    /* Preview grid */
-    .preview-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    /* CARD CTAs */
+    .card-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
       width: min(720px, 92%); margin: 0 auto;
     }
-    .preview-card {
-      border: 1px solid var(--line); border-radius: var(--radius);
-      min-height: 120px; padding: 16px; text-align: left;
-      opacity: .45; transition: opacity .15s ease, border-color .15s ease, box-shadow .15s ease;
+    .card-link {
+      text-decoration: none; color: inherit; outline: none;
     }
-    .preview-card h3 { margin: 0 0 6px; font-size: 16px; }
-    .preview-card p  { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.4; }
-    .preview-card.active {
-      opacity: 1; border-color: var(--fg);
-      box-shadow: 0 2px 14px rgba(0,0,0,.06);
+    .card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 16px; min-height: 120px; text-align: left;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+      box-shadow: 0 1px 6px rgba(0,0,0,.04);
+    }
+    .card h3 { margin: 0 0 6px; font-size: 16px; color: #222; }
+    .card p  { margin: 0; font-size: 14px; color: var(--muted); }
+
+    /* Hover/focus: lift + darker text + stronger border */
+    .card-link:hover .card,
+    .card-link:focus .card {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      border-color: #bbb;
+    }
+    .card-link:hover .card p,
+    .card-link:focus .card p {
+      color: #333;
+    }
+
+    /* Keyboard visibility */
+    .card-link:focus-visible .card {
+      outline: 2px solid #000; outline-offset: 2px;
     }
 
     /* Footer pinned to bottom */
     footer {
       margin-top: auto; width: 100%;
       padding: 18px 0 24px; text-align: center;
-      color: var(--muted); font-size: 13px;
+      color: #666; font-size: 13px;
     }
     footer a { color: var(--fg); text-decoration: underline; }
+
     @media (max-width: 640px) {
-      .preview-grid { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
-    <!-- Use your stacked logo (script + tagline) -->
+    <!-- stacked logo (script + tagline) -->
     <a class="logo" href="#top" aria-label="Lolaelo home">
       <img src="/logo.png" alt="Lolaelo — Travel, but kinder">
     </a>
@@ -81,31 +88,35 @@
   <main class="container" role="main">
     <h1>A friendlier way to book stays and experiences</h1>
 
-    <div class="cta-row" id="ctaRow">
-      <a class="btn" href="#our-story" data-preview="story">Our Story</a>
-      <a class="btn" href="#partners"  data-preview="partners">For Partners</a>
-      <a class="btn" href="mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist." data-preview="waitlist">Join the waitlist</a>
-    </div>
-
     <hr class="divider">
 
-    <!-- Hover previews -->
-    <section class="preview-grid" id="previewGrid" aria-live="polite">
-      <article class="preview-card" id="card-story">
-        <h3>Our Story</h3>
-        <p>How a family-first idea became Lolaelo—and why “travel, but kinder” guides everything we build.</p>
-      </article>
+    <!-- Cards replace the old top buttons -->
+    <section class="card-grid" aria-label="Primary actions">
+      <a class="card-link" href="#our-story" aria-label="Read our story">
+        <article class="card">
+          <h3>Our Story</h3>
+          <p>How a family-first idea became Lolaelo—and why “travel, but kinder” guides everything we build.</p>
+        </article>
+      </a>
 
-      <article class="preview-card" id="card-partners">
-        <h3>For Partners</h3>
-        <p>Fair terms, flexible payouts, and tools that help local hosts shine. Join our founding partner list.</p>
-      </article>
+      <a class="card-link" href="#partners" aria-label="Information for partners">
+        <article class="card">
+          <h3>For Partners</h3>
+          <p>Fair terms, flexible payouts, and tools that help local hosts shine. Join our founding partner list.</p>
+        </article>
+      </a>
 
-      <article class="preview-card" id="card-waitlist">
-        <h3>Join the waitlist</h3>
-        <p>Be first to try Lolaelo when we open invites. We’ll email only when there’s real news.</p>
-      </article>
+      <a class="card-link" href="mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist." aria-label="Join the waitlist by email">
+        <article class="card">
+          <h3>Join the waitlist</h3>
+          <p>Be first to try Lolaelo when invites open. We’ll email only when there’s real news.</p>
+        </article>
+      </a>
     </section>
+
+    <!-- Empty anchors for now; you can add sections later -->
+    <section id="our-story" style="height:1px;"></section>
+    <section id="partners" style="height:1px;"></section>
   </main>
 
   <footer>
@@ -113,38 +124,6 @@
   </footer>
 
   <script>
-    // Hover previews
-    const buttons = document.querySelectorAll('.cta-row .btn');
-    const cards = {
-      story:    document.getElementById('card-story'),
-      partners: document.getElementById('card-partners'),
-      waitlist: document.getElementById('card-waitlist'),
-    };
-
-    function activate(which){
-      Object.values(cards).forEach(el => el.classList.remove('active'));
-      if (cards[which]) cards[which].classList.add('active');
-    }
-
-    // Show preview on hover/focus
-    buttons.forEach(btn => {
-      const key = btn.dataset.preview;
-      btn.addEventListener('mouseenter', () => activate(key));
-      btn.addEventListener('focus', () => activate(key));
-    });
-
-    // Clear when leaving both the buttons row and preview grid
-    const ctaRow = document.getElementById('ctaRow');
-    const previewGrid = document.getElementById('previewGrid');
-    function clearIfOutside(e){
-      const related = e.relatedTarget;
-      const inside = ctaRow.contains(related) || previewGrid.contains(related);
-      if (!inside) Object.values(cards).forEach(el => el.classList.remove('active'));
-    }
-    ctaRow.addEventListener('mouseleave', clearIfOutside);
-    previewGrid.addEventListener('mouseleave', clearIfOutside);
-
-    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
