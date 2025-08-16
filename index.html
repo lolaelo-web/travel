@@ -1,110 +1,138 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lolaelo – Coming Soon</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lolaelo — Coming Soon</title>
+  <link rel="icon" href="/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
+    :root { --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea; --radius:12px; --maxw:880px; }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg') no-repeat center center fixed;
-      background-size: cover;
-      display: flex;
-      flex-direction: column;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color: var(--fg);
       min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center;
     }
 
-    .content {
-      background-color: white;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 60px 20px;
+    /* Full-page background image (visible around/under the white paper) */
+    .site-bg {
+      position: fixed; inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+        url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
+        center / cover no-repeat;
+      z-index: -1;  /* behind everything */
+    }
+
+    /* White content area — this stays clean and unchanged */
+    .paper {
+      width: 100%;
+      max-width: var(--maxw);
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+      padding: 24px 20px 28px;
+      margin: 18px 20px 16px;
       text-align: center;
     }
 
-    h1 {
-      font-family: 'Brush Script MT', cursive;
-      font-size: 64px;
-      margin-bottom: 0;
+    header { margin-bottom: 12px; }
+    .logo img { width: auto; max-width: 80vw; max-height: 240px; }
+
+    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 14px; font-weight: 500; }
+
+    .divider {
+      border: none; border-top: 1px solid var(--line);
+      margin: 16px auto 18px; width: min(720px, 92%);
     }
 
-    h2 {
-      font-size: 18px;
-      letter-spacing: 2px;
-      margin-top: 0;
+    .card-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+      width: min(720px, 92%); margin: 0 auto;
+      text-align: left;
     }
-
-    h3 {
-      font-size: 28px;
-      margin-top: 20px;
-      margin-bottom: 40px;
-    }
-
-    .cards {
-      display: flex;
-      justify-content: space-around;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
     .card {
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      padding: 20px;
-      width: 220px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      font-size: 14px;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 16px; min-height: 120px;
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+      box-shadow: 0 1px 6px rgba(0,0,0,.04);
+      background: #fff;
     }
-
-    .card h4 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      font-size: 16px;
+    .card h3 { margin: 0 0 6px; font-size: 16px; color: #222; }
+    .card p  { margin: 0; font-size: 14px; color: var(--muted); }
+    .card:hover, .card:focus-within {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      border-color: #bbb;
     }
+    .card:hover p, .card:focus-within p { color: #333; }
 
     footer {
+      width: 100%;
       text-align: center;
-      font-size: 12px;
-      color: #555;
+      padding: 14px 10px 22px;
+      font-size: 13px;
+      color: #444;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(3px);
+      border-top: 1px solid rgba(0,0,0,0.06);
       margin-top: auto;
-      padding: 20px;
-      background: rgba(255,255,255,0.8);
     }
+    footer a { color: var(--fg); text-decoration: underline; }
 
-    footer a {
-      color: #333;
-      text-decoration: none;
-      margin: 0 5px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
+    @media (max-width: 640px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .paper { margin: 12px 12px 10px; padding: 20px 14px 22px; }
+      .logo img { max-height: 200px; }
     }
   </style>
 </head>
 <body>
-  <div class="content">
-    <h1>lolaelo</h1>
-    <h2>TRAVEL, BUT KINDER</h2>
-    <h3>A friendlier way to book stays and experiences</h3>
-    <div class="cards">
-      <div class="card">
-        <h4>Our Story</h4>
-        <p>How a family–first idea became Lolaelo—and why “travel, but kinder” guides everything we build.</p>
-      </div>
-      <div class="card">
-        <h4>For Partners</h4>
-        <p>Fair terms, flexible payouts, and tools that help local hosts shine. Join our founding partner list.</p>
-      </div>
-      <div class="card">
-        <h4>Join the waitlist</h4>
-        <p>Be first to try Lolaelo when invites open. We’ll email only when there’s real news.</p>
-      </div>
-    </div>
+  <div class="site-bg" aria-hidden="true"></div>
+
+  <div class="paper">
+    <header>
+      <a class="logo" href="#top" aria-label="Lolaelo home">
+        <img src="/logo.png" alt="Lolaelo — Travel, but kinder">
+      </a>
+    </header>
+
+    <main role="main">
+      <h1>A friendlier way to book stays and experiences</h1>
+
+      <hr class="divider">
+
+      <section class="card-grid" aria-label="Primary actions">
+        <article class="card" tabindex="0">
+          <h3>Our Story</h3>
+          <p>How a family-first idea became Lolaelo—and why “travel, but kinder” guides everything we build.</p>
+        </article>
+
+        <article class="card" tabindex="0">
+          <h3>For Partners</h3>
+          <p>Fair terms, flexible payouts, and tools that help local hosts shine. Join our founding partner list.</p>
+        </article>
+
+        <article class="card" tabindex="0">
+          <h3>Join the waitlist</h3>
+          <p>Be first to try Lolaelo when invites open. We’ll email only when there’s real news.</p>
+        </article>
+      </section>
+    </main>
   </div>
+
   <footer>
-    © 2025 Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
