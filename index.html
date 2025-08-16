@@ -1,67 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- minimal v9 -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lolaelo — Coming Soon</title>
-  <meta name="description" content="Lolaelo: a friendlier way to book stays and experiences. Launching soon." />
   <link rel="icon" href="/logo.png" />
-
-  <!-- Inter for UI text -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <!-- Daytona Light for the main headline -->
-  <link href="https://db.onlinewebfonts.com/c/79a8e1bc16f1c88fe653585925532284?family=Daytona+W01+Light" rel="stylesheet">
-  <style>
-    @font-face {
-      font-family: "Daytona W01 Light";
-      src: url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff2") format("woff2"),
-           url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff") format("woff");
-      font-weight: 300; font-style: normal; font-display: swap;
-    }
 
+  <style>
     :root { --bg:#fff; --fg:#111; --muted:#666; --line:#e5e5e5; --radius:10px; --maxw:880px; }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--fg); background: var(--bg);
-      display: flex; flex-direction: column; align-items: center;
-      padding: 24px 20px 48px;
+      display: flex; flex-direction: column;       /* ➊ enables footer pin */
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 20px 0;
     }
 
-    /* Header / Logo (logo includes the tagline) */
     header { width: 100%; text-align: center; margin-bottom: 12px; }
-    .logo img { display: inline-block; width: auto; max-width: 80vw; max-height: 240px; margin: 0; }
-    @media (max-width: 640px) { .logo img { max-height: 200px; } }
+    .logo img { display: inline-block; width: auto; max-width: 80vw; max-height: 240px; }
 
     .container { width: 100%; max-width: var(--maxw); text-align: center; }
 
-    /* Main headline only -> Daytona Light */
-    h1 {
-      font-family: "Daytona W01 Light","Daytona Light","Daytona",sans-serif;
-      font-size: clamp(32px, 5.2vw, 56px);
-      line-height: 1.15; margin: 10px 0 8px;
-      font-weight: 300;
-    }
+    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 8px; font-weight: 500; }
 
-    /* CTAs */
+    /* Buttons row */
     .cta-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 18px; }
     .btn {
       appearance: none; border: 1px solid var(--fg); cursor: pointer;
       border-radius: var(--radius); padding: 12px 16px; font-weight: 600;
       background: transparent; color: var(--fg); text-decoration: none; display: inline-block;
     }
-    .btn.primary { background: var(--fg); color: var(--bg); }
+    /* Keep Join button white */
+    .btn.primary { background: #fff; color: #000; border: 1px solid #000; }
     .btn:hover { filter: brightness(0.95); }
 
-    footer { margin-top: 48px; color: var(--muted); font-size: 13px; text-align: center; }
+    /* ➋ Divider line under buttons */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--line);
+      margin: 26px auto;           /* space above/below the line */
+      width: min(720px, 90%);
+    }
+
+    /* ➌ Footer pinned to page bottom */
+    footer {
+      margin-top: auto;            /* pushes footer to bottom */
+      width: 100%;
+      padding: 18px 0 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
     footer a { color: var(--fg); text-decoration: underline; }
   </style>
 </head>
 <body>
   <header>
-    <!-- Replace /logo.png with your new stacked logo (script + tagline) -->
+    <!-- Use your stacked logo (script + tagline) -->
     <a class="logo" href="#top" aria-label="Lolaelo home">
       <img src="/logo.png" alt="Lolaelo — Travel, but kinder">
     </a>
@@ -69,24 +69,25 @@
 
   <main class="container" role="main">
     <h1>A friendlier way to book stays and experiences</h1>
-<p> </p>    <p></p><p></p> <p></p>
+
     <div class="cta-row">
-      <a class="btn" href="#about">Our Story</a>
+      <a class="btn" href="#our-story">Our Story</a>
       <a class="btn" href="#partners">For Partners</a>
-      <a class="btn" href="mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.">Join the waitlist</a>
+      <a class="btn primary" href="mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.">Join the waitlist</a>
     </div>
 
-    <!-- Empty anchors so buttons work; content intentionally removed per your markup -->
-    <section id="about" style="height:1px;"></section>
+    <!-- ➍ Divider line exactly where you drew it -->
+    <hr class="divider">
+
+    <!-- Optional empty anchors so buttons work; content can be added later -->
+    <section id="our-story" style="height:1px;"></section>
     <section id="partners" style="height:1px;"></section>
-<div class="line"></div>
-<div class="push-to-bottom">
-    <footer>
-      <div>© <span id="year"></span> Lolaelo</div>
-      <div><a href="#">Privacy</a> · <a href="#">Terms</a></div>
-    </footer>
-</div>
   </main>
+
+  <!-- ➎ Footer now pinned at the very bottom -->
+  <footer>
+    © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
+  </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
