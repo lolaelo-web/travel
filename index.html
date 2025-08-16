@@ -6,117 +6,78 @@
   <title>Lolaelo — Coming Soon</title>
   <meta name="description" content="Lolaelo: a friendlier way to book stays and experiences. Launching soon." />
   <meta name="robots" content="index,follow" />
-  <!-- Open Graph / Twitter -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Lolaelo — Coming Soon" />
   <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
-  <meta property="og:image" content="logo.png" />
+  <meta property="og:image" content="/logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <!-- Favicon -->
-  <link rel="icon" href="logo.png">
+  <link rel="icon" href="/logo.png">
   <style>
     :root {
-      --bg: #0b1220;
-      --bg2: #0f172a;
-      --fg: #e5e7eb;
-      --muted: #94a3b8;
-      --brand: #38bdf8; /* cyan-400 */
-      --accent: #a78bfa; /* violet-400 */
+      --bg: #ffffff;
+      --fg: #111111;
+      --muted: #444444;
+      --brand: #000000;
       --maxw: 880px;
     }
     * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    html, body { height: 100%; margin: 0; }
     body {
-      margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--fg);
-      background: radial-gradient(1200px 800px at 80% -10%, rgba(56,189,248,0.25), transparent 60%),
-                  radial-gradient(900px 600px at -10% 20%, rgba(167,139,250,0.18), transparent 60%),
-                  linear-gradient(180deg, var(--bg), var(--bg2));
-      display: grid;
-      place-items: center;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       padding: 24px;
+    }
+    header {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .logo img {
+      max-height: 320px; /* Enlarged ~7x */
+      width: auto;
+      display: inline-block;
     }
     .card {
       width: 100%;
       max-width: var(--maxw);
-      background: rgba(15, 23, 42, 0.7);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(148,163,184,0.15);
-      border-radius: 20px;
-      padding: 28px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      text-align: center;
     }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      text-decoration: none;
-    }
-    .logo img {
-      max-height: 48px;
-      width: auto;
-      border-radius: 8px;
-      display: block;
-    }
-    .pill {
-      border: 1px solid rgba(148,163,184,0.35);
-      color: var(--muted);
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      text-decoration: none;
-      transition: border-color .2s ease;
-    }
-    .pill:hover { border-color: var(--fg); }
+    .kicker { color: var(--muted); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 14px; }
+    h1 { font-size: clamp(28px, 4vw, 40px); line-height: 1.2; margin: 12px 0 16px; }
+    .sub { color: var(--muted); font-size: 18px; max-width: 60ch; margin: 0 auto 24px; }
 
-    .hero { margin: 28px 0 10px; }
-    .kicker { color: var(--brand); font-weight: 600; letter-spacing: .08em; text-transform: uppercase; font-size: 12px; }
-    h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.1; margin: 8px 0 12px; }
-    .sub { color: var(--muted); font-size: clamp(16px, 2vw, 18px); max-width: 58ch; }
-
-    .cta {
-      margin-top: 22px;
-      display: flex; flex-wrap: wrap; gap: 10px;
-    }
     .btn {
-      appearance: none; border: none; cursor: pointer;
-      border-radius: 12px; padding: 12px 16px; font-weight: 600;
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--brand), var(--accent));
-      color: #0b1220;
+      appearance: none; border: 1px solid var(--fg); cursor: pointer;
+      border-radius: 8px; padding: 12px 18px; font-weight: 600;
+      background: var(--fg); color: var(--bg);
+      margin: 6px;
     }
-    .btn.secondary { background: transparent; color: var(--fg); border: 1px solid rgba(148,163,184,0.35); }
+    .btn.secondary { background: transparent; color: var(--fg); }
 
-    form.waitlist {
-      margin-top: 18px; display: flex; flex-wrap: wrap; gap: 10px;
-    }
+    form.waitlist { margin-top: 20px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
     .input {
       flex: 1 1 260px; min-width: 220px;
-      background: rgba(2,6,23,0.5);
-      color: var(--fg);
-      border: 1px solid rgba(148,163,184,0.35);
-      border-radius: 12px; padding: 12px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px 14px;
     }
 
-    footer { margin-top: 18px; color: var(--muted); font-size: 13px; display:flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-    footer a { color: var(--fg); text-decoration: none; border-bottom: 1px dashed rgba(148,163,184,0.35); }
+    footer { margin-top: 48px; color: var(--muted); font-size: 13px; text-align: center; }
+    footer a { color: var(--fg); text-decoration: underline; }
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <header>
-      <a class="logo" href="#" aria-label="Lolaelo home">
-        <img src="./logo.png" alt="Lolaelo logo" />
-      </a>
-      <span class="pill" aria-live="polite">Launching soon</span>
-    </header>
+  <header>
+    <a class="logo" href="#" aria-label="Lolaelo home">
+      <img src="/logo.png" alt="Lolaelo logo" />
+    </a>
+  </header>
 
+  <main class="card" role="main">
     <section class="hero" aria-labelledby="title">
       <div class="kicker">Travel, but kinder</div>
       <h1 id="title">A friendlier way to book stays and experiences</h1>
@@ -134,23 +95,23 @@
       </div>
     </section>
 
-    <section id="about" style="margin-top: 26px;">
-      <h2 style="margin:0 0 8px; font-size: 18px;">What to expect</h2>
-      <ul style="margin:0; padding-left: 18px; color: var(--fg);">
+    <section id="about" style="margin-top: 40px;">
+      <h2 style="margin:0 0 12px; font-size: 20px;">What to expect</h2>
+      <ul style="margin:0 auto; padding-left: 20px; max-width:480px; text-align:left;">
         <li>Curated, family-friendly listings</li>
         <li>Transparent pricing and flexible policies</li>
         <li>Locally-owned partners prioritized</li>
       </ul>
     </section>
 
-    <section id="partners" style="margin-top: 18px;">
-      <h2 style="margin:0 0 8px; font-size: 18px;">For partners</h2>
+    <section id="partners" style="margin-top: 30px;">
+      <h2 style="margin:0 0 12px; font-size: 20px;">For partners</h2>
       <p class="sub" style="margin:0;">Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
     </section>
 
     <footer>
       <div>© <span id="year"></span> Lolaelo</div>
-      <div><a href="#" rel="nofollow">Privacy</a> · <a href="#" rel="nofollow">Terms</a></div>
+      <div><a href="#">Privacy</a> · <a href="#">Terms</a></div>
     </footer>
   </main>
 
