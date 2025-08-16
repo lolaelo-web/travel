@@ -1,162 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- v5 -->
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo — Coming Soon</title>
-  <meta name="description" content="Lolaelo: a friendlier way to book stays and experiences. Launching soon." />
-  <meta name="robots" content="index,follow" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Lolaelo — Coming Soon" />
-  <meta property="og:description" content="A friendlier way to book stays and experiences. Launching soon." />
-  <meta property="og:image" content="/logo.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href="/logo.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lolaelo Travel</title>
 
-  <!-- Fonts: Inter for everything, script for headline. 
-       We try 'Baguette Script' first (if you add it later),
-       and fall back to 'Great Vibes' (Google) to guarantee script styling. -->
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Daytona Light -->
+  <link href="https://db.onlinewebfonts.com/c/79a8e1bc16f1c88fe653585925532284?family=Daytona+W01+Light" rel="stylesheet">
 
   <style>
-    :root{
-      --bg:#ffffff; --fg:#111111; --muted:#555; --line:#e5e5e5;
-      --maxw:880px; --radius:10px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
-    body{
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--fg); background:var(--bg);
-      display:flex; flex-direction:column; align-items:center;
-      padding:24px 20px 48px;
+    @font-face {
+      font-family: "Daytona W01 Light";
+      src: url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff2") format("woff2"),
+           url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.woff") format("woff"),
+           url("https://db.onlinewebfonts.com/t/79a8e1bc16f1c88fe653585925532284.ttf") format("truetype");
+      font-weight: normal;
+      font-style: normal;
     }
 
-    /* HEADER / LOGO */
-    header{width:100%; text-align:center; margin-bottom:12px;} /* gap reduced by ~50% */
-    .logo img{
-      display:inline-block; width:auto; max-width:80vw;
-      max-height:240px; /* adjust as needed */
-    }
-    @media (max-width:640px){ .logo img{ max-height:200px; } }
-
-    .container{ width:100%; max-width:var(--maxw); text-align:center; }
-
-    /* TYPOGRAPHY */
-    .kicker{
-      color:var(--muted); font-weight:600; letter-spacing:.08em;
-      text-transform:uppercase; font-size:13px; margin-bottom:6px;
-    }
-    /* Headline only → script font */
-    h1{
-      font-family: "Baguette Script","Great Vibes",cursive;
-      font-size: clamp(32px, 5.2vw, 56px);
-      line-height:1.15; margin:6px 0 12px;
-      font-weight: 400;
-    }
-    /* Everything else uses Inter (same as kicker) */
-    .sub{ color:var(--muted); font-size:18px; max-width:60ch; margin:0 auto 20px; }
-
-    /* Waitlist layout: responsive grid (no overlap) */
-    form.waitlist{
-      margin-top:14px;
-      display:grid;
-      grid-template-columns: 1fr auto auto;
-      gap:10px;
-      align-items:center;
-      max-width:800px;
-      margin-left:auto; margin-right:auto;
-    }
-    .input{
-      width:100%;
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:12px 14px;
-      font-size:16px;
-      outline:none;
-    }
-    .input:focus{ border-color:#111; box-shadow:0 0 0 2px #11111110; }
-
-    .btn{
-      appearance:none; border:1px solid var(--fg); cursor:pointer;
-      border-radius:var(--radius); padding:12px 16px; font-weight:600;
-      background:var(--fg); color:var(--bg);
-    }
-    .btn:hover{ filter:brightness(0.95); }
-    .btn.secondary{ background:transparent; color:var(--fg); }
-
-    @media (max-width:640px){
-      form.waitlist{ grid-template-columns: 1fr; }
-      .btn, .btn.secondary{ width:100%; }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Daytona W01 Light", sans-serif;
+      background-color: #fff;
+      color: #333;
+      text-align: center;
     }
 
-    .cta{ margin-top:16px; display:flex; flex-wrap:wrap; justify-content:center; gap:10px; }
+    header {
+      margin-top: 30px;
+    }
 
-    section{ margin-top:32px; }
-    ul{ margin:0 auto; padding-left:20px; max-width:520px; text-align:left; }
+    header img {
+      width: 350px; /* enlarged ~7x */
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
 
-    footer{ margin-top:44px; color:var(--muted); font-size:13px; text-align:center; }
-    footer a{ color:var(--fg); text-decoration:underline; }
+    .tagline {
+      margin-top: 10px; /* tightened gap */
+      font-family: "Daytona W01 Light", sans-serif;
+      font-size: 32px;
+      font-weight: bold;
+      color: #111;
+    }
+
+    .subtagline {
+      margin-top: 5px;
+      font-family: "Daytona W01 Light", sans-serif;
+      font-size: 20px;
+      font-style: italic;
+      color: #555;
+    }
+
+    nav {
+      margin-top: 25px;
+    }
+
+    nav a {
+      font-family: "Daytona W01 Light", sans-serif;
+      text-decoration: none;
+      color: #333;
+      margin: 0 15px;
+      font-size: 18px;
+      font-weight: normal;
+    }
+
+    nav a:hover {
+      color: #0077cc;
+    }
+
+    .email-signup {
+      margin-top: 20px;
+    }
+
+    .email-signup input[type="email"] {
+      padding: 10px;
+      font-size: 16px;
+      font-family: "Daytona W01 Light", sans-serif;
+      width: 250px;
+    }
+
+    .email-signup button {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-family: "Daytona W01 Light", sans-serif;
+      background-color: #0077cc;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .email-signup button:hover {
+      background-color: #005fa3;
+    }
   </style>
 </head>
 <body>
+
   <header>
-    <a class="logo" href="#top" aria-label="Lolaelo home">
-      <img src="/logo.png" alt="Lolaelo logo">
-    </a>
+    <img src="logo.png" alt="Lolaelo Logo">
+    <div class="tagline">Travel, but kinder</div>
+    <div class="subtagline">a friendlier way...</div>
   </header>
 
-  <div class="container" role="main">
-    <section class="hero" aria-labelledby="title">
-      <div class="kicker">Travel, but kinder</div>
-      <h1 id="title">A friendlier way to book stays and experiences</h1>
-      <p class="sub">We’re building an online travel platform that puts partners and families first. Be the first to know when we launch.</p>
+  <nav>
+    <a href="#about">About</a>
+    <a href="#partners">For Partners</a>
+    <a href="#contact">Contact</a>
+  </nav>
 
-      <form class="waitlist" id="waitlistForm" onsubmit="return handleWaitlist(event)">
-        <input class="input" id="email" name="email" type="email" placeholder="your@email.com" required aria-label="Email address" />
-        <button type="submit" class="btn">Join the waitlist</button>
-        <button type="button" class="btn secondary" onclick="window.location.href='mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.'">Email us</button>
-      </form>
-
-      <div class="cta">
-        <a class="btn secondary" href="#about">About</a>
-        <a class="btn secondary" href="#partners">For Partners</a>
-      </div>
-    </section>
-
-    <section id="about">
-      <h2 style="margin:0 0 12px; font-size:20px;">What to expect</h2>
-      <ul>
-        <li>Curated, family-friendly listings</li>
-        <li>Transparent pricing and flexible policies</li>
-        <li>Locally-owned partners prioritized</li>
-      </ul>
-    </section>
-
-    <section id="partners">
-      <h2 style="margin:0 0 12px; font-size:20px;">For partners</h2>
-      <p class="sub" style="margin:0;">Operate a stay or experience? Reach us at <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>.</p>
-    </section>
-
-    <footer>
-      <div>© <span id="year"></span> Lolaelo</div>
-      <div><a href="#">Privacy</a> · <a href="#">Terms</a></div>
-    </footer>
+  <div class="email-signup">
+    <input type="email" placeholder="Enter your email">
+    <button>Subscribe</button>
   </div>
 
-  <script>
-    function handleWaitlist(e){
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      if(!email) return false;
-      const subject = encodeURIComponent('Lolaelo Waitlist');
-      const body = encodeURIComponent('Please add ' + email + ' to the waitlist.');
-      window.location.href = `mailto:hello@lolaelo.com?subject=${subject}&body=${body}`;
-      alert('Your email app should open. If not, send us a note at hello@lolaelo.com');
-      return false;
-    }
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
