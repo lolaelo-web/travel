@@ -6,19 +6,16 @@
   <title>Lolaelo — Coming Soon</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#666; --line:#e5e5e5; --radius:10px; --maxw:880px; }
+    :root { --bg:#fff; --fg:#111; --muted:#666; --line:#e5e5e5; --radius:12px; --maxw:880px; }
 
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
     body {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--fg); background: var(--bg);
-      display: flex; flex-direction: column;       /* ➊ enables footer pin */
-      align-items: center;
-      min-height: 100vh;
-      padding: 24px 20px 0;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh; padding: 24px 20px 0;
     }
 
     header { width: 100%; text-align: center; margin-bottom: 12px; }
@@ -33,30 +30,44 @@
     .btn {
       appearance: none; border: 1px solid var(--fg); cursor: pointer;
       border-radius: var(--radius); padding: 12px 16px; font-weight: 600;
-      background: transparent; color: var(--fg); text-decoration: none; display: inline-block;
+      background: #fff; color: #000; text-decoration: none; display: inline-block;
+      transition: transform .08s ease, filter .15s ease;
     }
-    /* Keep Join button white */
-    .btn.primary { background: #fff; color: #000; border: 1px solid #000; }
-    .btn:hover { filter: brightness(0.95); }
+    .btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
 
-    /* ➋ Divider line under buttons */
+    /* Divider line under buttons */
     .divider {
-      border: none;
-      border-top: 1px solid var(--line);
-      margin: 26px auto;           /* space above/below the line */
-      width: min(720px, 90%);
+      border: none; border-top: 1px solid var(--line);
+      margin: 26px auto 18px; width: min(720px, 92%);
     }
 
-    /* ➌ Footer pinned to page bottom */
+    /* Preview grid */
+    .preview-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+      width: min(720px, 92%); margin: 0 auto;
+    }
+    .preview-card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      min-height: 120px; padding: 16px; text-align: left;
+      opacity: .45; transition: opacity .15s ease, border-color .15s ease, box-shadow .15s ease;
+    }
+    .preview-card h3 { margin: 0 0 6px; font-size: 16px; }
+    .preview-card p  { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.4; }
+    .preview-card.active {
+      opacity: 1; border-color: var(--fg);
+      box-shadow: 0 2px 14px rgba(0,0,0,.06);
+    }
+
+    /* Footer pinned to bottom */
     footer {
-      margin-top: auto;            /* pushes footer to bottom */
-      width: 100%;
-      padding: 18px 0 24px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
+      margin-top: auto; width: 100%;
+      padding: 18px 0 24px; text-align: center;
+      color: var(--muted); font-size: 13px;
     }
     footer a { color: var(--fg); text-decoration: underline; }
+    @media (max-width: 640px) {
+      .preview-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -70,26 +81,70 @@
   <main class="container" role="main">
     <h1>A friendlier way to book stays and experiences</h1>
 
-    <div class="cta-row">
-      <a class="btn" href="#our-story">Our Story</a>
-      <a class="btn" href="#partners">For Partners</a>
-      <a class="btn primary" href="mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist.">Join the waitlist</a>
+    <div class="cta-row" id="ctaRow">
+      <a class="btn" href="#our-story" data-preview="story">Our Story</a>
+      <a class="btn" href="#partners"  data-preview="partners">For Partners</a>
+      <a class="btn" href="mailto:hello@lolaelo.com?subject=Lolaelo%20Waitlist&body=Please%20add%20me%20to%20the%20waitlist." data-preview="waitlist">Join the waitlist</a>
     </div>
 
-    <!-- ➍ Divider line exactly where you drew it -->
     <hr class="divider">
 
-    <!-- Optional empty anchors so buttons work; content can be added later -->
-    <section id="our-story" style="height:1px;"></section>
-    <section id="partners" style="height:1px;"></section>
+    <!-- Hover previews -->
+    <section class="preview-grid" id="previewGrid" aria-live="polite">
+      <article class="preview-card" id="card-story">
+        <h3>Our Story</h3>
+        <p>How a family-first idea became Lolaelo—and why “travel, but kinder” guides everything we build.</p>
+      </article>
+
+      <article class="preview-card" id="card-partners">
+        <h3>For Partners</h3>
+        <p>Fair terms, flexible payouts, and tools that help local hosts shine. Join our founding partner list.</p>
+      </article>
+
+      <article class="preview-card" id="card-waitlist">
+        <h3>Join the waitlist</h3>
+        <p>Be first to try Lolaelo when we open invites. We’ll email only when there’s real news.</p>
+      </article>
+    </section>
   </main>
 
-  <!-- ➎ Footer now pinned at the very bottom -->
   <footer>
     © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
   <script>
+    // Hover previews
+    const buttons = document.querySelectorAll('.cta-row .btn');
+    const cards = {
+      story:    document.getElementById('card-story'),
+      partners: document.getElementById('card-partners'),
+      waitlist: document.getElementById('card-waitlist'),
+    };
+
+    function activate(which){
+      Object.values(cards).forEach(el => el.classList.remove('active'));
+      if (cards[which]) cards[which].classList.add('active');
+    }
+
+    // Show preview on hover/focus
+    buttons.forEach(btn => {
+      const key = btn.dataset.preview;
+      btn.addEventListener('mouseenter', () => activate(key));
+      btn.addEventListener('focus', () => activate(key));
+    });
+
+    // Clear when leaving both the buttons row and preview grid
+    const ctaRow = document.getElementById('ctaRow');
+    const previewGrid = document.getElementById('previewGrid');
+    function clearIfOutside(e){
+      const related = e.relatedTarget;
+      const inside = ctaRow.contains(related) || previewGrid.contains(related);
+      if (!inside) Object.values(cards).forEach(el => el.classList.remove('active'));
+    }
+    ctaRow.addEventListener('mouseleave', clearIfOutside);
+    previewGrid.addEventListener('mouseleave', clearIfOutside);
+
+    // Year
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
