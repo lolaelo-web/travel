@@ -18,7 +18,7 @@
       display: flex; flex-direction: column; align-items: center;
     }
 
-    /* same background as index */
+    /* same background as home */
     .site-bg{
       position: fixed; inset: 0;
       background:
@@ -44,16 +44,15 @@
     }
     .crumb a{ color:var(--fg); text-decoration:none; }
     .crumb a:hover{ text-decoration:underline; }
-    .back{
+    .btn{
       appearance:none; border:1px solid #111; background:#fff; color:#111;
       border-radius:10px; padding:8px 12px; font-weight:600; text-decoration:none;
     }
-    .back:hover{ filter:brightness(.96); }
+    .btn:hover{ filter:brightness(.96); }
 
     h1{
       font-size: clamp(28px, 4.5vw, 42px);
-      line-height:1.2; margin:8px 0 4px; text-align:center;
-      font-weight:600;
+      line-height:1.2; margin:8px 0 4px; text-align:center; font-weight:600;
     }
     .sub{
       text-align:center; color:var(--muted);
@@ -62,15 +61,12 @@
 
     hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
 
-    /* sections */
     section{ margin:18px 0; }
     h2{ font-size:18px; margin:0 0 8px; }
     p{ margin:0 0 10px; line-height:1.65; color:#222; }
+    ul{ margin:6px 0 10px 18px; }
 
-    /* values grid */
-    .grid{
-      display:grid; grid-template-columns: repeat(3,1fr); gap:12px;
-    }
+    .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
     .card{
       border:1px solid var(--line); border-radius:12px; background:#fff;
       padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04);
@@ -78,13 +74,6 @@
     .card h3{ margin:0 0 6px; font-size:16px; }
     .muted{ color:var(--muted); }
 
-    /* timeline */
-    .timeline{ border-left:2px solid var(--line); padding-left:14px; }
-    .tl-item{ margin:10px 0; }
-    .tl-item h4{ margin:0 0 4px; font-size:15px; }
-    .tag{ display:inline-block; border:1px solid #111; border-radius:999px; padding:2px 8px; font-size:12px; }
-
-    /* footer like index */
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
       font-size:13px; color:#444; background:rgba(255,255,255,.72);
@@ -93,9 +82,7 @@
     }
     footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width: 700px){
-      .grid{ grid-template-columns:1fr; }
-    }
+    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -110,63 +97,70 @@
 
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <div class="crumb"><a href="/">Home</a> · Our Story</div>
-      <a class="back" href="/">Back</a>
+      <div style="display:flex; gap:8px;">
+        <a class="btn" href="/our-strategy.html">Our Strategy</a>
+        <a class="btn" href="/">Back</a>
+      </div>
     </nav>
 
-    <h1>Why “travel, but kinder”</h1>
-    <p class="sub">Lolaelo started as a simple idea: make travel friendlier—for families who book, and for local partners who host. We believe fair policies, clear pricing, and human support create better trips for everyone.</p>
+    <h1>Why we built Lolaelo</h1>
+    <p class="sub">
+      Lolaelo began with a straightforward idea: <strong>be an inexpensive bridge between travelers and local partners.</strong>
+      Partners should keep more of what they earn, and customers should pay a fair price—<em>without</em> platform games.
+    </p>
 
     <hr class="divider" />
 
     <section>
-      <h2>What we stand for</h2>
+      <h2>Our philosophy</h2>
+      <p>
+        We operate on a simple principle: <strong>reasonable margin</strong>. We’re here to make a living, not to maximize
+        profit at the expense of partners or guests. When we keep margins modest:
+      </p>
+      <ul>
+        <li><strong>Partners</strong> retain a larger share of each booking and can invest back into their properties and staff.</li>
+        <li><strong>Customers</strong> get a more reasonable price and the good feeling that their hosts are getting their fair share.</li>
+        <li><strong>Lolaelo</strong> stays sustainable by running lean and focusing on long-term relationships—not short-term extraction.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>How that shows up</h2>
       <div class="grid" role="list">
         <article class="card" role="listitem">
-          <h3>People first</h3>
-          <p class="muted">Real humans, not ticket numbers. We prioritize families and the local hosts who welcome them.</p>
+          <h3>Non-greedy by design</h3>
+          <p class="muted">We target a small, clear margin. If a fee doesn’t add value, we don’t charge it.</p>
         </article>
         <article class="card" role="listitem">
-          <h3>Fair & clear</h3>
-          <p class="muted">Transparent pricing and policies. No gotchas. Partners know how and when they get paid.</p>
+          <h3>Transparent pricing</h3>
+          <p class="muted">No hidden add-ons. Partners see what they keep. Guests see what they pay. Period.</p>
         </article>
         <article class="card" role="listitem">
-          <h3>Local matters</h3>
-          <p class="muted">We highlight locally owned stays and experiences that give back to the community.</p>
+          <h3>Community first</h3>
+          <p class="muted">We prioritize locally owned stays and experiences that strengthen their communities.</p>
         </article>
       </div>
     </section>
 
     <section>
-      <h2>How we got here</h2>
-      <div class="timeline">
-        <div class="tl-item">
-          <h4>2023 — The spark</h4>
-          <p class="muted">A family trip exposed how confusing policies and hidden fees can spoil the experience. We wrote the first notes for Lolaelo.</p>
-        </div>
-        <div class="tl-item">
-          <h4>2024 — Prototype</h4>
-          <p class="muted">We mocked up a friendlier booking flow and started speaking with independent hosts and operators.</p>
-        </div>
-        <div class="tl-item">
-          <h4>2025 — Partner-first launch <span class="tag">in progress</span></h4>
-          <p class="muted">Building with a small circle of founding partners before opening to public waitlist invites.</p>
-        </div>
-      </div>
+      <h2>What this means for you</h2>
+      <p><strong>Travelers:</strong> you’ll see prices that make sense, backed by human support when you need it.</p>
+      <p><strong>Partners:</strong> you keep more of each booking and work with a platform that treats you like a partner, not inventory.</p>
     </section>
 
     <section>
-      <h2>What’s next</h2>
-      <p>We’re assembling founding partners who believe in hospitality that’s kinder and more transparent. If that’s you, we’d love to connect.</p>
-      <p class="muted" style="margin-top:8px;">Email <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a> or join the waitlist from the homepage.</p>
+      <h2>Where we’re heading</h2>
+      <p>
+        In Year 1 we’re prioritizing trust over margin. We’re building a base of customers and a community of hotels and vendors
+        who share our belief that hospitality works best when everyone wins. Read how we’ll do it in <a href="/our-strategy.html">Our Strategy</a>.
+      </p>
     </section>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
