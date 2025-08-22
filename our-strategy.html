@@ -10,16 +10,17 @@
     :root { --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea; --radius:12px; --maxw:880px; }
 
     *{ box-sizing:border-box; }
-    html, body{ height:100%; margin:0; }
+    html,body{ height:100%; margin:0; }
     body{
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color: var(--fg);
-      min-height: 100vh;
+      color:var(--fg);
+      min-height:100vh;
       display:flex; flex-direction:column; align-items:center;
     }
 
+    /* same background as other pages */
     .site-bg{
-      position: fixed; inset: 0;
+      position:fixed; inset:0;
       background:
         linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
@@ -27,6 +28,7 @@
       z-index:-1;
     }
 
+    /* white card */
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
@@ -39,48 +41,49 @@
 
     nav.breadcrumbs{
       display:flex; justify-content:space-between; align-items:center;
-      font-size:13px; color:var(--muted); margin:4px 0 8px;
+      font-size:0.9375rem; color:var(--muted); margin:4px 0 8px;
     }
     .crumb a{ color:var(--fg); text-decoration:none; }
     .crumb a:hover{ text-decoration:underline; }
+
     .btn{
       appearance:none; border:1px solid #111; background:#fff; color:#111;
       border-radius:10px; padding:8px 12px; font-weight:600; text-decoration:none;
+      font-size:0.9375rem;
     }
     .btn:hover{ filter:brightness(.96); }
 
-    h1{ font-size: clamp(28px, 4.5vw, 42px); line-height:1.2; margin:8px 0 4px; text-align:center; font-weight:600; }
-    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; }
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:8px 0 6px; text-align:center; font-weight:600; }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:0.9375rem; }
 
     hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
 
     section{ margin:18px 0; }
     h2{ font-size:18px; margin:0 0 8px; }
-    p{ margin:0 0 10px; line-height:1.65; color:#222; }
+    p, li{ font-size:0.9375rem; line-height:1.65; color:#222; }
     ul{ margin:6px 0 10px 18px; }
 
-    .pill{
-      display:inline-block; border:1px solid #111; border-radius:999px;
-      padding:4px 10px; font-size:12px; margin-left:6px;
-    }
-
-    .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+    .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
     .card{
       border:1px solid var(--line); border-radius:12px; background:#fff;
       padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04);
+      transition:transform .15s ease, box-shadow .15s ease;
     }
     .card h3{ margin:0 0 6px; font-size:16px; }
-    .muted{ color:var(--muted); }
+    .card p{ margin:0; color:var(--muted); font-size:0.9375rem; }
+    .card:hover{ transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.08); }
+
+    .pill{ display:inline-block; border:1px solid #111; border-radius:999px; padding:4px 10px; font-size:12px; margin-left:6px; }
 
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
       font-size:13px; color:#444; background:rgba(255,255,255,.72);
-      backdrop-filter: blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
       margin-top:auto;
     }
     footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
+    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -89,7 +92,7 @@
   <main class="paper" role="main">
     <header>
       <a class="logo" href="/" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — Travel, but kinder" />
+        <img src="/logo.png" alt="Lolaelo — Travel, but kinder">
       </a>
     </header>
 
@@ -97,58 +100,53 @@
       <div class="crumb"><a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · Our Strategy</div>
       <div style="display:flex; gap:8px;">
         <a class="btn" href="/our-story.html">Our Story</a>
-        <a class="btn" href="/">Back</a>
+        <a class="btn" href="/">Home</a>
       </div>
     </nav>
 
     <h1>Our Strategy <span class="pill">Year 1: 0% margin</span></h1>
-    <p class="sub">
-      Radical transparency: why you’ll often see the cheapest price on Lolaelo, how we’ll run at a planned loss in Year 1, and
-      how this becomes sustainable without becoming greedy.
-    </p>
+    <p class="sub">Why you’ll often see the lowest price on Lolaelo, how we’ll run lean in Year 1, and how this scales without getting greedy.</p>
 
     <hr class="divider" />
 
     <section>
       <h2>1) Why are prices so low?</h2>
-      <p>
-        In our first year, <strong>we charge 0% platform margin</strong>. 100% of the booking payment goes to the partner and payment processing.
-        We absorb our operating costs. That’s the bridge we promised to be.
-      </p>
+      <p><strong>Year 1: we take 0% platform margin.</strong> 100% of the payment goes to the partner and payment processing. We absorb operating costs to prove the model.</p>
     </section>
 
     <section>
       <h2>2) Why do this?</h2>
       <ul>
-        <li><strong>Build a customer base</strong> by offering the most cost-effective price we can—without compromising reliability.</li>
-        <li><strong>Build a partner community</strong> of hotels and vendors who share our view: local businesses should maximize profit and keep their fair share.</li>
-        <li><strong>Prove the model</strong>: fair pricing + dependable service beats gimmicks and junk fees.</li>
+        <li><strong>Win trust</strong> — offer the most cost-effective price with reliable service.</li>
+        <li><strong>Grow both sides</strong> — build a base of travelers and a community of partners who keep more.</li>
+        <li><strong>Play the long game</strong> — fairness beats junk fees and gimmicks.</li>
       </ul>
-      <p class="muted">We expect to operate at a loss in Year 1 and will work hard to minimize it.</p>
+      <p class="sub">We expect a planned loss in Year 1 and will work hard to minimize it.</p>
     </section>
 
     <section>
       <h2>3) How can we afford it?</h2>
-      <p>
-        Because we’re committed to <strong>reasonable margin</strong> and a lean operation—not growth at any cost. We keep overhead low, automate where it helps,
-        and choose partners who value long-term relationships over short-term extraction.
-      </p>
+      <ul>
+        <li><strong>Fair Margin Formula</strong> — small, clear margins × high volume = decent profit over time.</li>
+        <li><strong>Lean ops</strong> — automate the boring parts; keep overhead light.</li>
+        <li><strong>Right partners</strong> — hotels and vendors who value long-term relationships.</li>
+      </ul>
     </section>
 
     <section>
       <h2>What happens after Year 1?</h2>
       <div class="grid" role="list">
         <article class="card" role="listitem">
-          <h3>Year 2: modest margin</h3>
-          <p class="muted">Introduce a small, published platform fee. Keep total price competitive and transparent.</p>
+          <h3>Year 2: modest fee</h3>
+          <p>Introduce a small, published platform fee. Keep total price competitive and clear.</p>
         </article>
         <article class="card" role="listitem">
           <h3>Scale fairly</h3>
-          <p class="muted">As bookings grow, we stay disciplined on costs so partners and guests continue to win.</p>
+          <p>As bookings grow, stay disciplined on costs so partners and guests continue to win.</p>
         </article>
         <article class="card" role="listitem">
-          <h3>Proud sustainability</h3>
-          <p class="muted">Aim for a healthy, honest business that pays people fairly and avoids the “race to extract.”</p>
+          <h3>Proudly sustainable</h3>
+          <p>Build a business we’re proud of: fair to partners, fair to customers, healthy for the team.</p>
         </article>
       </div>
     </section>
@@ -156,18 +154,15 @@
     <section>
       <h2>How we’ll be accountable</h2>
       <ul>
-        <li>We’ll publish any platform fee, in plain language, on the checkout page.</li>
-        <li>We’ll never add surprise add-ons after you start the booking flow.</li>
-        <li>We’ll publish a quarterly note on improvements, uptime, and support metrics.</li>
+        <li>Publish any platform fee, in plain language, at checkout.</li>
+        <li>No surprise add-ons—ever.</li>
+        <li>Share quarterly notes on improvements, uptime, and support.</li>
       </ul>
     </section>
 
     <section>
       <h2>Be part of it</h2>
-      <p>
-        If you’re a hotel or vendor who aligns with this approach, we’d love to talk:
-        <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>. Travelers: join the waitlist from the homepage—we’ll email only when there’s real news.
-      </p>
+      <p>Partners: email <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>. Travelers: join the waitlist from the homepage. Let’s build hospitality that works for everyone.</p>
     </section>
   </main>
 
