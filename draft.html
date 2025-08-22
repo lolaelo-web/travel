@@ -61,7 +61,7 @@
 
     /* Form */
     form{ width:100%; max-width:720px; margin:0 auto; }
-    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; justify-items:stretch; }
     .full{ grid-column:1 / -1; }
 
     label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
@@ -76,6 +76,7 @@
     textarea{ min-height:120px; resize:vertical; }
 
     .help{ color:var(--muted); font-size:.85rem; }
+
     .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
     .btn{
       appearance:none; border:1px solid #111; background:#111; color:#fff;
@@ -83,15 +84,18 @@
     }
     .btn.secondary{ background:#fff; color:#111; }
 
-    /* Consent */
+    /* Consent — left aligned row */
     .disclaimer{ color:var(--muted); font-size:.85rem; margin:6px 0 6px; }
-    .form-check{ margin:0 0 18px; text-align:left; }
-    .form-check label{
+    .form-check{
       display:flex; align-items:center; gap:8px;
-      font-size:.9375rem; color:#444; font-weight:600;
-      cursor:pointer;
+      margin:0 0 18px; text-align:left; width:100%;
     }
-    .form-check input[type="checkbox"]{ margin:0; transform:scale(1.1); }
+    .form-check input[type="checkbox"]{
+      margin:0; transform:scale(1.1); flex:0 0 auto;
+    }
+    .form-check label{
+      margin:0; padding:0; font-weight:600; color:#444; cursor:pointer;
+    }
 
     .status{ font-size:.9375rem; margin-top:8px; display:none; }
     .status.ok{ color:#0a7a3e; }
@@ -129,7 +133,7 @@
     <hr class="divider" />
 
     <!-- Replace action URL with your Formspree endpoint -->
-    <form id="partnerForm" action="https://formspree.io/f/xnnzepqr" method="POST" novalidate>
+    <form id="partnerForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
       <!-- Honeypot (spam trap) -->
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
@@ -165,17 +169,15 @@
           <div class="help">We’ll review your details and get back to you with next steps.</div>
         </div>
 
-        <!-- Consent area -->
+        <!-- Consent (left aligned: checkbox then label) -->
         <div class="full">
           <p class="disclaimer">
             By clicking the box below, you confirm you’re authorized to represent your business and consent to us
             contacting you about onboarding and payouts.
           </p>
           <div class="form-check">
-            <label>
-              <input type="checkbox" name="consent" required />
-              I agree to be contacted about partnering with Lolaelo.
-            </label>
+            <input id="consent" type="checkbox" name="consent" required />
+            <label for="consent">I agree to be contacted about partnering with Lolaelo.</label>
           </div>
         </div>
       </div>
