@@ -9,17 +9,17 @@
   <style>
     :root { --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea; --radius:12px; --maxw:880px; }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
+    *{ box-sizing: border-box; }
+    html, body{ height:100%; margin:0; }
+    body{
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--fg);
       min-height: 100vh;
       display: flex; flex-direction: column; align-items: center;
     }
 
-    /* Same background as home */
-    .site-bg {
+    /* same background as index */
+    .site-bg{
       position: fixed; inset: 0;
       background:
         linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
@@ -28,42 +28,145 @@
       z-index: -1;
     }
 
-    .paper {
-      width: 100%; max-width: var(--maxw);
-      background: #fff; border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-      padding: 20px 20px 28px; margin: 18px 20px 16px;
+    .paper{
+      width:100%; max-width:var(--maxw);
+      background:#fff; border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:20px 20px 28px; margin:18px 20px 16px;
     }
 
-    header { text-align: center; margin-bottom: 8px; }
-    .logo img { width: auto; max-width: 80vw; max-height: 180px; }
+    header{ text-align:center; margin-bottom:6px; }
+    .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
-    nav.top {
-      display:flex; justify-content: space-between; align-items:center;
-      gap:8px; margin: 6px 0 8px 0;
+    nav.breadcrumbs{
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:13px; color:var(--muted); margin:4px 0 8px;
     }
-    .crumbs { font-size: 13px; color: var(--muted); }
-    .crumbs a { color: var(--fg); text-decoration: none; }
-    .crumbs a:hover { text-decoration: underline; }
-
-    h1 { font-size: clamp(28px, 4.5vw, 42px); margin: 6px 0 6px; text-align:center; }
-    .sub { text-align:center; color: var(--muted); margin: 0 auto 14px; max-width: 60ch; }
-
-    .divider { border: none; border-top: 1px solid var(--line); margin: 16px 0 18px; }
-
-    section { margin: 18px 0; }
-    h2 { font-size: 18px; margin: 0 0 6px; }
-    p { margin: 0 0 10px; color: #222; line-height: 1.6; }
-    ul { margin: 6px 0 10px 18px; }
-
-    .cta-row { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top: 8px; }
-    .btn {
+    .crumb a{ color:var(--fg); text-decoration:none; }
+    .crumb a:hover{ text-decoration:underline; }
+    .back{
       appearance:none; border:1px solid #111; background:#fff; color:#111;
-      border-radius:10px; padding:10px 14px; font-weight:600; text-decoration:none;
+      border-radius:10px; padding:8px 12px; font-weight:600; text-decoration:none;
     }
-    .btn:hover { filter:brightness(0.96); }
+    .back:hover{ filter:brightness(.96); }
 
-    footer {
-      width: 100%; text-align: center;
-      padding: 14px 10px 22px; font-size: 13px; color: #444;
-      background:
+    h1{
+      font-size: clamp(28px, 4.5vw, 42px);
+      line-height:1.2; margin:8px 0 4px; text-align:center;
+      font-weight:600;
+    }
+    .sub{
+      text-align:center; color:var(--muted);
+      margin:0 auto 14px; max-width:62ch;
+    }
+
+    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
+
+    /* sections */
+    section{ margin:18px 0; }
+    h2{ font-size:18px; margin:0 0 8px; }
+    p{ margin:0 0 10px; line-height:1.65; color:#222; }
+
+    /* values grid */
+    .grid{
+      display:grid; grid-template-columns: repeat(3,1fr); gap:12px;
+    }
+    .card{
+      border:1px solid var(--line); border-radius:12px; background:#fff;
+      padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04);
+    }
+    .card h3{ margin:0 0 6px; font-size:16px; }
+    .muted{ color:var(--muted); }
+
+    /* timeline */
+    .timeline{ border-left:2px solid var(--line); padding-left:14px; }
+    .tl-item{ margin:10px 0; }
+    .tl-item h4{ margin:0 0 4px; font-size:15px; }
+    .tag{ display:inline-block; border:1px solid #111; border-radius:999px; padding:2px 8px; font-size:12px; }
+
+    /* footer like index */
+    footer{
+      width:100%; text-align:center; padding:14px 10px 22px;
+      font-size:13px; color:#444; background:rgba(255,255,255,.72);
+      backdrop-filter: blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      margin-top:auto;
+    }
+    footer a{ color:var(--fg); text-decoration:underline; }
+
+    @media (max-width: 700px){
+      .grid{ grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="site-bg" aria-hidden="true"></div>
+
+  <main class="paper" role="main">
+    <header>
+      <a class="logo" href="/" aria-label="Lolaelo home">
+        <img src="/logo.png" alt="Lolaelo — Travel, but kinder" />
+      </a>
+    </header>
+
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <div class="crumb"><a href="/">Home</a> · Our Story</div>
+      <a class="back" href="/">Back</a>
+    </nav>
+
+    <h1>Why “travel, but kinder”</h1>
+    <p class="sub">Lolaelo started as a simple idea: make travel friendlier—for families who book, and for local partners who host. We believe fair policies, clear pricing, and human support create better trips for everyone.</p>
+
+    <hr class="divider" />
+
+    <section>
+      <h2>What we stand for</h2>
+      <div class="grid" role="list">
+        <article class="card" role="listitem">
+          <h3>People first</h3>
+          <p class="muted">Real humans, not ticket numbers. We prioritize families and the local hosts who welcome them.</p>
+        </article>
+        <article class="card" role="listitem">
+          <h3>Fair & clear</h3>
+          <p class="muted">Transparent pricing and policies. No gotchas. Partners know how and when they get paid.</p>
+        </article>
+        <article class="card" role="listitem">
+          <h3>Local matters</h3>
+          <p class="muted">We highlight locally owned stays and experiences that give back to the community.</p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>How we got here</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <h4>2023 — The spark</h4>
+          <p class="muted">A family trip exposed how confusing policies and hidden fees can spoil the experience. We wrote the first notes for Lolaelo.</p>
+        </div>
+        <div class="tl-item">
+          <h4>2024 — Prototype</h4>
+          <p class="muted">We mocked up a friendlier booking flow and started speaking with independent hosts and operators.</p>
+        </div>
+        <div class="tl-item">
+          <h4>2025 — Partner-first launch <span class="tag">in progress</span></h4>
+          <p class="muted">Building with a small circle of founding partners before opening to public waitlist invites.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What’s next</h2>
+      <p>We’re assembling founding partners who believe in hospitality that’s kinder and more transparent. If that’s you, we’d love to connect.</p>
+      <p class="muted" style="margin-top:8px;">Email <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a> or join the waitlist from the homepage.</p>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
