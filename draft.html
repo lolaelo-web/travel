@@ -3,138 +3,247 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo — Coming Soon</title>
+  <title>For Partners — Lolaelo</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea; --radius:20px; --maxw:880px;
-            --bubble:#ff6633; /* speech bubble color (matches “hello”) */ }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
+    :root{
+      --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
+      --radius:12px; --maxw:880px; --bubble:#ff6633; --input:#f8f8f8;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+    body{
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color: var(--fg);
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center;
+      color:var(--fg); min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
     }
 
-    /* Full-page background */
-    .site-bg {
-      position: fixed; inset: 0;
+    /* Background */
+    .site-bg{
+      position:fixed; inset:0;
       background:
-        linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+        linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.08)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
         center / cover no-repeat;
-      z-index: -1;
+      z-index:-1;
     }
 
-    /* White content area */
-    .paper {
-      width: 100%;
-      max-width: var(--maxw);
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-      padding: 24px 20px 28px;
-      margin: 18px 20px 16px;
-      text-align: center;
+    /* White card */
+    .paper{
+      width:100%; max-width:var(--maxw);
+      background:#fff; border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:20px 20px 28px; margin:18px 20px 16px;
     }
 
-    header { margin-bottom: 12px; }
-    .logo img { width: auto; max-width: 80vw; max-height: 240px; }
+    header{ text-align:center; margin-bottom:6px; }
+    .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
-    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 14px; font-weight: 500; }
+    /* Bubble nav */
+    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 8px; }
+    .bubble-link{
+      display:inline-block; background:var(--bubble); color:#fff;
+      font-weight:600; font-size:14px; line-height:1.2;
+      padding:9px 16px; border-radius:22px; text-decoration:none;
+      position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    .bubble-link::after{
+      content:""; position:absolute; bottom:-8px; left:18px;
+      border-width:8px 8px 0; border-style:solid;
+      border-color:var(--bubble) transparent transparent transparent;
+    }
+    .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
 
-    .divider {
-      border: none; border-top: 1px solid var(--line);
-      margin: 16px auto 8px; width: min(720px, 92%);
-    }
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:10px 0 6px; text-align:center; font-weight:600; }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
+    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
 
-    /* Speech-bubble navigation */
-    .bubble-nav {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin: 18px 0 6px;
-    }
-    .bubble-link {
-      display: inline-block;
-      background: var(--bubble);
-      color: #fff;
-      font-weight: 600;
-      font-size: 14px;
-      padding: 10px 18px;
-      border-radius: 22px;
-      position: relative;
-      text-decoration: none;
-      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
-      line-height: 1.2;
-    }
-    .bubble-link::after {
-      /* little tail */
-      content: "";
-      position: absolute;
-      bottom: -8px;
-      left: 22px;
-      border-width: 8px 8px 0;
-      border-style: solid;
-      border-color: var(--bubble) transparent transparent transparent;
-    }
-    .bubble-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); filter: brightness(0.98); }
-    .bubble-link:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
+    /* Form */
+    form{ width:100%; max-width:720px; margin:0 auto; }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .full{ grid-column:1 / -1; }
 
-    footer {
-      width: 100%;
-      text-align: center;
-      padding: 14px 10px 22px;
-      font-size: 13px;
-      color: #444;
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(3px);
-      border-top: 1px solid rgba(0,0,0,0.06);
-      margin-top: auto;
+    label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
+    input, select, textarea{
+      width:100%; border:1px solid var(--line); background:var(--input);
+      border-radius:10px; padding:12px 12px; font-size:15px; color:#222;
+      outline:none; transition:border-color .15s ease, box-shadow .15s ease;
     }
-    footer a { color: var(--fg); text-decoration: underline; }
+    input:focus, select:focus, textarea:focus{
+      border-color:#111; box-shadow:0 0 0 2px #11111114;
+    }
+    textarea{ min-height:120px; resize:vertical; }
 
-    @media (max-width: 480px) {
-      .bubble-link { font-size: 13px; padding: 9px 16px; }
-      .bubble-link::after { left: 18px; }
+    .help{ color:var(--muted); font-size:.85rem; }
+    .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
+    .btn{
+      appearance:none; border:1px solid #111; background:#111; color:#fff;
+      border-radius:10px; padding:12px 16px; font-weight:600; cursor:pointer;
     }
+    .btn.secondary{ background:#fff; color:#111; }
+
+    /* Consent */
+    .disclaimer{ color:var(--muted); font-size:.85rem; margin:6px 0 6px; }
+    .form-check{ margin:0 0 18px; text-align:left; }
+    .form-check label{
+      display:flex; align-items:center; gap:8px;
+      font-size:.9375rem; color:#444; font-weight:600;
+      cursor:pointer;
+    }
+    .form-check input[type="checkbox"]{ margin:0; transform:scale(1.1); }
+
+    .status{ font-size:.9375rem; margin-top:8px; display:none; }
+    .status.ok{ color:#0a7a3e; }
+    .status.err{ color:#b00020; }
+
+    /* Footer */
+    footer{
+      width:100%; text-align:center; padding:14px 10px 22px;
+      font-size:13px; color:#444; background:rgba(255,255,255,.72);
+      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      margin-top:auto;
+    }
+    footer a{ color:var(--fg); text-decoration:underline; }
+
+    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <div class="site-bg" aria-hidden="true"></div>
 
-  <div class="paper">
+  <main class="paper" role="main">
     <header>
-      <a class="logo" href="#top" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — Travel, but kinder">
-      </a>
+      <a class="logo" href="/" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo — fair stays, fair pay"></a>
     </header>
 
-    <main role="main">
-      <h1>Fair travel, built on trust.</h1>
-      <hr class="divider">
+    <nav class="bubble-nav" aria-label="Primary navigation">
+      <a class="bubble-link" href="/">Home</a>
+      <a class="bubble-link" href="/our-story.html">Our Story</a>
+      <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+    </nav>
 
-      <!-- Speech-bubble links -->
-      <nav class="bubble-nav" aria-label="Primary navigation">
-        <a class="bubble-link" href="/our-story.html">Our Story</a>
-        <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
-        <a class="bubble-link" href="/partners.html">For Partners</a>
-        <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
-      </nav>
-    </main>
-  </div>
+    <h1>Partner with Lolaelo</h1>
+    <p class="sub">Tell us about your property or experience. We’ll follow up with simple next steps. We keep margins reasonable so <em>you</em> keep more.</p>
+
+    <hr class="divider" />
+
+    <!-- Replace action URL with your Formspree endpoint -->
+    <form id="partnerForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
+      <!-- Honeypot (spam trap) -->
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+      <div class="grid">
+        <div>
+          <label for="business">Business / Property name</label>
+          <input id="business" name="business" type="text" required placeholder="e.g., Palmside Guesthouse" />
+        </div>
+
+        <div>
+          <label for="contact">Contact name</label>
+          <input id="contact" name="contact" type="text" required placeholder="Your full name" />
+        </div>
+
+        <div>
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="you@business.com" />
+        </div>
+
+        <div>
+          <label for="phone">Phone for WhatsApp or Viber</label>
+          <input id="phone" name="phone" type="tel" placeholder="+1 555 123 4567" />
+        </div>
+
+        <div class="full">
+          <label for="location">Location</label>
+          <input id="location" name="location" type="text" required placeholder="City, Country" />
+        </div>
+
+        <div class="full">
+          <label for="message">Additional Relevant Information</label>
+          <textarea id="message" name="message" placeholder="Anything we should know about your property, policies, payouts, or seasonality?"></textarea>
+          <div class="help">We’ll review your details and get back to you with next steps.</div>
+        </div>
+
+        <!-- Consent area -->
+        <div class="full">
+          <p class="disclaimer">
+            By clicking the box below, you confirm you’re authorized to represent your business and consent to us
+            contacting you about onboarding and payouts.
+          </p>
+          <div class="form-check">
+            <label>
+              <input type="checkbox" name="consent" required />
+              I agree to be contacted about partnering with Lolaelo.
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit" id="submitBtn">Submit</button>
+        <a class="btn secondary" href="/">Back to Home</a>
+      </div>
+
+      <div id="formStatus" class="status" role="status" aria-live="polite"></div>
+    </form>
+  </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Simple time-to-submit anti-bot (reject ultra-fast submissions)
+    const form = document.getElementById('partnerForm');
+    const statusEl = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
+    const formStart = Date.now();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.style.display = 'none';
+
+      if (Date.now() - formStart < 2000) {
+        statusEl.className = 'status err';
+        statusEl.textContent = 'Please wait a moment and try again.';
+        statusEl.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      try {
+        const data = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: data
+        });
+
+        if (res.ok) {
+          form.reset();
+          statusEl.className = 'status ok';
+          statusEl.textContent = 'Thanks! We received your details and will reach out shortly.';
+          statusEl.style.display = 'block';
+        } else {
+          const err = await res.json().catch(() => ({}));
+          statusEl.className = 'status err';
+          statusEl.textContent = err.message || 'Something went wrong. Please try again later.';
+          statusEl.style.display = 'block';
+        }
+      } catch (err) {
+        statusEl.className = 'status err';
+        statusEl.textContent = 'Network error. Please check your connection and try again.';
+        statusEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+      }
+    });
   </script>
 </body>
 </html>
