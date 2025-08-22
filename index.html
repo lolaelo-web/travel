@@ -3,12 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo — Coming Soon</title>
+  <title>Lolaelo — Fair travel, built on trust.</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea; --radius:12px; --maxw:880px; }
+    :root {
+      --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea;
+      --radius:20px; --maxw:880px; --bubble:#ff6633; /* match logo “hello” */
+    }
 
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
@@ -16,20 +19,20 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--fg);
       min-height: 100vh;
-      display: flex; flex-direction: column;
-      align-items: center;
+      display: flex; flex-direction: column; align-items: center;
     }
 
-    /* Full-page background */
+    /* Background image layer */
     .site-bg {
       position: fixed; inset: 0;
       background:
-        linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.1)),
+        linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.10)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
         center / cover no-repeat;
       z-index: -1;
     }
 
+    /* White content card */
     .paper {
       width: 100%;
       max-width: var(--maxw);
@@ -41,59 +44,59 @@
       text-align: center;
     }
 
-    header { margin-bottom: 12px; }
+    header { margin-bottom: 10px; }
     .logo img { width: auto; max-width: 80vw; max-height: 240px; }
 
-    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.15; margin: 10px 0 14px; font-weight: 500; }
+    /* New tagline */
+    h1 {
+      font-size: clamp(30px, 4.8vw, 44px);
+      line-height: 1.15;
+      margin: 10px 0 12px;
+      font-weight: 600;
+    }
 
     .divider {
       border: none; border-top: 1px solid var(--line);
-      margin: 16px auto 18px; width: min(720px, 92%);
+      margin: 14px auto 10px; width: min(720px, 92%);
     }
 
-    /* Cards now headline-only */
-    .card-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
-      width: min(720px, 92%); margin: 0 auto;
-      text-align: center;
+    /* Speech-bubble navigation */
+    .bubble-nav {
+      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+      margin: 16px 0 6px;
     }
-   .card {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 10px; /* reduced from 16px */
-  min-height: auto; /* remove forced height */
-  display: flex; 
-  align-items: center; 
-  justify-content: center; /* centers text both ways */
-  box-shadow: 0 1px 6px rgba(0,0,0,.04);
-  background: #fff;
-}
-
-.card h3 {
-  margin: 0; 
-  font-size: 15px;
-  line-height: 1.2; /* tighter vertical alignment */
-}
-    .card a { color: inherit; text-decoration: none; display: block; width: 100%; height: 100%; }
+    .bubble-link {
+      display: inline-block;
+      background: var(--bubble);
+      color: #fff;
+      font-weight: 600; font-size: 14px; line-height: 1.2;
+      padding: 10px 18px;
+      border-radius: 22px;
+      position: relative;
+      text-decoration: none;
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    .bubble-link::after {
+      content: "";
+      position: absolute; bottom: -8px; left: 22px;
+      border-width: 8px 8px 0; border-style: solid;
+      border-color: var(--bubble) transparent transparent transparent;
+    }
+    .bubble-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); filter: brightness(0.98); }
+    .bubble-link:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
 
     footer {
-      width: 100%;
-      text-align: center;
-      padding: 14px 10px 22px;
-      font-size: 13px;
-      color: #444;
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(3px);
+      width: 100%; text-align: center;
+      padding: 14px 10px 22px; font-size: 13px; color: #444;
+      background: rgba(255,255,255,0.72); backdrop-filter: blur(3px);
       border-top: 1px solid rgba(0,0,0,0.06);
       margin-top: auto;
     }
     footer a { color: var(--fg); text-decoration: underline; }
 
-    @media (max-width: 768px) {
-      .card-grid { grid-template-columns: repeat(2, 1fr); }
-    }
     @media (max-width: 480px) {
-      .card-grid { grid-template-columns: 1fr; }
+      .bubble-link { font-size: 13px; padding: 9px 16px; }
+      .bubble-link::after { left: 18px; }
     }
   </style>
 </head>
@@ -108,15 +111,16 @@
     </header>
 
     <main role="main">
-      <h1>A friendlier way to book stays and experiences</h1>
+      <h1>Fair travel, built on trust.</h1>
       <hr class="divider">
 
-      <section class="card-grid" aria-label="Primary actions">
-        <article class="card"><a href="/our-story.html">Our Story</a></article>
-        <article class="card"><a href="/our-strategy.html">Our Strategy</a></article>
-        <article class="card"><a href="/partners.html">For Partners</a></article>
-        <article class="card"><a href="/waitlist.html">Join the Waitlist</a></article>
-      </section>
+      <!-- Speech-bubble nav -->
+      <nav class="bubble-nav" aria-label="Primary navigation">
+        <a class="bubble-link" href="/our-story.html">Our Story</a>
+        <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+        <a class="bubble-link" href="/partners.html">For Partners</a>
+        <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
+      </nav>
     </main>
   </div>
 
