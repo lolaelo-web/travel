@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -5,105 +6,120 @@
   <title>Our Story — Lolaelo</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
   <style>
-    :root { 
-      --bg:#fff; 
-      --fg:#111; 
-      --muted:#666; 
-      --line:#e5e5e5; 
-      --radius:12px; 
-      --maxw:800px;
-    }
+    :root { --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea; --radius:12px; --maxw:880px; }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
-      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      background: var(--bg);
+    *{ box-sizing: border-box; }
+    html, body{ height:100%; margin:0; }
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color: var(--fg);
-      display: flex; flex-direction: column;
-      align-items: center;
-      padding: 0 18px;
-      line-height: 1.55;
+      min-height: 100vh;
+      display:flex; flex-direction:column; align-items:center;
     }
 
-    .page { max-width: var(--maxw); width: 100%; margin: 24px auto; }
-
-    header { text-align: center; margin-bottom: 24px; }
-    .logo img { max-height: 120px; margin-bottom: 6px; }
-
-    h1 { font-size: 28px; margin: 12px 0; }
-    h2 { font-size: 20px; margin: 18px 0 10px; }
-    p, li, .card p { font-size: 0.9375rem; } /* reduced by ~1pt */
-
-    .back-nav {
-      display: flex; justify-content: flex-end; gap: 8px;
-      margin: 10px 0 20px;
-    }
-    .btn {
-      padding: 8px 14px; border: 1px solid var(--line);
-      border-radius: var(--radius); background: #fff;
-      cursor: pointer; font-weight: 500;
-      text-decoration: none; color: var(--fg);
-    }
-    .btn:hover { background: #f5f5f5; }
-
-    hr.divider {
-      border: none; border-top: 1px solid var(--line);
-      margin: 22px 0;
+    /* SAME BACKGROUND AS HOME */
+    .site-bg{
+      position: fixed; inset: 0;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
+        url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
+        center / cover no-repeat;
+      z-index:-1;
     }
 
-    ul { padding-left: 18px; margin: 10px 0 20px; }
+    /* WHITE CARD (paper) */
+    .paper{
+      width:100%; max-width:var(--maxw);
+      background:#fff; border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:20px 20px 28px; margin:18px 20px 16px;
+    }
 
-    .card-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 14px; margin: 20px 0;
-    }
-    .card {
-      border: 1px solid var(--line); border-radius: var(--radius);
-      padding: 16px; background: #fafafa;
-      transition: transform .15s ease, box-shadow .15s ease;
-    }
-    .card h3 { margin: 0 0 6px; font-size: 15px; }
-    .card p { margin: 0; font-size: 0.9375rem; color: var(--muted); }
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(0,0,0,.08);
-    }
-    .card:hover p { color: #333; }
+    header{ text-align:center; margin-bottom:6px; }
+    .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
-    footer {
-      margin-top: 32px;
-      padding: 16px;
-      font-size: 13px;
-      color: var(--muted);
-      text-align: center;
+    /* Breadcrumb / top actions (consistent buttons) */
+    nav.breadcrumbs{
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:0.9375rem; color:var(--muted); margin:4px 0 8px;
     }
-    footer a { color: var(--fg); text-decoration: underline; }
+    .crumb a{ color:var(--fg); text-decoration:none; }
+    .crumb a:hover{ text-decoration:underline; }
+    .btn{
+      appearance:none; border:1px solid #111; background:#fff; color:#111;
+      border-radius:10px; padding:8px 12px; font-weight:600; text-decoration:none;
+      font-size:0.9375rem;
+    }
+    .btn:hover{ filter:brightness(.96); }
 
-    @media (max-width: 680px) {
-      .card-grid { grid-template-columns: 1fr; }
+    /* Typography */
+    h1{ font-size: clamp(28px, 4.5vw, 42px); line-height:1.2; margin:8px 0 6px; text-align:center; font-weight:600; }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:62ch; font-size:0.9375rem; }
+    p, li{ font-size:0.9375rem; line-height:1.65; color:#222; }
+
+    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
+
+    section{ margin:18px 0; }
+    h2{ font-size:18px; margin:0 0 8px; }
+    ul{ margin:6px 0 10px 18px; }
+
+    /* Cards grid (same style as home) */
+    .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+    .card{
+      border:1px solid var(--line); border-radius:12px; background:#fff;
+      padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04);
+      transition:transform .15s ease, box-shadow .15s ease;
     }
+    .card h3{ margin:0 0 6px; font-size:16px; }
+    .card p{ margin:0; color:var(--muted); font-size:0.9375rem; }
+    .card:hover{ transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.08); }
+
+    /* Footer same as home */
+    footer{
+      width:100%; text-align:center; padding:14px 10px 22px;
+      font-size:13px; color:#444; background:rgba(255,255,255,.72);
+      backdrop-filter: blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      margin-top:auto;
+    }
+    footer a{ color:var(--fg); text-decoration:underline; }
+
+    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class="site-bg" aria-hidden="true"></div>
+
+  <main class="paper" role="main">
     <header>
-      <img class="logo" src="/logo.png" alt="Lolaelo logo" />
-      <div class="back-nav">
-        <a href="/our-strategy.html" class="btn">Our Strategy</a>
-        <a href="/" class="btn">Back</a>
-      </div>
-      <h1>Why Lolaelo exist</h1>
-      <p><strong>Lolaelo began with a straightforward idea:</strong> be an inexpensive bridge between travelers and local partners. Partners should keep more of what they earn, and customers should pay a fair price—<em>without platform games</em>.</p>
+      <a class="logo" href="/" aria-label="Lolaelo home">
+        <img src="/logo.png" alt="Lolaelo — Travel, but kinder" />
+      </a>
     </header>
 
-    <hr class="divider">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <div class="crumb"><a href="/">Home</a> · Our Story</div>
+      <div style="display:flex; gap:8px;">
+        <a class="btn" href="/our-strategy.html">Our Strategy</a>
+        <a class="btn" href="/">Back</a>
+      </div>
+    </nav>
 
+    <h1>Why Lolaelo exists</h1>
+    <p class="sub">
+      Lolaelo began with a straightforward idea: <strong>be an inexpensive bridge between travelers and local partners.</strong>
+      Partners should keep more of what they earn, and customers should pay a fair price—without platform games.
+    </p>
+
+    <hr class="divider" />
+
+    <!-- Our Philosophy (tightened) -->
     <section>
-      <h2>Our Philosophy</h2>
-      <p>We operate on one principle: <strong>reasonable margin</strong>. The goal isn’t to maximize profit, but to make travel work better for everyone. Small, clear margins × high volume = fair, sustainable growth.</p>
+      <h2>Our philosophy</h2>
+      <p>
+        We operate on one principle: <strong>reasonable margin</strong>. The goal isn’t to maximize profit, but to make travel work better for everyone.
+        <strong>Small, clear margins × high volume = decent profit.</strong>
+      </p>
       <ul>
         <li><strong>Partners</strong> keep more from each booking and reinvest in their staff and properties.</li>
         <li><strong>Customers</strong> get fair prices and the assurance their hosts receive a fair share.</li>
@@ -111,33 +127,37 @@
       </ul>
     </section>
 
+    <!-- How that shows up (concise, aligned) -->
     <section>
-      <h2>How That Shows Up</h2>
-      <div class="card-grid">
-        <div class="card">
+      <h2>How that shows up</h2>
+      <div class="grid" role="list">
+        <article class="card" role="listitem">
           <h3>Fair Margin Formula</h3>
           <p>Small, clear margins × high volume = sustainable growth for everyone.</p>
-        </div>
-        <div class="card">
-          <h3>Transparent Pricing</h3>
-          <p>No hidden add-ons. Partners see what they keep. Guests see what they pay.</p>
-        </div>
-        <div class="card">
-          <h3>Community First</h3>
+        </article>
+        <article class="card" role="listitem">
+          <h3>Transparent pricing</h3>
+          <p>No hidden add-ons. Partners see what they keep; guests see what they pay.</p>
+        </article>
+        <article class="card" role="listitem">
+          <h3>Community first</h3>
           <p>We prioritize local stays and experiences that strengthen communities.</p>
-        </div>
+        </article>
       </div>
     </section>
 
     <section>
-      <h2>Where We’re Heading</h2>
-      <p>In Year 1 we’re choosing trust over margin. Our goal is to build a customer base and a partner community that believes hospitality works best when everyone benefits. See how in <a href="/our-strategy.html">Our Strategy</a>.</p>
+      <h2>Where we’re heading</h2>
+      <p>
+        In Year 1 we’re choosing trust over margin. Our goal is to build a customer base and a partner community that believes hospitality works best when everyone benefits.
+        See how in <a href="/our-strategy.html">Our Strategy</a>.
+      </p>
     </section>
+  </main>
 
-    <footer>
-      © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
-    </footer>
-  </div>
+  <footer>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+  </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
