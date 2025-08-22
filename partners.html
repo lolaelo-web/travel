@@ -63,10 +63,9 @@
 
     /* Form */
     form{ width:100%; max-width:720px; margin:0 auto; }
-    .grid{
-      display:grid; grid-template-columns:1fr 1fr; gap:12px;
-    }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .full{ grid-column:1 / -1; }
+
     label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
     input, select, textarea{
       width:100%; border:1px solid var(--line); background:var(--input);
@@ -85,9 +84,16 @@
       border-radius:10px; padding:12px 16px; font-weight:600; cursor:pointer;
     }
     .btn.secondary{ background:#fff; color:#111; }
-    .status{
-      font-size:.9375rem; margin-top:8px; display:none;
+
+    /* Consent alignment */
+    .consent-note { margin-top:6px; }
+    .consent{
+      display:flex; align-items:center; gap:8px;
+      font-weight:500; font-size:.9375rem; cursor:pointer;
     }
+    .consent input{ margin:0; transform:scale(1.1); }
+
+    .status{ font-size:.9375rem; margin-top:8px; display:none; }
     .status.ok{ color:#0a7a3e; }
     .status.err{ color:#b00020; }
 
@@ -125,7 +131,7 @@
     <hr class="divider" />
 
     <!-- Replace action URL with your Formspree endpoint -->
-    <form id="partnerForm" action="https://formspree.io/f/xnnzepqr" method="POST" novalidate>
+    <form id="partnerForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
       <!-- Honeypot (spam trap) -->
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
@@ -180,11 +186,18 @@
         <div class="full">
           <label for="message">Tell us a bit more</label>
           <textarea id="message" name="message" placeholder="What makes your place special? Anything we should know about policies, payouts, or seasonality?"></textarea>
-          <div class="help">By submitting, you agree we may contact you about onboarding and payouts. We don’t share your info.</div>
+          <div class="help">We’ll review your details and get back to you with next steps.</div>
         </div>
 
+        <!-- Consent note ABOVE checkbox so 'below' is accurate -->
         <div class="full">
-          <label><input type="checkbox" name="consent" required /> I agree to be contacted about partnering with Lolaelo.</label>
+          <div class="help consent-note">
+            By clicking the box below, you confirm you’re authorized to represent your business and consent to us contacting you about onboarding and payouts.
+          </div>
+          <label class="consent">
+            <input type="checkbox" name="consent" required />
+            I agree to be contacted about partnering with Lolaelo.
+          </label>
         </div>
       </div>
 
