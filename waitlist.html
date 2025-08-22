@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Join the Waitlist — Lolaelo</title>
+  <link rel="icon" href="/logo.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
+      --radius:12px; --maxw:880px; --bubble:#ff6633; --input:#f8f8f8;
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+    body{
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg); min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
+    }
+
+    /* Background (same as other pages) */
+    .site-bg{
+      position:fixed; inset:0;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.08)),
+        url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
+        center / cover no-repeat;
+      z-index:-1;
+    }
+
+    /* White card */
+    .paper{
+      width:100%; max-width:var(--maxw);
+      background:#fff; border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:20px 20px 28px; margin:18px 20px 16px;
+    }
+
+    header{ text-align:center; margin-bottom:6px; }
+    .logo img{ width:auto; max-width:80vw; max-height:180px; }
+
+    /* Bubble nav (matches home) */
+    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 8px; }
+    .bubble-link{
+      display:inline-block; background:var(--bubble); color:#fff;
+      font-weight:600; font-size:14px; line-height:1.2;
+      padding:9px 16px; border-radius:22px; text-decoration:none;
+      position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+    }
+    .bubble-link::after{
+      content:""; position:absolute; bottom:-8px; left:18px;
+      border-width:8px 8px 0; border-style:solid;
+      border-color:var(--bubble) transparent transparent transparent;
+    }
+    .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
+
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:10px 0 6px; text-align:center; font-weight:600; }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
+    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
+
+    /* Form */
+    form{ width:100%; max-width:640px; margin:0 auto; }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .full{ grid-column:1 / -1; }
+
+    label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
+    input, select, textarea{
+      width:100%; border:1px solid var(--line); background:var(--input);
+      border-radius:10px; padding:12px 12px; font-size:15px; color:#222;
+      outline:none; transition:border-color .15s ease, box-shadow .15s ease;
+    }
+    input:focus, select:focus, textarea:focus{ border-color:#111; box-shadow:0 0 0 2px #11111114; }
+    textarea{ min-height:100px; resize:vertical; }
+
+    .help{ color:var(--muted); font-size:.85rem; margin-top:4px; }
+    .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
+    .btn{
+      appearance:none; border:1px solid #111; background:#111; color:#fff;
+      border-radius:10px; padding:12px 16px; font-weight:600; cursor:pointer;
+    }
+    .btn.secondary{ background:#fff; color:#111; }
+
+    /* Consent alignment */
+    .consent-note { margin-top:6px; }
+    .consent{
+      display:flex; align-items:center; gap:8px;
+      font-weight:500; font-size:.9375rem; cursor:pointer;
+    }
+    .consent input{ margin:0; transform:scale(1.1); }
+
+    .status{ font-size:.9375rem; margin-top:8px; display:none; }
+    .status.ok{ color:#0a7a3e; }
+    .status.err{ color:#b00020; }
+
+    /* Footer */
+    footer{
+      width:100%; text-align:center; padding:14px 10px 22px;
+      font-size:13px; color:#444; background:rgba(255,255,255,.72);
+      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      margin-top:auto;
+    }
+    footer a{ color:var(--fg); text-decoration:underline; }
+
+    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <div class="site-bg" aria-hidden="true"></div>
+
+  <main class="paper" role="main">
+    <header>
+      <a class="logo" href="/" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo — Travel, but kinder"></a>
+    </header>
+
+    <nav class="bubble-nav" aria-label="Primary navigation">
+      <a class="bubble-link" href="/">Home</a>
+      <a class="bubble-link" href="/our-story.html">Our Story</a>
+      <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+      <a class="bubble-link" href="/partners.html">For Partners</a>
+    </nav>
+
+    <h1>Join the Lolaelo Waitlist</h1>
+    <p class="sub">Get early access and real updates—no spam. We’ll reach out when invites open or we have meaningful news.</p>
+
+    <hr class="divider" />
+
+    <!-- Replace action URL with your Formspree endpoint -->
+    <form id="waitlistForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
+      <!-- Honeypot (spam trap) -->
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
+
+      <div class="grid">
+        <div>
+          <label for="first">First name</label>
+          <input id="first" name="first" type="text" required placeholder="e.g., Alex" />
+        </div>
+
+        <div>
+          <label for="last">Last name</label>
+          <input id="last" name="last" type="text" required placeholder="e.g., Rivera" />
+        </div>
+
+        <div class="full">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required placeholder="you@email.com" />
+          <div class="help">We’ll only email when there’s real news or an invite for you.</div>
+        </div>
+
+        <div>
+          <label for="city">City (optional)</label>
+          <input id="city" name="city" type="text" placeholder="e.g., Honolulu" />
+        </div>
+
+        <div>
+          <label for="country">Country (optional)</label>
+          <input id="country" name="country" type="text" placeholder="e.g., USA" />
+        </div>
+
+        <div class="full">
+          <label for="interest">What are you most interested in? (optional)</label>
+          <select id="interest" name="interest">
+            <option value="">Select…</option>
+            <option>Family-friendly stays</option>
+            <option>Locally owned hotels</option>
+            <option>Unique experiences</option>
+            <option>Partner news</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <label for="notes">Anything we should know? (optional)</label>
+          <textarea id="notes" name="notes" placeholder="Tell us what would make Lolaelo most useful to you."></textarea>
+        </div>
+
+        <!-- Consent note ABOVE checkbox so 'below' is accurate -->
+        <div class="full">
+          <div class="help consent-note">
+            By clicking the box below, you consent to receive occasional email updates from Lolaelo. You can unsubscribe anytime.
+          </div>
+          <label class="consent">
+            <input type="checkbox" name="consent" required />
+            I agree to receive email updates from Lolaelo.
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit" id="submitBtn">Join the waitlist</button>
+        <a class="btn secondary" href="/">Back to Home</a>
+      </div>
+
+      <div id="formStatus" class="status" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="/partners.html">For Partners</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // AJAX submit to Formspree (inline success/error)
+    const form = document.getElementById('waitlistForm');
+    const statusEl = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      statusEl.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting…';
+
+      try {
+        const data = new FormData(form);
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Accept': 'application/json' },
+          body: data
+        });
+
+        if (res.ok) {
+          form.reset();
+          statusEl.className = 'status ok';
+          statusEl.textContent = 'Thanks! You’re on the list. We’ll be in touch when invites open.';
+          statusEl.style.display = 'block';
+        } else {
+          const err = await res.json().catch(() => ({}));
+          statusEl.className = 'status err';
+          statusEl.textContent = err.message || 'Something went wrong. Please try again later.';
+          statusEl.style.display = 'block';
+        }
+      } catch (err) {
+        statusEl.className = 'status err';
+        statusEl.textContent = 'Network error. Please check your connection and try again.';
+        statusEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Join the waitlist';
+      }
+    });
+  </script>
+</body>
+</html>
