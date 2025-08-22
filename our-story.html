@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -6,153 +5,142 @@
   <title>Our Story — Lolaelo</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea; --radius:12px; --maxw:880px; }
+    :root { 
+      --bg:#fff; 
+      --fg:#111; 
+      --muted:#666; 
+      --line:#e5e5e5; 
+      --radius:12px; 
+      --maxw:800px;
+    }
 
-    *{ box-sizing: border-box; }
-    html, body{ height:100%; margin:0; }
-    body{
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      background: var(--bg);
       color: var(--fg);
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center;
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 0 18px;
+      line-height: 1.55;
     }
 
-    /* same background as home */
-    .site-bg{
-      position: fixed; inset: 0;
-      background:
-        linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
-        url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
-        center / cover no-repeat;
-      z-index: -1;
+    .page { max-width: var(--maxw); width: 100%; margin: 24px auto; }
+
+    header { text-align: center; margin-bottom: 24px; }
+    .logo img { max-height: 120px; margin-bottom: 6px; }
+
+    h1 { font-size: 28px; margin: 12px 0; }
+    h2 { font-size: 20px; margin: 18px 0 10px; }
+    p, li, .card p { font-size: 0.9375rem; } /* reduced by ~1pt */
+
+    .back-nav {
+      display: flex; justify-content: flex-end; gap: 8px;
+      margin: 10px 0 20px;
+    }
+    .btn {
+      padding: 8px 14px; border: 1px solid var(--line);
+      border-radius: var(--radius); background: #fff;
+      cursor: pointer; font-weight: 500;
+      text-decoration: none; color: var(--fg);
+    }
+    .btn:hover { background: #f5f5f5; }
+
+    hr.divider {
+      border: none; border-top: 1px solid var(--line);
+      margin: 22px 0;
     }
 
-    .paper{
-      width:100%; max-width:var(--maxw);
-      background:#fff; border-radius:16px;
-      box-shadow:0 12px 40px rgba(0,0,0,.08);
-      padding:20px 20px 28px; margin:18px 20px 16px;
+    ul { padding-left: 18px; margin: 10px 0 20px; }
+
+    .card-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 14px; margin: 20px 0;
     }
-
-    header{ text-align:center; margin-bottom:6px; }
-    .logo img{ width:auto; max-width:80vw; max-height:180px; }
-
-    nav.breadcrumbs{
-      display:flex; justify-content:space-between; align-items:center;
-      font-size:13px; color:var(--muted); margin:4px 0 8px;
+    .card {
+      border: 1px solid var(--line); border-radius: var(--radius);
+      padding: 16px; background: #fafafa;
+      transition: transform .15s ease, box-shadow .15s ease;
     }
-    .crumb a{ color:var(--fg); text-decoration:none; }
-    .crumb a:hover{ text-decoration:underline; }
-    .btn{
-      appearance:none; border:1px solid #111; background:#fff; color:#111;
-      border-radius:10px; padding:8px 12px; font-weight:600; text-decoration:none;
+    .card h3 { margin: 0 0 6px; font-size: 15px; }
+    .card p { margin: 0; font-size: 0.9375rem; color: var(--muted); }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
     }
-    .btn:hover{ filter:brightness(.96); }
+    .card:hover p { color: #333; }
 
-    h1{
-      font-size: clamp(28px, 4.5vw, 42px);
-      line-height:1.2; margin:8px 0 4px; text-align:center; font-weight:600;
+    footer {
+      margin-top: 32px;
+      padding: 16px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
     }
-    .sub{
-      text-align:center; color:var(--muted);
-      margin:0 auto 14px; max-width:62ch;
+    footer a { color: var(--fg); text-decoration: underline; }
+
+    @media (max-width: 680px) {
+      .card-grid { grid-template-columns: 1fr; }
     }
-
-    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
-
-    section{ margin:18px 0; }
-    h2{ font-size:18px; margin:0 0 8px; }
-    p{ margin:0 0 10px; line-height:1.65; color:#222; }
-    ul{ margin:6px 0 10px 18px; }
-
-    .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
-    .card{
-      border:1px solid var(--line); border-radius:12px; background:#fff;
-      padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04);
-    }
-    .card h3{ margin:0 0 6px; font-size:16px; }
-    .muted{ color:var(--muted); }
-
-    footer{
-      width:100%; text-align:center; padding:14px 10px 22px;
-      font-size:13px; color:#444; background:rgba(255,255,255,.72);
-      backdrop-filter: blur(3px); border-top:1px solid rgba(0,0,0,.06);
-      margin-top:auto;
-    }
-    footer a{ color:var(--fg); text-decoration:underline; }
-
-    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <div class="site-bg" aria-hidden="true"></div>
-
-  <main class="paper" role="main">
+  <div class="page">
     <header>
-      <a class="logo" href="/" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — Travel, but kinder" />
-      </a>
+      <img class="logo" src="/logo.png" alt="Lolaelo logo" />
+      <div class="back-nav">
+        <a href="/our-strategy.html" class="btn">Our Strategy</a>
+        <a href="/" class="btn">Back</a>
+      </div>
+      <h1>Why Lolaelo exist</h1>
+      <p><strong>Lolaelo began with a straightforward idea:</strong> be an inexpensive bridge between travelers and local partners. Partners should keep more of what they earn, and customers should pay a fair price—<em>without platform games</em>.</p>
     </header>
 
-    <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <div class="crumb">Our Story</div>
-      <div style="display:flex; gap:8px;">
-        <a class="btn" href="/our-strategy.html">Our Strategy</a>
-        <a class="btn" href="/">Home</a>
-      </div>
-    </nav>
-
-    <h1>Why Lolaelo exist</h1>
-    <p class="sub">
-      Lolaelo began with a straightforward idea: <strong>be an inexpensive bridge between travelers and local partners.</strong>
-      Partners should keep more of what they earn, and customers should pay a fair price—<em>without</em> platform games.
-    </p>
-
-    <hr class="divider" />
+    <hr class="divider">
 
     <section>
-      <h2>Our philosophy</h2>
-      <p>
-        We operate on a simple principle: <strong>reasonable margin</strong>. We’re here to make a living, not to maximize
-        profit at the expense of partners or guests. When we keep margins modest:
-      </p>
+      <h2>Our Philosophy</h2>
+      <p>We operate on one principle: <strong>reasonable margin</strong>. The goal isn’t to maximize profit, but to make travel work better for everyone. Small, clear margins × high volume = fair, sustainable growth.</p>
       <ul>
-        <li><strong>Partners</strong> retain a larger share of each booking and can invest back into their properties and staff.</li>
-        <li><strong>Customers</strong> get fair prices and assurances their hosts receive a fair share.</li>
-        <li><strong>Lolaelo</strong> stays lean by focusing on long-term relationships—not short-term gains</li>
+        <li><strong>Partners</strong> keep more from each booking and reinvest in their staff and properties.</li>
+        <li><strong>Customers</strong> get fair prices and the assurance their hosts receive a fair share.</li>
+        <li><strong>Lolaelo</strong> stays lean by focusing on long-term relationships, not short-term gains.</li>
       </ul>
     </section>
 
     <section>
-      <h2>How that shows up</h2>
-      <div class="grid" role="list">
-        <article class="card" role="listitem">
-          <h3>The Non-Greedy Formula</h3>
-          <p class="muted">Small, clear margins x high volume = fair & sustainable growth. </p>
-        </article>
-        <article class="card" role="listitem">
-          <h3>Transparent pricing</h3>
-          <p class="muted">No hidden add-ons. Partners see what they keep. Guests see what they pay.</p>
-        </article>
-        <article class="card" role="listitem">
-          <h3>Community first</h3>
-          <p class="muted">We prioritize locally owned stays and experiences that strengthen their communities.</p>
-        </article>
+      <h2>How That Shows Up</h2>
+      <div class="card-grid">
+        <div class="card">
+          <h3>Fair Margin Formula</h3>
+          <p>Small, clear margins × high volume = sustainable growth for everyone.</p>
+        </div>
+        <div class="card">
+          <h3>Transparent Pricing</h3>
+          <p>No hidden add-ons. Partners see what they keep. Guests see what they pay.</p>
+        </div>
+        <div class="card">
+          <h3>Community First</h3>
+          <p>We prioritize local stays and experiences that strengthen communities.</p>
+        </div>
       </div>
     </section>
 
     <section>
-      <h2>Where we’re heading</h2>
-      <p>
-        In Year 1 we’re choosing trust over margin. Our goal is to build a customer base and a partner community that believes hospitality works best when everyone benefits. See how in <a href="/our-strategy.html">Our Strategy</a>.      </p>
+      <h2>Where We’re Heading</h2>
+      <p>In Year 1 we’re choosing trust over margin. Our goal is to build a customer base and a partner community that believes hospitality works best when everyone benefits. See how in <a href="/our-strategy.html">Our Strategy</a>.</p>
     </section>
-  </main>
 
-  <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
-  </footer>
+    <footer>
+      © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    </footer>
+  </div>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
