@@ -19,7 +19,6 @@
       display:flex; flex-direction:column; align-items:center;
     }
 
-    /* Background */
     .site-bg{
       position:fixed; inset:0;
       background:
@@ -29,7 +28,6 @@
       z-index:-1;
     }
 
-    /* White card */
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
@@ -40,7 +38,6 @@
     header{ text-align:center; margin-bottom:6px; }
     .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
-    /* Bubble nav */
     .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 8px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff;
@@ -59,7 +56,6 @@
     .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
     hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
 
-    /* Form */
     form{ width:100%; max-width:720px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; justify-items:stretch; }
     .full{ grid-column:1 / -1; }
@@ -74,7 +70,6 @@
       border-color:#111; box-shadow:0 0 0 2px #11111114;
     }
     textarea{ min-height:120px; resize:vertical; }
-
     .help{ color:var(--muted); font-size:.85rem; }
 
     .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
@@ -84,24 +79,26 @@
     }
     .btn.secondary{ background:#fff; color:#111; }
 
-    /* Consent — left aligned row */
+    /* Consent — force left alignment */
     .disclaimer{ color:var(--muted); font-size:.85rem; margin:6px 0 6px; }
     .form-check{
-      display:flex; align-items:center; gap:8px;
-      margin:0 0 18px; text-align:left; width:100%;
+      display:flex; align-items:center; gap:10px;
+      width:100%; margin:0 0 18px;
+      text-align:left; /* ensure no right-alignment inheritance */
     }
     .form-check input[type="checkbox"]{
       margin:0; transform:scale(1.1); flex:0 0 auto;
     }
     .form-check label{
-      margin:0; padding:0; font-weight:600; color:#444; cursor:pointer;
+      display:inline-block; margin:0; padding:0;
+      font-weight:600; color:#444; cursor:pointer; flex:1 1 auto;
+      white-space:normal; /* allow wrapping next to the box */
     }
 
     .status{ font-size:.9375rem; margin-top:8px; display:none; }
     .status.ok{ color:#0a7a3e; }
     .status.err{ color:#b00020; }
 
-    /* Footer */
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
       font-size:13px; color:#444; background:rgba(255,255,255,.72);
@@ -134,7 +131,6 @@
 
     <!-- Replace action URL with your Formspree endpoint -->
     <form id="partnerForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
-      <!-- Honeypot (spam trap) -->
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
       <div class="grid">
@@ -169,12 +165,13 @@
           <div class="help">We’ll review your details and get back to you with next steps.</div>
         </div>
 
-        <!-- Consent (left aligned: checkbox then label) -->
         <div class="full">
           <p class="disclaimer">
             By clicking the box below, you confirm you’re authorized to represent your business and consent to us
             contacting you about onboarding and payouts.
           </p>
+
+          <!-- Consent row: checkbox + text on the same left-aligned line -->
           <div class="form-check">
             <input id="consent" type="checkbox" name="consent" required />
             <label for="consent">I agree to be contacted about partnering with Lolaelo.</label>
@@ -198,7 +195,6 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Simple time-to-submit anti-bot (reject ultra-fast submissions)
     const form = document.getElementById('partnerForm');
     const statusEl = document.getElementById('formStatus');
     const submitBtn = document.getElementById('submitBtn');
@@ -237,7 +233,7 @@
           statusEl.textContent = err.message || 'Something went wrong. Please try again later.';
           statusEl.style.display = 'block';
         }
-      } catch (err) {
+      } catch {
         statusEl.className = 'status err';
         statusEl.textContent = 'Network error. Please check your connection and try again.';
         statusEl.style.display = 'block';
