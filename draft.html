@@ -6,93 +6,81 @@
   <title>Lolaelo — Fair travel, built on trust.</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Flatpickr (calendar) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" />
+
   <style>
     :root{
       --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea;
-      --radius:20px; --maxw:880px; --bubble:#ff6633;   /* speech-bubble orange */
-      --card:#ffffff; --input:#f7f7f7;
+      --radius:20px; --maxw:880px; --bubble:#ff6633;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0}
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
     body{
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      color:var(--fg);
-      min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg); min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
+    }
+    .site-bg{ position:fixed; inset:0;
       background:
-        linear-gradient(to bottom,rgba(255,255,255,.10),rgba(255,255,255,.10)),
+        linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.10)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
-        center/cover no-repeat fixed;
+        center/cover no-repeat;
+      z-index:-1;
     }
 
     .paper{
       width:100%; max-width:var(--maxw);
-      background:var(--card); border-radius:16px;
+      background:#fff; border-radius:16px;
       box-shadow:0 12px 40px rgba(0,0,0,.08);
       padding:24px 20px 28px; margin:18px 20px 16px;
       text-align:center;
     }
-    header{margin-bottom:10px}
-    .logo img{width:auto; max-width:80vw; max-height:180px}
+    header{ margin-bottom:10px; }
+    .logo img{ width:auto; max-width:80vw; max-height:240px; }
 
-    h1{font-size:clamp(30px,4.8vw,44px); line-height:1.15; margin:6px 0 14px; font-weight:600}
+    h1{ font-size:clamp(30px,4.8vw,44px); line-height:1.15; margin:10px 0 12px; font-weight:600; }
 
-    /* ---- Hotel Search card ---- */
-    .search-card{
-      width:min(760px,92%);
-      margin:0 auto 14px;
-      background:var(--card);
-      border:2px solid var(--bubble);           /* match bubble color */
-      border-radius:16px;
-      box-shadow:0 6px 18px rgba(0,0,0,.06);
-      text-align:left;
-      padding:10px;
+    /* Speech-bubble nav */
+    .bubble-nav{ display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin:16px 0 6px; }
+    .bubble-link{
+      display:inline-block; background:var(--bubble); color:#fff; font-weight:600;
+      font-size:14px; line-height:1.2; padding:10px 18px; border-radius:22px;
+      position:relative; text-decoration:none; transition:transform .15s, box-shadow .15s, filter .15s;
     }
-    .search-top{
-      display:flex; gap:10px; flex-wrap:wrap; padding:4px 6px 8px;
-      color:#333; font-size:14px;
+    .bubble-link::after{ /* seamless pointer */
+      content:""; position:absolute; bottom:-6px; left:22px; width:12px; height:12px;
+      background:var(--bubble); transform:rotate(45deg); border-radius:2px;
     }
-    .chip{
-      background:var(--input); border:1px solid var(--line); border-radius:999px;
-      padding:8px 12px; display:inline-flex; align-items:center; gap:8px; font-weight:600;
+    .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
+
+    /* Search box */
+    .search-wrap{
+      width:100%; max-width:760px; margin:16px auto 10px;
+      border:2px solid var(--bubble); border-radius:16px; padding:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,.08);
     }
-    .search-grid{
-      display:grid; gap:10px; padding:6px;
-      grid-template-columns: 1.2fr 1fr 1fr 1fr;   /* destination wider */
+    .search-row{
+      display:grid; grid-template-columns: 1.2fr 1fr 1fr .8fr auto; gap:10px;
+      align-items:center;
     }
     .field{
-      background:var(--input); border:1px solid var(--line); border-radius:12px;
-      display:flex; align-items:center; gap:8px; padding:10px 12px;
+      display:flex; align-items:center; gap:8px;
+      background:#fafafa; border:1px solid var(--line); border-radius:12px; padding:10px 12px;
     }
-    .field input, .field select{
-      border:0; background:transparent; outline:none; width:100%;
-      font: 500 14px/1.2 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:#222;
+    .field span{ opacity:.7; }
+    .field input,.field select{
+      width:100%; border:none; background:transparent; outline:none; font-size:15px; color:#222;
+      font-family: inherit;  /* ensure textarea/input match */
     }
-    .search-actions{ display:flex; justify-content:center; padding:6px 6px 10px; }
-    .explore{
-      appearance:none; border:0; background:#4f8cff; color:#fff;
-      font-weight:700; border-radius:999px; padding:12px 22px; cursor:pointer;
-      box-shadow:0 6px 16px rgba(79,140,255,.35);
+    .search-btn{
+      border:1px solid var(--bubble); background:var(--bubble); color:#fff;
+      border-radius:999px; padding:10px 16px; font-weight:600; cursor:pointer;
     }
-    .explore:hover{ filter:brightness(.98) }
 
-    /* Speech-bubble navigation */
-    .bubble-nav{display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin:16px 0 6px}
-    .bubble-link{
-      display:inline-block; background:var(--bubble); color:#fff;
-      font-weight:600; font-size:14px; line-height:1.2;
-      padding:10px 18px; border-radius:22px; position:relative; text-decoration:none;
-      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
-    }
-    .bubble-link::after{
-      content:""; position:absolute; bottom:-6px; left:22px;
-      width:12px; height:12px; background:var(--bubble);
-      transform:rotate(45deg); border-radius:2px;  /* seamless tail */
-    }
-    .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98) }
-
-    /* Bullets */
-    .value-list{ margin:10px auto 4px; padding:0; list-style:none; text-align:left; width:min(720px,92%); color:#222 }
+    /* Value bullets */
+    .value-list{ margin:10px auto 4px; padding:0; list-style:none; text-align:left; width:min(720px,92%); color:#222; }
     .value-list li{ position:relative; padding-left:26px; margin:8px 0; line-height:1.35; font-size:15px; }
     .value-list li::before{ content:"•"; position:absolute; left:8px; top:0; font-size:22px; line-height:1; color:#ff7a45; }
     .note{ color:var(--muted); font-size:12px; text-align:left; width:min(720px,92%); margin:2px auto 0; }
@@ -104,98 +92,109 @@
     }
     footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width:800px){
-      .search-grid{ grid-template-columns: 1fr 1fr }
+    @media (max-width:740px){
+      .search-row{ grid-template-columns: 1fr 1fr; }
+      .search-row .field.guests{ grid-column:1/2; }
+      .search-row .search-btn{ grid-column:2/3; }
     }
-    @media (max-width:480px){
-      .bubble-link{ font-size:13px; padding:9px 16px }
-      .bubble-link::after{ left:18px }
-      .search-grid{ grid-template-columns:1fr }
-    }
+
+    /* Flatpickr theming to match brand */
+    .flatpickr-calendar { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange,
+    .flatpickr-day.selected:hover{ background:var(--bubble); border-color:var(--bubble); color:#fff; }
+    .flatpickr-day.today{ border-color:var(--bubble); }
+    .flatpickr-monthDropdown-months, .numInput.cur-year{ font-weight:600; }
   </style>
 </head>
 <body>
+  <div class="site-bg" aria-hidden="true"></div>
+
   <div class="paper">
     <header>
       <a class="logo" href="#top" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — fair stays, fair pay">
+        <img src="/logo.png" alt="Lolaelo — Fair travel, built on trust">
       </a>
     </header>
 
-    <h1>Fair travel, built on trust.</h1>
+    <main role="main">
+      <h1>Fair travel, built on trust.</h1>
 
-    <!-- HOTEL SEARCH CARD -->
-    <form class="search-card" onsubmit="event.preventDefault(); alert('Search prototype — hotel engine coming later.');">
-      <div class="search-top">
-        <div class="chip">Guests & Rooms ▾</div>
-        <div class="chip">Flexible dates ▾</div>
-      </div>
+      <!-- Speech-bubble nav -->
+      <nav class="bubble-nav" aria-label="Primary navigation">
+        <a class="bubble-link" href="/our-story.html">Our Story</a>
+        <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+        <a class="bubble-link" href="/partners.html">For Partners</a>
+        <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
+      </nav>
 
-      <div class="search-grid">
-        <!-- Destination -->
-        <label class="field" aria-label="Destination">
-          <span>📍</span>
-          <input type="text" placeholder="Where to stay?" autocomplete="off" />
-        </label>
+      <!-- Hotel search box -->
+      <form class="search-wrap" onsubmit="event.preventDefault(); alert('Search coming soon');">
+        <div class="search-row">
+          <label class="field" aria-label="Destination">
+            <span>📍</span>
+            <input type="text" placeholder="Where to?" />
+          </label>
 
-        <!-- Check-in -->
-        <label class="field" aria-label="Start date">
-          <span>📅</span>
-          <input type="text" placeholder="Start date" />
-        </label>
+          <label class="field" aria-label="Start date">
+            <span>📅</span>
+            <input class="date start" type="text" placeholder="Start Date" />
+          </label>
 
-        <!-- Check-out -->
-        <label class="field" aria-label="End date">
-          <span>📅</span>
-          <input type="text" placeholder="End date" />
-        </label>
+          <label class="field" aria-label="End date">
+            <span>📅</span>
+            <input class="date end" type="text" placeholder="End Date" />
+          </label>
 
-        <!-- Guests/Rooms -->
-        <label class="field" aria-label="Guests and rooms">
-          <span>👥</span>
-          <select>
-            <option selected>2 guests · 1 room</option>
-            <option>1 guest · 1 room</option>
-            <option>3 guests · 1 room</option>
-            <option>4 guests · 2 rooms</option>
-            <option>Custom…</option>
-          </select>
-        </label>
+          <label class="field guests" aria-label="Guests">
+            <span>👤</span>
+            <select>
+              <option>1 guest</option>
+              <option>2 guests</option>
+              <option>3 guests</option>
+              <option>4 guests</option>
+              <option>5+ guests</option>
+            </select>
+          </label>
 
-        <!-- Promo code (optional) -->
-        <label class="field" aria-label="Promo code (optional)">
-          <span>🏷️</span>
-          <input type="text" placeholder="Code (optional)" />
-        </label>
-      </div>
+          <button class="search-btn" type="submit">Search</button>
+        </div>
+      </form>
 
-      <div class="search-actions">
-        <button class="explore" type="submit">Search stays</button>
-      </div>
-    </form>
-    <!-- /HOTEL SEARCH CARD -->
-
-    <nav class="bubble-nav" aria-label="Primary navigation">
-      <a class="bubble-link" href="/our-story.html">Our Story</a>
-      <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
-      <a class="bubble-link" href="/partners.html">For Partners</a>
-      <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
-    </nav>
-
-    <ul class="value-list" aria-label="How Lolaelo works">
-      <li><strong>Year&nbsp;1:</strong> <em>no margin</em> — partners keep more, customers pay less.</li>
-      <li><strong>Year&nbsp;2:</strong> <em>reasonable margin</em> — partners still keep more, customers still pay less.</li>
-      <li><strong>Service quality:</strong> human-backed support, powered by smart AI to keep things fast and fair.</li>
-    </ul>
-    <div class="note">*“Pay less” refers to offering the most cost-effective price we can while keeping service reliable.</div>
+      <ul class="value-list" aria-label="How Lolaelo works">
+        <li><strong>Year 1:</strong> <em>no margin</em> — partners keep more, customers pay less.</li>
+        <li><strong>Year 2:</strong> <em>reasonable margin</em> — partners still keep more, customers still pay less.</li>
+        <li><strong>Service quality:</strong> human-backed support, powered by smart AI to keep things fast and fair.</li>
+      </ul>
+      <div class="note">*“Pay less” refers to offering the most cost-effective price we can while keeping service reliable.</div>
+    </main>
   </div>
 
   <footer>
     © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Hook up calendars
+    const start = flatpickr(".date.start", {
+      altInput: true,
+      altFormat: "M j, Y",
+      dateFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr, instance) {
+        if (selectedDates.length) {
+          end.set('minDate', selectedDates[0]);
+        }
+      }
+    });
+
+    const end = flatpickr(".date.end", {
+      altInput: true,
+      altFormat: "M j, Y",
+      dateFormat: "Y-m-d"
+    });
   </script>
 </body>
 </html>
