@@ -48,11 +48,20 @@
       padding:9px 16px; border-radius:22px; text-decoration:none;
       position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
+    /* replace the old ::after that used border triangles */
     .bubble-link::after{
-      content:""; position:absolute; bottom:-8px; left:18px;
-      border-width:8px 8px 0; border-style:solid;
-      border-color:var(--bubble) transparent transparent transparent;
+      content:"";
+      position:absolute;
+      left:22px;          /* adjust to taste */
+      bottom:-6px;        /* overlaps the pill slightly */
+      width:12px;
+      height:12px;
+      background:var(--bubble);
+      transform:rotate(45deg);
+      border-radius:2px;  /* subtle rounding to match the pill */
+      pointer-events:none;
     }
+
     .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
 
     h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:10px 0 6px; text-align:center; font-weight:600; }
