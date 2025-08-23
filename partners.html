@@ -6,12 +6,10 @@
   <title>For Partners — Lolaelo</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
-      --radius:12px; --maxw:880px; --bubble:#ff6633;
-      --input:#f8f8f8;
+      --radius:12px; --maxw:880px; --bubble:#ff6633; --input:#f8f8f8;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
@@ -21,7 +19,6 @@
       display:flex; flex-direction:column; align-items:center;
     }
 
-    /* Background image (same as other pages) */
     .site-bg{
       position:fixed; inset:0;
       background:
@@ -31,7 +28,6 @@
       z-index:-1;
     }
 
-    /* White paper card */
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
@@ -42,7 +38,6 @@
     header{ text-align:center; margin-bottom:6px; }
     .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
-    /* Top nav: bubble links (matches home) */
     .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 8px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff;
@@ -61,23 +56,22 @@
     .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
     hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
 
-    /* Form */
     form{ width:100%; max-width:720px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .full{ grid-column:1 / -1; }
 
     label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
-    input, select, textarea{
+    input, textarea{
       width:100%; border:1px solid var(--line); background:var(--input);
       border-radius:10px; padding:12px 12px; font-size:15px; color:#222;
       outline:none; transition:border-color .15s ease, box-shadow .15s ease;
     }
-    input:focus, select:focus, textarea:focus{
+    input:focus, textarea:focus{
       border-color:#111; box-shadow:0 0 0 2px #11111114;
     }
     textarea{ min-height:120px; resize:vertical; }
+    .help{ color:var(--muted); font-size:.85rem; }
 
-    .help{ color:var(--muted); font-size:.85rem; margin-top:4px; }
     .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
     .btn{
       appearance:none; border:1px solid #111; background:#111; color:#fff;
@@ -85,19 +79,6 @@
     }
     .btn.secondary{ background:#fff; color:#111; }
 
-    /* Consent alignment */
-    .consent-note { margin-top:6px; }
-    .consent{
-      display:flex; align-items:center; gap:8px;
-      font-weight:500; font-size:.9375rem; cursor:pointer;
-    }
-    .consent input{ margin:0; transform:scale(1.1); }
-
-    .status{ font-size:.9375rem; margin-top:8px; display:none; }
-    .status.ok{ color:#0a7a3e; }
-    .status.err{ color:#b00020; }
-
-    /* Footer (same feel) */
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
       font-size:13px; color:#444; background:rgba(255,255,255,.72);
@@ -106,9 +87,7 @@
     }
     footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width:700px){
-      .grid{ grid-template-columns:1fr; }
-    }
+    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
@@ -116,13 +95,14 @@
 
   <main class="paper" role="main">
     <header>
-      <a class="logo" href="/" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo — Travel, but kinder"></a>
+      <a class="logo" href="/" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo — fair stays, fair pay"></a>
     </header>
 
     <nav class="bubble-nav" aria-label="Primary navigation">
       <a class="bubble-link" href="/">Home</a>
       <a class="bubble-link" href="/our-story.html">Our Story</a>
       <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+      <a class="bubble-link" href="/waitlist.html">Waitlist</a>
     </nav>
 
     <h1>Partner with Lolaelo</h1>
@@ -130,9 +110,7 @@
 
     <hr class="divider" />
 
-    <!-- Replace action URL with your Formspree endpoint -->
     <form id="partnerForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
-      <!-- Honeypot (spam trap) -->
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
       <div class="grid">
@@ -152,110 +130,35 @@
         </div>
 
         <div>
-          <label for="phone">Phone (optional)</label>
+          <label for="phone">Phone for WhatsApp or Viber</label>
           <input id="phone" name="phone" type="tel" placeholder="+1 555 123 4567" />
         </div>
 
-        <div>
-          <label for="website">Website (optional)</label>
-          <input id="website" name="website" type="url" placeholder="https://…" />
-        </div>
-
-        <div>
+        <div class="full">
           <label for="location">Location</label>
           <input id="location" name="location" type="text" required placeholder="City, Country" />
         </div>
 
-        <div>
-          <label for="type">Property / Offering</label>
-          <select id="type" name="type" required>
-            <option value="">Select…</option>
-            <option>Hotel / Resort</option>
-            <option>Guesthouse / B&B</option>
-            <option>Apartment / Villas</option>
-            <option>Experience / Tour</option>
-            <option>Other</option>
-          </select>
-        </div>
-
-        <div>
-          <label for="rooms">Rooms / Capacity</label>
-          <input id="rooms" name="rooms" type="number" min="0" step="1" placeholder="e.g., 24" />
-        </div>
-
         <div class="full">
-          <label for="message">Tell us a bit more</label>
-          <textarea id="message" name="message" placeholder="What makes your place special? Anything we should know about policies, payouts, or seasonality?"></textarea>
+          <label for="message">Additional Relevant Information</label>
+          <textarea id="message" name="message" placeholder="Anything we should know about your property, policies, payouts, or seasonality?"></textarea>
           <div class="help">We’ll review your details and get back to you with next steps.</div>
-        </div>
-
-        <!-- Consent note ABOVE checkbox so 'below' is accurate -->
-        <div class="full">
-          <div class="help consent-note">
-            By clicking the box below, you confirm you’re authorized to represent your business and consent to us contacting you about onboarding and payouts.
-          </div>
-          <label class="consent">
-            <input type="checkbox" name="consent" required />
-            I agree to be contacted about partnering with Lolaelo.
-          </label>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn" type="submit" id="submitBtn">Submit</button>
+        <button class="btn" type="submit">Submit</button>
         <a class="btn secondary" href="/">Back to Home</a>
       </div>
-
-      <div id="formStatus" class="status" role="status" aria-live="polite"></div>
     </form>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="/waitlist.html">Waitlist</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-
-    // AJAX submit to Formspree (inline success/error)
-    const form = document.getElementById('partnerForm');
-    const statusEl = document.getElementById('formStatus');
-    const submitBtn = document.getElementById('submitBtn');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      statusEl.style.display = 'none';
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting…';
-
-      try {
-        const data = new FormData(form);
-        const res = await fetch(form.action, {
-          method: 'POST',
-          headers: { 'Accept': 'application/json' },
-          body: data
-        });
-
-        if (res.ok) {
-          form.reset();
-          statusEl.className = 'status ok';
-          statusEl.textContent = 'Thanks! We received your details and will reach out shortly.';
-          statusEl.style.display = 'block';
-        } else {
-          const err = await res.json().catch(() => ({}));
-          statusEl.className = 'status err';
-          statusEl.textContent = err.message || 'Something went wrong. Please try again later.';
-          statusEl.style.display = 'block';
-        }
-      } catch (err) {
-        statusEl.className = 'status err';
-        statusEl.textContent = 'Network error. Please check your connection and try again.';
-        statusEl.style.display = 'block';
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit';
-      }
-    });
   </script>
 </body>
 </html>
