@@ -9,7 +9,7 @@
   <style>
     :root{
       --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
-      --radius:12px; --maxw:880px; --bubble:#ff6633;
+      --radius:12px; --maxw:880px; --bubble:#ff6633; /* matches logo “hello” */
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
@@ -27,48 +27,53 @@
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
       box-shadow:0 12px 40px rgba(0,0,0,.08);
-      padding:20px; margin:18px 20px 16px;
+      padding:22px 20px 28px; margin:18px 20px;
     }
 
-    header{ text-align:center; margin-bottom:8px; }
+    header{ text-align:center; margin-bottom:4px; }
     .logo img{ width:auto; max-width:80vw; max-height:160px; }
 
-    /* Orange speech-bubble nav (same as index/partners/waitlist) */
-    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 10px; }
+    /* orange speech-bubble nav */
+    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:8px 0 10px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff;
       font-weight:600; font-size:14px; line-height:1.2;
-      padding:10px 18px; border-radius:22px; text-decoration:none;
+      padding:9px 16px; border-radius:22px; text-decoration:none;
       position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
+    /* seamless tail (no white gap): rotated square */
     .bubble-link::after{
-      content:""; position:absolute; bottom:-6px; left:22px;
+      content:""; position:absolute; bottom:-6px; left:18px;
       width:12px; height:12px; background:var(--bubble);
       transform:rotate(45deg); border-radius:2px;
     }
     .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
 
-    h1{ text-align:center; font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:8px 0 6px; }
-    .lede{
-      text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.95rem;
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; text-align:center; margin:8px 0 4px; }
+    .intro{
+      text-align:center; color:var(--muted);
+      max-width:62ch; margin:0 auto 14px; font-size:.9375rem;
     }
 
-    hr.div{ border:none; border-top:1px solid var(--line); margin:14px 0 16px; }
+    .section-title{
+      margin:14px 0 8px; font-size:1rem; font-weight:700;
+      border-top:1px solid var(--line); padding-top:12px;
+    }
 
-    .section-title{ font-size:1.05rem; font-weight:700; margin:0 0 6px; }
-    .body{ margin:0 0 10px; color:#222; font-size:.95rem; }
+    ul.tight{ margin:0; padding-left:18px; }
+    ul.tight li{ margin:6px 0; font-size:.9375rem; }
 
-    ul.tight{ margin:8px 0 6px 18px; }
-    ul.tight li{ margin:6px 0; }
-
-    /* Three-up cards */
-    .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:8px; }
+    /* three-up cards */
+    .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:10px; }
     .card{
       border:1px solid var(--line); border-radius:12px; padding:14px;
-      background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.04);
+      box-shadow:0 1px 6px rgba(0,0,0,.04); background:#fff;
     }
-    .card h3{ margin:0 0 6px; font-size:15px; }
-    .card p{ margin:0; font-size:13.5px; color:var(--muted); }
+    .card h3{ margin:0 0 6px; font-size:.95rem; }
+    .card p{ margin:0; font-size:.9rem; color:var(--muted); }
+
+    .footnote{ color:var(--muted); font-size:.875rem; margin-top:14px; }
+    .link{ color:var(--fg); text-decoration:underline; }
 
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
@@ -76,21 +81,19 @@
       backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
       margin-top:auto;
     }
-    footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
+    @media (max-width:720px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <main class="paper" role="main">
     <header>
       <a class="logo" href="/" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo">
+        <img src="/logo.png" alt="Lolaelo logo">
       </a>
     </header>
 
-    <!-- Consistent orange bubble nav -->
-    <nav class="bubble-nav" aria-label="Primary navigation">
+    <nav class="bubble-nav" aria-label="Site">
       <a class="bubble-link" href="/">Home</a>
       <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
       <a class="bubble-link" href="/partners.html">For Partners</a>
@@ -98,50 +101,51 @@
     </nav>
 
     <h1>Why Lolaelo exists</h1>
-    <p class="lede">
-      We’re a straightforward bridge between travelers and local partners. Keep prices fair, margins clear, and dignity intact—for both sides.
+    <p class="intro">
+      Lolaelo began with a simple idea: be a fair bridge between travelers and local partners.
+      Partners should keep more of what they earn. Guests should pay a fair price—without tricks.
+      We choose trust, clarity, and service you can feel.
     </p>
-
-    <hr class="div" />
 
     <h2 class="section-title">Our philosophy</h2>
-    <p class="body">
-      One rule: <strong>reasonable margin.</strong> We’re here to make a living, not squeeze anyone. Small, clear margins × high volume = sustainable growth.
-    </p>
     <ul class="tight">
-      <li><strong>Partners</strong> keep more and can reinvest in people and place.</li>
-      <li><strong>Guests</strong> get fair prices and the confidence their hosts get a fair share.</li>
-      <li><strong>Lolaelo</strong> runs lean and plays the long game—relationships over short-term grabs.</li>
+      <li><strong>Fair share for partners.</strong> More of each booking stays with the people who host you.</li>
+      <li><strong>Fair price for guests.</strong> No games. Clear totals. You know what you’re paying for.</li>
+      <li><strong>Lean & human.</strong> We run light, use smart AI, and back it with real people.</li>
     </ul>
 
-    <h2 class="section-title" style="margin-top:14px;">How that shows up</h2>
+    <h2 class="section-title">How that shows up</h2>
     <div class="grid">
       <article class="card">
-        <h3>Fair margin formula</h3>
-        <p>Modest margin, clear math, scale with volume. Everyone wins.</p>
+        <h3>Fair-margin mindset</h3>
+        <p>Small, clear margins × healthy volume = sustainable growth for everyone.</p>
       </article>
       <article class="card">
         <h3>Transparent pricing</h3>
-        <p>No junk fees. Partners see what they keep; guests see what they pay.</p>
+        <p>No hidden add-ons. Partners see what they keep. Guests see what they pay.</p>
       </article>
       <article class="card">
         <h3>Community first</h3>
-        <p>We prioritize local stays and experiences that strengthen their communities.</p>
+        <p>We prioritize locally owned stays and experiences that strengthen their communities.</p>
       </article>
     </div>
 
-    <h2 class="section-title" style="margin-top:16px;">Where we’re heading</h2>
-    <p class="body">
-      In Year 1 we’re choosing trust over margin—building travelers who return and partners who keep more. Details in
-      <a href="/our-strategy.html">Our Strategy</a>.
+    <p class="footnote">
+      Curious about the nuts and bolts—Year 1 vs. Year 2, fees, and how we’ll stay lean?
+      That lives in <a class="link" href="/our-strategy.html">Our Strategy</a>.
     </p>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-strategy.html">Our Strategy</a> ·
-    <a href="/partners.html">For Partners</a> · <a href="/waitlist.html">Waitlist</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a class="link" href="/">Home</a> ·
+    <a class="link" href="/our-strategy.html">Our Strategy</a> ·
+    <a class="link" href="/partners.html">For Partners</a> ·
+    <a class="link" href="/waitlist.html">Waitlist</a> ·
+    <a class="link" href="#">Privacy</a> · <a class="link" href="#">Terms</a>
   </footer>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
