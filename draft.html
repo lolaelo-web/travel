@@ -3,16 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo — Fair stays, fair pay</title>
-  <meta name="description" content="Lolaelo helps travelers book fairly priced stays while local partners keep more. No gimmicks. Transparent, service-first." />
-  <meta name="robots" content="index,follow" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Lolaelo — Fair stays, fair pay" />
-  <meta property="og:description" content="Partners keep more. You pay less—without gimmicks." />
-  <meta property="og:image" content="/og.jpg" />
+  <title>Lolaelo — Fair travel, built on trust.</title>
   <link rel="icon" href="/logo.png" />
-  <link rel="preload" as="image" href="https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -23,72 +16,77 @@
     html,body{ height:100%; margin:0; }
     body{
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--fg); min-height:100vh; display:flex; flex-direction:column; align-items:center;
-    }
-    .site-bg{
-      position:fixed; inset:0;
+      color:var(--fg); min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
       background:
         linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.08)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
-        center / cover no-repeat;
-      z-index:-1;
+        center / cover no-repeat fixed;
     }
+
     .paper{
       width:100%; max-width:var(--maxw);
-      background:#fff; border-radius:16px; box-shadow:0 12px 40px rgba(0,0,0,.08);
-      padding:20px 20px 28px; margin:18px 20px 16px; text-align:center;
+      background:#fff; border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:20px; margin:18px 20px 16px;
+      text-align:center;
     }
-    header{ margin-bottom:8px; }
-    .logo img{ width:auto; max-width:80vw; max-height:170px; }
-    @media (max-width:640px){ .logo img{ max-height:130px; } }
 
-    /* Bubble nav */
-    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:10px; margin:6px 0 8px; }
+    .logo img{
+      width:auto; max-width:80vw; max-height:160px; display:block; margin:0 auto;
+    }
+
+    h1{ font-size:clamp(26px,4.5vw,40px); line-height:1.2; margin:12px 0 10px; }
+    hr.divider{ border:none; border-top:1px solid var(--line); margin:10px auto 14px; width:min(720px,92%); }
+
+    /* bubble nav */
+    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:0 0 4px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff; text-decoration:none;
-      font-weight:600; font-size:13px; padding:8px 14px; border-radius:20px; position:relative;
+      font-weight:600; font-size:14px; line-height:1.2; padding:9px 16px;
+      border-radius:22px; position:relative;
       transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
+    /* Tail with rotated square to avoid white seam */
     .bubble-link::after{
-      content:""; position:absolute; bottom:-7px; left:16px; border-width:7px 7px 0; border-style:solid;
-      border-color:var(--bubble) transparent transparent transparent;
+      content:""; position:absolute; left:22px; bottom:-6px;
+      width:12px; height:12px; background:var(--bubble);
+      transform:rotate(45deg); border-radius:2px; pointer-events:none;
     }
     .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
 
-    h1{ font-size:clamp(28px,4.5vw,44px); line-height:1.15; margin:10px 0 8px; font-weight:600; }
-    .trust{ margin:6px auto 10px; padding:0; list-style:disc; text-align:left; width:min(720px,92%); color:#333; }
-    .trust li{ margin:4px 0; }
-
-    hr.divider{ border:none; border-top:1px solid var(--line); margin:14px auto 14px; width:min(720px,92%); }
-
-    /* Action cards */
-    .card-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; width:min(720px,92%); margin:0 auto; }
-    .card{ display:block; border:1px solid var(--line); border-radius:var(--radius); padding:16px; background:#fff;
-      text-decoration:none; color:var(--fg); text-align:center;
-      box-shadow:0 1px 6px rgba(0,0,0,.04); transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    /* bullet list */
+    .value-list{
+      margin:10px auto 4px; padding:0; list-style:none; text-align:left;
+      width:min(720px,92%); color:#222;
     }
-    .card:hover, .card:focus-visible{ transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.08); border-color:#bbb; outline:0; }
-    .card h3{ margin:0; font-size:16px; }
-    @media (max-width:760px){ .card-grid{ grid-template-columns:1fr 1fr; } }
-    @media (max-width:480px){ .card-grid{ grid-template-columns:1fr; } }
+    .value-list li{
+      position:relative; padding-left:26px; margin:8px 0; line-height:1.35;
+      font-size:15px;
+    }
+    .value-list li::before{
+      content:"•"; position:absolute; left:8px; top:0; font-size:22px; line-height:1; color:#ff7a45;
+    }
+    .note{ color:var(--muted); font-size:12px; text-align:left; width:min(720px,92%); margin:2px auto 0; }
 
     footer{
-      width:100%; text-align:center; padding:14px 10px 22px; font-size:13px; color:#444;
-      background:rgba(255,255,255,.72); backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06); margin-top:auto;
+      width:100%; text-align:center; padding:14px 10px 22px;
+      font-size:13px; color:#444; background:rgba(255,255,255,.72);
+      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      margin-top:auto;
     }
     footer a{ color:var(--fg); text-decoration:underline; }
-    :focus-visible{ outline:2px solid #111; outline-offset:2px; }
   </style>
 </head>
 <body>
-  <div class="site-bg" aria-hidden="true"></div>
-
   <main class="paper" role="main">
     <header>
-      <a class="logo" href="/" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo — fair stays, fair pay"></a>
+      <a class="logo" href="#" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo"></a>
     </header>
 
-    <!-- Bubble nav -->
+    <h1>Fair travel, built on trust.</h1>
+    <hr class="divider" />
+
     <nav class="bubble-nav" aria-label="Primary navigation">
       <a class="bubble-link" href="/our-story.html">Our Story</a>
       <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
@@ -96,30 +94,20 @@
       <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
     </nav>
 
-    <!-- (Future) booking module goes here -->
-
-    <h1>Fair stays, fair pay—no gimmicks.</h1>
-
-    <ul class="trust">
-      <li><strong>Partners keep more</strong> with a lean, transparent take rate.</li>
-      <li><strong>You pay less</strong> with no hidden markups or junk fees.</li>
-      <li><strong>Service first</strong>—real support and locally owned stays.</li>
+    <ul class="value-list" aria-label="How Lolaelo works">
+      <li><strong>Year&nbsp;1:</strong> <em>no margin</em> — partners keep more, customers pay less.</li>
+      <li><strong>Year&nbsp;2:</strong> <em>reasonable margin</em> — partners still keep more, customers still pay less.</li>
+      <li><strong>Service quality:</strong> human-backed support, powered by smart AI to keep things fast and fair.</li>
     </ul>
-
-    <hr class="divider" />
-
-    <section class="card-grid" aria-label="Explore">
-      <a class="card" href="/our-story.html"><h3>Our Story</h3></a>
-      <a class="card" href="/our-strategy.html"><h3>Our Strategy</h3></a>
-      <a class="card" href="/partners.html"><h3>For Partners</h3></a>
-      <a class="card" href="/waitlist.html"><h3>Join the Waitlist</h3></a>
-    </section>
+    <div class="note">*“Pay less” refers to offering the most cost-effective price we can while keeping service reliable.</div>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="mailto:hello@lolaelo.com">hello@lolaelo.com</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a>
+    © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
-  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
