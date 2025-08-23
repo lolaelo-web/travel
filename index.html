@@ -7,133 +7,119 @@
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
+  <!-- Flatpickr (calendar) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" />
+
   <style>
-    :root {
+    :root{
       --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea;
       --radius:20px; --maxw:880px; --bubble:#ff6633;
     }
-
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; }
-    body {
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
+    body{
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color: var(--fg);
-      min-height: 100vh;
-      display: flex; flex-direction: column; align-items: center;
-    }
-
-    /* Background image */
-    .site-bg {
-      position: fixed; inset: 0;
+      color:var(--fg); min-height:100vh;
+      display:flex; flex-direction:column; align-items:center;
       background:
-        linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0.10)),
+        linear-gradient(to bottom, rgba(255,255,255,.10), rgba(255,255,255,.10)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
-        center / cover no-repeat;
-      z-index: -1;
+        center/cover no-repeat fixed;
     }
 
-    /* White card */
-    .paper {
-      width: 100%;
-      max-width: var(--maxw);
-      background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.08);
-      padding: 24px 20px 28px;
-      margin: 18px 20px 16px;
-      text-align: center;
+    .paper{
+      width:100%; max-width:var(--maxw);
+      background:#fff; border-radius:16px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08);
+      padding:24px 20px 28px; margin:18px 20px 16px;
+      text-align:center;
     }
 
-    header { margin-bottom: 10px; }
-    .logo img { width: auto; max-width: 80vw; max-height: 240px; }
+    header{ margin-bottom:10px; }
+    .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
-    h1 {
-      font-size: clamp(30px, 4.8vw, 44px);
-      line-height: 1.15;
-      margin: 10px 0 12px;
-      font-weight: 600;
+    h1{ font-size:clamp(30px,4.8vw,44px); line-height:1.15; margin:10px 0 12px; font-weight:600; }
+
+    /* Speech-bubble nav */
+    .bubble-nav{ display:flex; justify-content:center; gap:16px; flex-wrap:wrap; margin:16px 0 6px; }
+    .bubble-link{
+      display:inline-block; background:var(--bubble); color:#fff; font-weight:600;
+      font-size:14px; line-height:1.2; padding:10px 18px; border-radius:22px;
+      position:relative; text-decoration:none; transition:transform .15s, box-shadow .15s, filter .15s;
+    }
+    .bubble-link::after{
+      content:""; position:absolute; bottom:-6px; left:22px; width:12px; height:12px;
+      background:var(--bubble); transform:rotate(45deg); border-radius:2px;
+    }
+    .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
+
+    /* Search box */
+    .search-wrap{
+      width:100%; max-width:760px; margin:16px auto 6px;
+      border:1px solid var(--line);          /* light gray border */
+      border-radius:16px; padding:12px;
+      box-shadow:0 6px 18px rgba(0,0,0,.06);
+      background:#fff;
+    }
+    .search-row{
+      display:grid;
+      grid-template-columns: 1.3fr 1fr 1fr .8fr .8fr; /* dest, start, end, guests, rooms */
+      gap:10px; align-items:center;
+    }
+    .field{
+      display:flex; align-items:center; gap:8px;
+      background:#fafafa; border:1px solid var(--line); border-radius:12px; padding:10px 12px;
+    }
+    .field span{ opacity:.7; }
+    .field input,.field select{
+      width:100%; border:none; background:transparent; outline:none; font-size:15px; color:#222;
+      font-family: inherit;
+    }
+    .search-actions{
+      display:flex; justify-content:center; padding:10px 6px 4px;  /* button on its own row, centered */
+    }
+    .search-btn{
+      border:1px solid var(--bubble); background:var(--bubble); color:#fff;
+      border-radius:999px; padding:12px 22px; font-weight:700; cursor:pointer;
+      box-shadow:0 6px 16px rgba(79,140,255,.0);
+    }
+    .search-btn:hover{ filter:brightness(.98); }
+
+    /* Bullets */
+    .value-list{ margin:10px auto 4px; padding:0; list-style:none; text-align:left; width:min(720px,92%); color:#222; }
+    .value-list li{ position:relative; padding-left:26px; margin:8px 0; line-height:1.35; font-size:15px; }
+    .value-list li::before{ content:"•"; position:absolute; left:8px; top:0; font-size:22px; line-height:1; color:#ff7a45; }
+    .note{ color:var(--muted); font-size:12px; text-align:left; width:min(720px,92%); margin:2px auto 0; }
+
+    footer{
+      width:100%; text-align:center; padding:14px 10px 22px; font-size:13px; color:#444;
+      background:rgba(255,255,255,.72); backdrop-filter:blur(3px);
+      border-top:1px solid rgba(0,0,0,0.06); margin-top:auto;
+    }
+    footer a{ color:var(--fg); text-decoration:underline; }
+
+    @media (max-width:740px){
+      .search-row{ grid-template-columns: 1fr 1fr; }
     }
 
-    /* Bubble nav */
-    .bubble-nav {
-      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
-      margin: 16px 0 6px;
-    }
-    .bubble-link {
-      display: inline-block;
-      background: var(--bubble);
-      color: #fff;
-      font-weight: 600; font-size: 14px; line-height: 1.2;
-      padding: 10px 18px;
-      border-radius: 22px;
-      position: relative;
-      text-decoration: none;
-      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
-    }
-    .bubble-link::after {
-      content: "";
-      position: absolute; bottom: -8px; left: 22px;
-      border-width: 8px 8px 0; border-style: solid;
-      border-color: var(--bubble) transparent transparent transparent;
-    }
-    .bubble-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); filter: brightness(0.98); }
-    .bubble-link:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
-
-    /* Bullet list fix */
-    .value-list {
-      margin: 18px auto 10px;
-      padding: 0;
-      list-style: none;
-      text-align: left;   /* force left alignment */
-      width: min(720px, 92%);
-      color: #222;
-    }
-    .value-list li {
-      position: relative;
-      padding-left: 26px;
-      margin: 8px 0;
-      line-height: 1.35;
-      font-size: 15px;
-    }
-    .value-list li::before {
-      content: "•";
-      position: absolute;
-      left: 8px; top: 0;
-      font-size: 22px; line-height: 1; color: #ff7a45;
-    }
-
-    /* Smaller note */
-    .note {
-      color: var(--muted);
-      font-size: 11px; /* smaller than body text */
-      text-align: left;
-      width: min(720px, 92%);
-      margin: 6px auto 0;
-    }
-
-    footer {
-      width: 100%; text-align: center;
-      padding: 14px 10px 22px; font-size: 13px; color: #444;
-      background: rgba(255,255,255,0.72); backdrop-filter: blur(3px);
-      border-top: 1px solid rgba(0,0,0,0.06);
-      margin-top: auto;
-    }
-    footer a { color: var(--fg); text-decoration: underline; }
+    /* Flatpickr theming */
+    .flatpickr-calendar{ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange,
+    .flatpickr-day.selected:hover{ background:var(--bubble); border-color:var(--bubble); color:#fff; }
+    .flatpickr-day.today{ border-color:var(--bubble); }
   </style>
 </head>
 <body>
-  <div class="site-bg" aria-hidden="true"></div>
-
   <div class="paper">
     <header>
       <a class="logo" href="#top" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — Fair travel, built on trust.">
+        <img src="/logo.png" alt="Lolaelo — Fair travel, built on trust">
       </a>
     </header>
 
     <main role="main">
       <h1>Fair travel, built on trust.</h1>
-    
+
       <nav class="bubble-nav" aria-label="Primary navigation">
         <a class="bubble-link" href="/our-story.html">Our Story</a>
         <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
@@ -141,13 +127,57 @@
         <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
       </nav>
 
-      <ul class="value-list" aria-label="How Lolaelo works">
-        <li><strong>Year&nbsp;1:</strong> <em>no margin</em> — partners keep more, customers pay less.</li>
-        <li><strong>Year&nbsp;2:</strong> <em>reasonable margin</em> — partners still keep more, customers still pay less.</li>
-        <li><strong>Service quality:</strong> human-backed support, powered by smart AI to keep things fast and fair.</li>
-      </ul>
+      <!-- Hotel search box -->
+      <form class="search-wrap" onsubmit="event.preventDefault(); alert('Feature not live yet: we’re testing to ensure reliability');">
+        <div class="search-row">
+          <label class="field" aria-label="Destination">
+            <span>📍</span>
+            <input type="text" placeholder="Where to stay?" />
+          </label>
 
-      <div class="note">* “Pay less” relevant to our competitors</div>
+          <label class="field" aria-label="Start date">
+            <span>📅</span>
+            <input class="date start" type="text" placeholder="Start Date" />
+          </label>
+
+          <label class="field" aria-label="End date">
+            <span>📅</span>
+            <input class="date end" type="text" placeholder="End Date" />
+          </label>
+
+          <label class="field" aria-label="Guests">
+            <span>👤</span>
+            <select>
+              <option>1 guest</option>
+              <option selected>2 guests</option>
+              <option>3 guests</option>
+              <option>4 guests</option>
+              <option>5+ guests</option>
+            </select>
+          </label>
+
+          <label class="field" aria-label="Rooms">
+            <span>🛏️</span>
+            <select>
+              <option selected>1 room</option>
+              <option>2 rooms</option>
+              <option>3 rooms</option>
+              <option>4+ rooms</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="search-actions">
+          <button class="search-btn" type="submit">Search</button>
+        </div>
+      </form>
+
+      <ul class="value-list" aria-label="How Lolaelo works">
+        <li><strong>Year 1:</strong> <em>Zero platform margin</em> — partners keep everything, customers pay less.</li>
+        <li><strong>Year 2:</strong> <em>Fair margin policy</em> — partners still keep more, customers still pay less.</li>
+        <li><strong>Service quality:</strong> Real human support, enhanced with AI to keep things efficient and still human.</li>
+      </ul>
+      <div class="note">*“Pay less” relevant to how much they would pay in other platforms.</div>
     </main>
   </div>
 
@@ -155,8 +185,19 @@
     © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
+  <!-- Flatpickr JS -->
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Calendars
+    const start = flatpickr(".date.start", {
+      altInput: true, altFormat: "M j, Y", dateFormat: "Y-m-d",
+      onChange(selectedDates){ if(selectedDates.length){ end.set('minDate', selectedDates[0]); } }
+    });
+    const end = flatpickr(".date.end", {
+      altInput: true, altFormat: "M j, Y", dateFormat: "Y-m-d"
+    });
   </script>
 </body>
 </html>
