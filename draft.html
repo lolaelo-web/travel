@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>For Partners — Lolaelo</title>
+  <title>Join the Lolaelo Waitlist</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -19,6 +19,7 @@
       display:flex; flex-direction:column; align-items:center;
     }
 
+    /* Background */
     .site-bg{
       position:fixed; inset:0;
       background:
@@ -28,6 +29,7 @@
       z-index:-1;
     }
 
+    /* White card */
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
@@ -38,6 +40,7 @@
     header{ text-align:center; margin-bottom:6px; }
     .logo img{ width:auto; max-width:80vw; max-height:180px; }
 
+    /* Speech-bubble nav */
     .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 8px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff;
@@ -56,17 +59,19 @@
     .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
     hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
 
+    /* Form */
     form{ width:100%; max-width:720px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .full{ grid-column:1 / -1; }
 
     label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
-    input, textarea{
+    input, textarea, select{
       width:100%; border:1px solid var(--line); background:var(--input);
       border-radius:10px; padding:12px 12px; font-size:15px; color:#222;
       outline:none; transition:border-color .15s ease, box-shadow .15s ease;
+      font-family: inherit; /* ensure same font inside textarea */
     }
-    input:focus, textarea:focus{
+    input:focus, textarea:focus, select:focus{
       border-color:#111; box-shadow:0 0 0 2px #11111114;
     }
     textarea{ min-height:120px; resize:vertical; }
@@ -102,59 +107,50 @@
       <a class="bubble-link" href="/">Home</a>
       <a class="bubble-link" href="/our-story.html">Our Story</a>
       <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
-      <a class="bubble-link" href="/waitlist.html">Waitlist</a>
+      <a class="bubble-link" href="/partners.html">For Partners</a>
     </nav>
 
-    <h1>Partner with Lolaelo</h1>
-    <p class="sub">Tell us about your property or experience. We’ll follow up with simple next steps. We keep margins reasonable so <em>you</em> keep more.</p>
+    <h1>Join the Lolaelo Waitlist</h1>
+    <p class="sub">Get early access and real updates—no spam. We’ll reach out when invites open or we have meaningful news.</p>
 
     <hr class="divider" />
 
-    <form id="partnerForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
+    <!-- Replace action URL with your Formspree endpoint -->
+    <form id="waitlistForm" action="https://formspree.io/f/REPLACE_ME" method="POST" novalidate>
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
       <div class="grid">
         <div>
-          <label for="business">Business / Property name</label>
-          <input id="business" name="business" type="text" required placeholder="e.g., Palmside Guesthouse" />
+          <label for="first">First name</label>
+          <input id="first" name="first_name" type="text" required placeholder="e.g., Alex" />
         </div>
 
         <div>
-          <label for="contact">Contact name</label>
-          <input id="contact" name="contact" type="text" required placeholder="Your full name" />
+          <label for="last">Last name</label>
+          <input id="last" name="last_name" type="text" required placeholder="e.g., Rivera" />
         </div>
 
-        <div>
+        <div class="full">
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" required placeholder="you@business.com" />
-        </div>
-
-        <div>
-          <label for="phone">Phone for WhatsApp or Viber</label>
-          <input id="phone" name="phone" type="tel" placeholder="+1 555 123 4567" />
+          <input id="email" name="email" type="email" required placeholder="you@email.com" />
+          <div class="help">We’ll only email when there’s real news or an invite for you.</div>
         </div>
 
         <div class="full">
-          <label for="location">Location</label>
-          <input id="location" name="location" type="text" required placeholder="City, Country" />
-        </div>
-
-        <div class="full">
-          <label for="message">Additional Relevant Information</label>
-          <textarea id="message" name="message" placeholder="Anything we should know about your property, policies, payouts, or seasonality?"></textarea>
-          <div class="help">We’ll review your details and get back to you with next steps.</div>
+          <label for="notes">Anything we should know? (optional)</label>
+          <textarea id="notes" name="notes" placeholder="Tell us what would make Lolaelo most useful to you."></textarea>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn" type="submit">Submit</button>
+        <button class="btn" type="submit">Join the waitlist</button>
         <a class="btn secondary" href="/">Back to Home</a>
       </div>
     </form>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="/waitlist.html">Waitlist</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="/partners.html">For Partners</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
   <script>
