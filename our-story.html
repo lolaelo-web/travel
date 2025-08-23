@@ -7,156 +7,141 @@
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root { --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea; --radius:12px; --maxw:880px; }
-
-    *{ box-sizing: border-box; }
-    html, body{ height:100%; margin:0; }
+    :root{
+      --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
+      --radius:12px; --maxw:880px; --bubble:#ff6633; /* matches logo “hello” */
+    }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; }
     body{
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color: var(--fg);
-      min-height: 100vh;
+      color:var(--fg); min-height:100vh;
       display:flex; flex-direction:column; align-items:center;
-    }
-
-    /* SAME BACKGROUND AS HOME */
-    .site-bg{
-      position: fixed; inset: 0;
       background:
-        linear-gradient(to bottom, rgba(255,255,255,0.08), rgba(255,255,255,0.08)),
+        linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.08)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
-        center / cover no-repeat;
-      z-index:-1;
+        center / cover no-repeat fixed;
     }
 
-    /* WHITE CARD (paper) */
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
       box-shadow:0 12px 40px rgba(0,0,0,.08);
-      padding:20px 20px 28px; margin:18px 20px 16px;
+      padding:22px 20px 28px; margin:18px 20px;
     }
 
-    header{ text-align:center; margin-bottom:6px; }
-    .logo img{ width:auto; max-width:80vw; max-height:180px; }
+    header{ text-align:center; margin-bottom:4px; }
+    .logo img{ width:auto; max-width:80vw; max-height:160px; }
 
-    /* Breadcrumb / top actions (consistent buttons) */
-    nav.breadcrumbs{
-      display:flex; justify-content:space-between; align-items:center;
-      font-size:0.9375rem; color:var(--muted); margin:4px 0 8px;
+    /* orange speech-bubble nav */
+    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:8px 0 10px; }
+    .bubble-link{
+      display:inline-block; background:var(--bubble); color:#fff;
+      font-weight:600; font-size:14px; line-height:1.2;
+      padding:9px 16px; border-radius:22px; text-decoration:none;
+      position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
-    .crumb a{ color:var(--fg); text-decoration:none; }
-    .crumb a:hover{ text-decoration:underline; }
-    .btn{
-      appearance:none; border:1px solid #111; background:#fff; color:#111;
-      border-radius:10px; padding:8px 12px; font-weight:600; text-decoration:none;
-      font-size:0.9375rem;
+    /* seamless tail (no white gap): rotated square */
+    .bubble-link::after{
+      content:""; position:absolute; bottom:-6px; left:18px;
+      width:12px; height:12px; background:var(--bubble);
+      transform:rotate(45deg); border-radius:2px;
     }
-    .btn:hover{ filter:brightness(.96); }
+    .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
 
-    /* Typography */
-    h1{ font-size: clamp(28px, 4.5vw, 42px); line-height:1.2; margin:8px 0 6px; text-align:center; font-weight:600; }
-    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:62ch; font-size:0.9375rem; }
-    p, li{ font-size:0.9375rem; line-height:1.65; color:#222; }
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; text-align:center; margin:8px 0 4px; }
+    .intro{
+      text-align:center; color:var(--muted);
+      max-width:62ch; margin:0 auto 14px; font-size:.9375rem;
+    }
 
-    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
+    .section-title{
+      margin:14px 0 8px; font-size:1rem; font-weight:700;
+      border-top:1px solid var(--line); padding-top:12px;
+    }
 
-    section{ margin:18px 0; }
-    h2{ font-size:18px; margin:0 0 8px; }
-    ul{ margin:6px 0 10px 18px; }
+    ul.tight{ margin:0; padding-left:18px; }
+    ul.tight li{ margin:6px 0; font-size:.9375rem; }
 
-    /* Cards grid (same style as home) */
-    .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+    /* three-up cards */
+    .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:10px; }
     .card{
-      border:1px solid var(--line); border-radius:12px; background:#fff;
-      padding:14px; box-shadow:0 1px 6px rgba(0,0,0,.04);
-      transition:transform .15s ease, box-shadow .15s ease;
+      border:1px solid var(--line); border-radius:12px; padding:14px;
+      box-shadow:0 1px 6px rgba(0,0,0,.04); background:#fff;
     }
-    .card h3{ margin:0 0 6px; font-size:16px; }
-    .card p{ margin:0; color:var(--muted); font-size:0.9375rem; }
-    .card:hover{ transform:translateY(-3px); box-shadow:0 6px 18px rgba(0,0,0,.08); }
+    .card h3{ margin:0 0 6px; font-size:.95rem; }
+    .card p{ margin:0; font-size:.9rem; color:var(--muted); }
 
-    /* Footer same as home */
+    .footnote{ color:var(--muted); font-size:.875rem; margin-top:14px; }
+    .link{ color:var(--fg); text-decoration:underline; }
+
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
       font-size:13px; color:#444; background:rgba(255,255,255,.72);
-      backdrop-filter: blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
       margin-top:auto;
     }
-    footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width: 700px){ .grid{ grid-template-columns:1fr; } }
+    @media (max-width:720px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
-  <div class="site-bg" aria-hidden="true"></div>
-
   <main class="paper" role="main">
     <header>
       <a class="logo" href="/" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — Travel, but kinder" />
+        <img src="/logo.png" alt="Lolaelo logo">
       </a>
     </header>
 
-    <nav class="breadcrumbs" aria-label="Breadcrumb">
-      <div class="crumb"> Our Story</div>
-      <div style="display:flex; gap:8px;">
-        <a class="btn" href="/our-strategy.html">Our Strategy</a>
-        <a class="btn" href="/">Home</a>
-      </div>
+    <nav class="bubble-nav" aria-label="Site">
+      <a class="bubble-link" href="/">Home</a>
+      <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+      <a class="bubble-link" href="/partners.html">For Partners</a>
+      <a class="bubble-link" href="/waitlist.html">Waitlist</a>
     </nav>
 
     <h1>Why Lolaelo exists</h1>
-    <p class="sub">
-      Lolaelo began with a straightforward idea: <strong>be a sustaintable bridge between travelers and local partners.</strong>
-      Partners should keep more of what they earn, and customers should pay a fair price—by building our model on fairness, not exploitation.
+    <p class="intro">
+      Lolaelo began with a simple idea: be a fair bridge between travelers and local partners.
+      Partners should keep more of what they earn. Guests should pay a fair price—without tricks.
+      We choose trust, clarity, and service you can feel.
     </p>
 
-    <hr class="divider" />
+    <h2 class="section-title">Our philosophy</h2>
+    <ul class="tight">
+      <li><strong>Fair margin policy.</strong> More of each booking stays with our partners and vendors. (Year 1 - 100% of booking cost goes to our partners)</li>
+      <li><strong>Fair price for guests.</strong> The most cost-effective price on the market, with the peace of mind that your hosts wins too.</li>
+      <li><strong>Lean & human.</strong> We run light, use smart AI, and back it with real people.</li>
+    </ul>
 
-    <!-- Our Philosophy (tightened) -->
-    <section>
-      <h2>Our philosophy</h2>
-      <p>
-        We operate on one principle: <strong>reasonable margin</strong>. The goal isn’t to maximize profit, but to make travel work better for everyone.
-        <strong>Small, clear margins × high volume = reasonable margin.</strong>
-      </p>
-      <ul>
-        <li><strong>Partners</strong> keep more from each booking and reinvest in their staff and properties.</li>
-        <li><strong>Customers</strong> get fair prices and the assurance their hosts receive a fair share.</li>
-        <li><strong>Lolaelo</strong> stays lean by focusing on long-term relationships, not short-term gains.</li>
-      </ul>
-    </section>
+    <h2 class="section-title">How that shows up</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Fair-margin mindset</h3>
+        <p>Small, clear margins × healthy volume = sustainable growth for everyone.</p>
+      </article>
+      <article class="card">
+        <h3>Transparent pricing</h3>
+        <p>No hidden add-ons. Partners see what they keep. Guests see what they pay.</p>
+      </article>
+      <article class="card">
+        <h3>Community first</h3>
+        <p>We prioritize locally owned stays and experiences that strengthen their communities.</p>
+      </article>
+    </div>
 
-    <!-- How that shows up (concise, aligned) -->
-    <section>
-      <h2>How that shows up</h2>
-      <div class="grid" role="list">
-        <article class="card" role="listitem">
-          <h3>Fair Margin Formula</h3>
-          <p>Small, clear margins × high volume = sustainable growth for everyone.</p>
-        </article>
-        <article class="card" role="listitem">
-          <h3>Transparent pricing</h3>
-          <p>No hidden add-ons. Partners see what they keep; guests see what they pay.</p>
-        </article>
-        <article class="card" role="listitem">
-          <h3>Community first</h3>
-          <p>We prioritize local stays and experiences that strengthen communities.</p>
-        </article>
-      </div>
-    </section>
-
-    <section>
-      <h2>Where we’re heading</h2>
-      <p>
-        In Year 1 we’re choosing trust over margin. Our goal is to build a customer base and a partner community that believes hospitality works best when everyone benefits.
-        See how in <a href="/our-strategy.html">Our Strategy</a>.
-      </p>
-    </section>
+    <p class="footnote">
+      Curious about the nuts and bolts—Year 1 vs. Year 2, fees, and how we’ll stay lean?
+      That lives in <a class="link" href="/our-strategy.html">Our Strategy</a>.
+    </p>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-strategy.html">Our Strategy</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a class="link" href="/">Home</a> ·
+    <a class="link" href="/our-strategy.html">Our Strategy</a> ·
+    <a class="link" href="/partners.html">For Partners</a> ·
+    <a class="link" href="/waitlist.html">Waitlist</a> ·
+    <a class="link" href="#">Privacy</a> · <a class="link" href="#">Terms</a>
   </footer>
 
   <script>
