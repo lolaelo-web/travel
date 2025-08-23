@@ -10,7 +10,7 @@
   <style>
     :root {
       --bg:#fff; --fg:#111; --muted:#777; --line:#eaeaea;
-      --radius:20px; --maxw:880px; --bubble:#ff6633; /* match logo “hello” */
+      --radius:20px; --maxw:880px; --bubble:#ff6633;
     }
 
     * { box-sizing: border-box; }
@@ -22,7 +22,7 @@
       display: flex; flex-direction: column; align-items: center;
     }
 
-    /* Background image layer */
+    /* Background image */
     .site-bg {
       position: fixed; inset: 0;
       background:
@@ -32,7 +32,7 @@
       z-index: -1;
     }
 
-    /* White content card */
+    /* White card */
     .paper {
       width: 100%;
       max-width: var(--maxw);
@@ -47,7 +47,6 @@
     header { margin-bottom: 10px; }
     .logo img { width: auto; max-width: 80vw; max-height: 240px; }
 
-    /* New tagline */
     h1 {
       font-size: clamp(30px, 4.8vw, 44px);
       line-height: 1.15;
@@ -55,12 +54,7 @@
       font-weight: 600;
     }
 
-    .divider {
-      border: none; border-top: 1px solid var(--line);
-      margin: 14px auto 10px; width: min(720px, 92%);
-    }
-
-    /* Speech-bubble navigation */
+    /* Bubble nav */
     .bubble-nav {
       display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
       margin: 16px 0 6px;
@@ -85,6 +79,38 @@
     .bubble-link:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.15); filter: brightness(0.98); }
     .bubble-link:active { transform: translateY(0); box-shadow: 0 3px 8px rgba(0,0,0,.12); }
 
+    /* Bullet list fix */
+    .value-list {
+      margin: 18px auto 10px;
+      padding: 0;
+      list-style: none;
+      text-align: left;   /* force left alignment */
+      width: min(720px, 92%);
+      color: #222;
+    }
+    .value-list li {
+      position: relative;
+      padding-left: 26px;
+      margin: 8px 0;
+      line-height: 1.35;
+      font-size: 15px;
+    }
+    .value-list li::before {
+      content: "•";
+      position: absolute;
+      left: 8px; top: 0;
+      font-size: 22px; line-height: 1; color: #ff7a45;
+    }
+
+    /* Smaller note */
+    .note {
+      color: var(--muted);
+      font-size: 11px; /* smaller than body text */
+      text-align: left;
+      width: min(720px, 92%);
+      margin: 6px auto 0;
+    }
+
     footer {
       width: 100%; text-align: center;
       padding: 14px 10px 22px; font-size: 13px; color: #444;
@@ -93,11 +119,6 @@
       margin-top: auto;
     }
     footer a { color: var(--fg); text-decoration: underline; }
-
-    @media (max-width: 480px) {
-      .bubble-link { font-size: 13px; padding: 9px 16px; }
-      .bubble-link::after { left: 18px; }
-    }
   </style>
 </head>
 <body>
@@ -106,29 +127,29 @@
   <div class="paper">
     <header>
       <a class="logo" href="#top" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo — Travel, but kinder">
+        <img src="/logo.png" alt="Lolaelo — Fair travel, built on trust.">
       </a>
     </header>
 
     <main role="main">
       <h1>Fair travel, built on trust.</h1>
     
-      <!-- Speech-bubble nav -->
       <nav class="bubble-nav" aria-label="Primary navigation">
         <a class="bubble-link" href="/our-story.html">Our Story</a>
         <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
         <a class="bubble-link" href="/partners.html">For Partners</a>
         <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
       </nav>
-        <ul class="value-list" aria-label="How Lolaelo works">
-      <li><strong>Year&nbsp;1:</strong> <em>no margin</em> — partners keep more, customers pay less.</li>
-      <li><strong>Year&nbsp;2:</strong> <em>reasonable margin</em> — partners still keep more, customers still pay less.</li>
-      <li><strong>Service quality:</strong> human-backed support, powered by smart AI to keep things fast and fair.</li>
-    </ul>
-    <div class="note">*“Pay less” refers to offering the most cost-effective price we can while keeping service reliable.</div>
-   </div>
-</main>
- 
+
+      <ul class="value-list" aria-label="How Lolaelo works">
+        <li><strong>Year&nbsp;1:</strong> <em>no margin</em> — partners keep more, customers pay less.</li>
+        <li><strong>Year&nbsp;2:</strong> <em>reasonable margin</em> — partners still keep more, customers still pay less.</li>
+        <li><strong>Service quality:</strong> human-backed support, powered by smart AI to keep things fast and fair.</li>
+      </ul>
+
+      <div class="note">* “Pay less” relevant to our competitors</div>
+    </main>
+  </div>
 
   <footer>
     © <span id="year"></span> Lolaelo · <a href="#">Privacy</a> · <a href="#">Terms</a>
