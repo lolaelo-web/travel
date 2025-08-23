@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Our Story — Lolaelo</title>
+  <title>Our Strategy — Lolaelo</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
-      --radius:12px; --maxw:880px; --bubble:#ff6633; /* matches logo “hello” */
+      --radius:12px; --maxw:880px; --bubble:#ff6633;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
@@ -22,26 +22,23 @@
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
         center / cover no-repeat fixed;
     }
-
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
       box-shadow:0 12px 40px rgba(0,0,0,.08);
-      padding:22px 20px 28px; margin:18px 20px;
+      padding:20px; margin:18px 20px 16px;
     }
-
-    header{ text-align:center; margin-bottom:4px; }
+    header{ text-align:center; }
     .logo img{ width:auto; max-width:80vw; max-height:160px; }
 
-    /* orange speech-bubble nav */
-    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:8px 0 10px; }
+    /* speech-bubble nav (same as index/partners/waitlist) */
+    .bubble-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin:10px 0 6px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff;
       font-weight:600; font-size:14px; line-height:1.2;
       padding:9px 16px; border-radius:22px; text-decoration:none;
       position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
-    /* seamless tail (no white gap): rotated square */
     .bubble-link::after{
       content:""; position:absolute; bottom:-6px; left:18px;
       width:12px; height:12px; background:var(--bubble);
@@ -49,103 +46,119 @@
     }
     .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
 
-    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; text-align:center; margin:8px 0 4px; }
-    .intro{
-      text-align:center; color:var(--muted);
-      max-width:62ch; margin:0 auto 14px; font-size:.9375rem;
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.15; text-align:center; margin:10px 0 4px; }
+    .tag{
+      display:inline-block; font-size:12px; font-weight:600; color:#fff; background:#111;
+      padding:4px 8px; border-radius:999px; margin-left:8px;
     }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; }
+    hr{ border:none; border-top:1px solid var(--line); margin:14px 0 16px; }
 
-    .section-title{
-      margin:14px 0 8px; font-size:1rem; font-weight:700;
-      border-top:1px solid var(--line); padding-top:12px;
+    section{ margin:10px 0 6px; }
+    h2{ font-size:18px; margin:0 0 8px; }
+    p{ margin:0 0 10px; color:#222; }
+    ul{ margin:6px 0 10px 18px; }
+    li{ margin:6px 0; }
+
+    .card-grid{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:10px 0 6px;
     }
-
-    ul.tight{ margin:0; padding-left:18px; }
-    ul.tight li{ margin:6px 0; font-size:.9375rem; }
-
-    /* three-up cards */
-    .grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:10px; }
     .card{
       border:1px solid var(--line); border-radius:12px; padding:14px;
-      box-shadow:0 1px 6px rgba(0,0,0,.04); background:#fff;
+      background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.04);
     }
-    .card h3{ margin:0 0 6px; font-size:.95rem; }
-    .card p{ margin:0; font-size:.9rem; color:var(--muted); }
-
-    .footnote{ color:var(--muted); font-size:.875rem; margin-top:14px; }
-    .link{ color:var(--fg); text-decoration:underline; }
+    .card h3{ margin:0 0 6px; font-size:15px; }
+    .card p{ margin:0; font-size:14px; color:#555; }
 
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
       font-size:13px; color:#444; background:rgba(255,255,255,.72);
-      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
+      border-top:1px solid rgba(0,0,0,.06); backdrop-filter:blur(3px);
       margin-top:auto;
     }
+    footer a{ color:var(--fg); text-decoration:underline; }
 
-    @media (max-width:720px){ .grid{ grid-template-columns:1fr; } }
+    @media (max-width:720px){ .card-grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
   <main class="paper" role="main">
     <header>
-      <a class="logo" href="/" aria-label="Lolaelo home">
-        <img src="/logo.png" alt="Lolaelo logo">
-      </a>
+      <a class="logo" href="/"><img src="/logo.png" alt="Lolaelo"></a>
     </header>
 
-    <nav class="bubble-nav" aria-label="Site">
+    <nav class="bubble-nav" aria-label="Primary navigation">
       <a class="bubble-link" href="/">Home</a>
-      <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
+      <a class="bubble-link" href="/our-story.html">Our Story</a>
       <a class="bubble-link" href="/partners.html">For Partners</a>
       <a class="bubble-link" href="/waitlist.html">Waitlist</a>
     </nav>
 
-    <h1>Why Lolaelo exists</h1>
-    <p class="intro">
-      Lolaelo began with a simple idea: be a fair bridge between travelers and local partners.
-      Partners should keep more of what they earn. Guests should pay a fair price—without tricks.
-      We choose trust, clarity, and service you can feel.
-    </p>
+    <h1>Our Strategy <span class="tag">Year 1: 0% margin</span></h1>
+    <p class="sub">Why you’ll often see the lowest price on Lolaelo, how we’ll run lean in Year 1, and how this scales without getting greedy.</p>
+    <hr>
 
-    <h2 class="section-title">Our philosophy</h2>
-    <ul class="tight">
-      <li><strong>Fair margin policy.</strong> More of each booking stays with our partners and vendors. (Year 1 - 100% of booking cost goes to our partners)</li>
-      <li><strong>Fair price for guests.</strong> The most cost-effective price on the market, with the peace of mind that your hosts wins too.</li>
-      <li><strong>Lean & human.</strong> We run light, use smart AI, and back it with real people.</li>
-    </ul>
+    <section>
+      <h2>1) Why are prices so low?</h2>
+      <p><strong>Year 1: we take 0% platform margin.</strong> 100% of the payment goes to the partner and payment processing. We absorb operating costs.</p>
+      <ul>
+        <li><strong>Goal:</strong> bookings, not profit. We’re intentionally running at a planned loss to earn trust and prove the model.</li>
+        <li><strong>What we gain:</strong> real demand, real feedback, and clean data to improve pricing, quality, and support.</li>
+      </ul>
+    </section>
 
-    <h2 class="section-title">How that shows up</h2>
-    <div class="grid">
+    <section>
+      <h2>2) What’s the bigger plan?</h2>
+      <ul>
+        <li><strong>Earn trust:</strong> deliver the most cost-effective price with reliable service.</li>
+        <li><strong>Build both sides:</strong> grow travelers who pay less and partners who keep more.</li>
+        <li><strong>Use the data:</strong> bookings + NPS + ops metrics strengthen our unit-economics story for angel investors.</li>
+      </ul>
+      <p>We expect a loss in Year 1 and will work hard to minimize it while improving product and operations.</p>
+    </section>
+
+    <section>
+      <h2>3) How does this become sustainable?</h2>
+      <ul>
+        <li><strong>Year 2: modest, transparent fee.</strong> A small published platform fee keeps total price competitive and clear.</li>
+        <li><strong>Scale fairly:</strong> as bookings grow, we stay disciplined on costs so partners continue to win and guests still pay less.</li>
+      </ul>
+    </section>
+
+    <div class="card-grid" aria-label="What happens next">
       <article class="card">
-        <h3>Fair-margin mindset</h3>
-        <p>Small, clear margins × healthy volume = sustainable growth for everyone.</p>
+        <h3>Year 2: modest fee</h3>
+        <p>Introduce a clear, published platform fee. Still competitive, still fair.</p>
       </article>
       <article class="card">
-        <h3>Transparent pricing</h3>
-        <p>No hidden add-ons. Partners see what they keep. Guests see what they pay.</p>
+        <h3>Scale with discipline</h3>
+        <p>Automate the boring parts, keep overhead light, and protect partner earnings.</p>
       </article>
       <article class="card">
-        <h3>Community first</h3>
-        <p>We prioritize locally owned stays and experiences that strengthen their communities.</p>
+        <h3>Proudly sustainable</h3>
+        <p>Fair to partners, fair to guests, healthy for the team. No gimmicks.</p>
       </article>
     </div>
 
-    <p class="footnote">
-      Curious about the nuts and bolts—Year 1 vs. Year 2, fees, and how we’ll stay lean?
-      That lives in <a class="link" href="/our-strategy.html">Our Strategy</a>.
-    </p>
+    <section>
+      <h2>4) How we’ll be accountable</h2>
+      <ul>
+        <li>Publish any platform fee in plain language at checkout.</li>
+        <li>No surprise add-ons—ever.</li>
+        <li>Share quarterly notes on improvements, uptime, and support.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Be part of it</h2>
+      <p>Partners: <a href="mailto:partners@lolaelo.com">partners@lolaelo.com</a>. Travelers: join the waitlist from the homepage. Let’s build hospitality that works for everyone.</p>
+    </section>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a class="link" href="/">Home</a> ·
-    <a class="link" href="/our-strategy.html">Our Strategy</a> ·
-    <a class="link" href="/partners.html">For Partners</a> ·
-    <a class="link" href="/waitlist.html">Waitlist</a> ·
-    <a class="link" href="#">Privacy</a> · <a class="link" href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/partners.html">For Partners</a> · <a href="/waitlist.html">Waitlist</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
