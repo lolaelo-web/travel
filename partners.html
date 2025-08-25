@@ -186,7 +186,7 @@
 
       try {
         await apiPost("/partners/applications", { companyName, contactName, email, location, phone, notes });
-        showFlash("ok", "Thanks for reaching out — we’ll follow up shortly.");
+        showFlash("ok", "Appreciate it — we’ll connect with you directly.");
         form.reset();
       } catch (err) {
         const msg = (err && err.message) ? err.message : "Unexpected error";
