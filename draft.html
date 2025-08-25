@@ -123,7 +123,7 @@
         </div>
 
         <div class="full">
-          <label for="phone">Phone <span class="help">(optional)</span></label>
+          <label for="phone">Phone <span class="help">(optional — used only for WhatsApp/Viber updates, never marketing calls)</span></label>
           <input id="phone" name="phone" type="tel" placeholder="5551234567" />
         </div>
 
@@ -176,7 +176,7 @@
         // Only email + phone are stored by the API today
         const data = await apiPost("/waitlist", { email, phone: phone || undefined });
 
-        showFlash("ok", "You're on the waitlist. Thank you!");
+        showFlash("ok", "Thanks for joining — we’ll reach out only when we have REAL updates or invites ready - no spam - except for breakfast.");
         form.reset();
       } catch (err) {
         const msg = (err && err.message) ? err.message : "Unexpected error";
