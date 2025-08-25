@@ -1,15 +1,16 @@
-m<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Our Strategy — Lolaelo</title>
+  <title>Join the Lolaelo Waitlist</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root{
       --bg:#fff; --fg:#111; --muted:#666; --line:#eaeaea;
-      --radius:12px; --maxw:880px; --bubble:#ff6633;
+      --radius:12px; --maxw:880px; --bubble:#ff6633; --input:#f8f8f8;
+      --ok:#166534; --okbg:#f0fdf4; --err:#991b1b; --errbg:#fef2f2;
     }
     *{ box-sizing:border-box; }
     html,body{ height:100%; margin:0; }
@@ -17,22 +18,24 @@ m<!DOCTYPE html>
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       color:var(--fg); min-height:100vh;
       display:flex; flex-direction:column; align-items:center;
+    }
+    .site-bg{
+      position:fixed; inset:0;
       background:
         linear-gradient(to bottom, rgba(255,255,255,.08), rgba(255,255,255,.08)),
         url("https://images.pexels.com/photos/1005417/pexels-photo-1005417.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=1600&w=2400")
-        center / cover no-repeat fixed;
+        center / cover no-repeat;
+      z-index:-1;
     }
     .paper{
       width:100%; max-width:var(--maxw);
       background:#fff; border-radius:16px;
       box-shadow:0 12px 40px rgba(0,0,0,.08);
-      padding:20px; margin:18px 20px 16px;
+      padding:20px 20px 28px; margin:18px 20px 16px;
     }
-    header{ text-align:center; }
-    .logo img{ width:auto; max-width:80vw; max-height:160px; }
-
-    /* speech-bubble nav (same as index/partners/waitlist) */
-    .bubble-nav{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin:10px 0 6px; }
+    header{ text-align:center; margin-bottom:6px; }
+    .logo img{ width:auto; max-width:80vw; max-height:180px; }
+    .bubble-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:12px; margin:6px 0 8px; }
     .bubble-link{
       display:inline-block; background:var(--bubble); color:#fff;
       font-weight:600; font-size:14px; line-height:1.2;
@@ -40,130 +43,156 @@ m<!DOCTYPE html>
       position:relative; transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
     }
     .bubble-link::after{
-      content:""; position:absolute; bottom:-6px; left:18px;
-      width:12px; height:12px; background:var(--bubble);
-      transform:rotate(45deg); border-radius:2px;
+      content:""; position:absolute; bottom:-8px; left:18px;
+      border-width:8px 8px 0; border-style:solid;
+      border-color:var(--bubble) transparent transparent transparent;
     }
     .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
-
-    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.15; text-align:center; margin:10px 0 4px; }
-    .tag{
-      display:inline-block; font-size:12px; font-weight:600; color:#fff; background:#111;
-      padding:4px 8px; border-radius:999px; margin-left:8px;
+    h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:10px 0 6px; text-align:center; font-weight:600; }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
+    hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
+    form{ width:100%; max-width:720px; margin:0 auto; }
+    .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .full{ grid-column:1 / -1; }
+    label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
+    input, textarea, select{
+      width:100%; border:1px solid var(--line); background:var(--input);
+      border-radius:10px; padding:12px 12px; font-size:15px; color:#222;
+      outline:none; transition:border-color .15s ease, box-shadow .15s ease;
+      font-family: inherit;
     }
-    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; }
-    hr{ border:none; border-top:1px solid var(--line); margin:14px 0 16px; }
-
-    section{ margin:10px 0 6px; }
-    h2{ font-size:18px; margin:0 0 8px; }
-    p{ margin:0 0 10px; color:#222; }
-    ul{ margin:6px 0 10px 18px; }
-    li{ margin:6px 0; }
-
-    .card-grid{
-      display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:10px 0 6px;
-    }
-    .card{
-      border:1px solid var(--line); border-radius:12px; padding:14px;
-      background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.04);
-    }
-    .card h3{ margin:0 0 6px; font-size:15px; }
-    .card p{ margin:0; font-size:14px; color:#555; }
-
+    input:focus, textarea:focus, select:focus{ border-color:#111; box-shadow:0 0 0 2px #11111114; }
+    .help{ color:var(--muted); font-size:.85rem; }
+    .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
+    .btn{ appearance:none; border:1px solid #111; background:#111; color:#fff;
+      border-radius:10px; padding:12px 16px; font-weight:600; cursor:pointer; }
+    .btn.secondary{ background:#fff; color:#111; }
+    .flash{ margin-top:12px; padding:10px 12px; border-radius:10px; font-size:.95rem; }
+    .ok{ background:var(--okbg); color:var(--ok); }
+    .err{ background:var(--errbg); color:var(--err); }
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
-      font-size:13px; color:#444; background:rgba(255,255,255,.72);
-      border-top:1px solid rgba(0,0,0,.06); backdrop-filter:blur(3px);
+      font-size:13px; color:var(--muted); background:rgba(255,255,255,.72);
+      backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
       margin-top:auto;
     }
     footer a{ color:var(--fg); text-decoration:underline; }
-
-    @media (max-width:720px){ .card-grid{ grid-template-columns:1fr; } }
+    @media (max-width:700px){ .grid{ grid-template-columns:1fr; } }
   </style>
 </head>
 <body>
+  <div class="site-bg" aria-hidden="true"></div>
+
   <main class="paper" role="main">
     <header>
-      <a class="logo" href="/"><img src="/logo.png" alt="Lolaelo"></a>
+      <a class="logo" href="/" aria-label="Lolaelo home"><img src="/logo.png" alt="Lolaelo — fair stays, fair pay"></a>
     </header>
 
     <nav class="bubble-nav" aria-label="Primary navigation">
       <a class="bubble-link" href="/">Home</a>
       <a class="bubble-link" href="/our-story.html">Our Story</a>
+      <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
       <a class="bubble-link" href="/partners.html">For Partners</a>
-      <a class="bubble-link" href="/waitlist.html">Waitlist</a>
     </nav>
 
-    <h1>Our Strategy <span class="tag">Year 1: 0% margin</span></h1>
-    <p class="sub">Why you’ll often see the lowest price on Lolaelo, how we’ll run lean in Year 1, and how this scales without getting greedy.</p>
-    <hr>
+    <h1>Join the Lolaelo Waitlist</h1>
+    <p class="sub">Get early access and real updates—no spam. We’ll reach out when invites open or we have meaningful news.</p>
 
-    <section>
-      <h2>1) Why are prices so low?</h2>
-      <p><strong>Year 1: we take 0% platform margin.</strong> 100% of the payment goes to the partner and payment processing. We absorb operating costs.</p>
-      <ul>
-        <li><strong>Goal:</strong> bookings, not profit. We’re intentionally running at a planned loss to earn trust and prove the model.</li>
-        <li><strong>What we gain:</strong> real demand, real feedback, and clean data to improve pricing, quality, and support.</li>
-      </ul>
-    </section>
+    <hr class="divider" />
 
-    <section>
-      <h2>2) What’s the long term vision?</h2>
-      <ul>
-        <li><strong>Earn trust:</strong> deliver the most cost-effective price with reliable service.</li>
-        <li><strong>Build both sides:</strong> grow travelers who pay less and partners who keep more.</li>
-        <li><strong>Use the data:</strong> bookings + NPS + ops metrics strengthen our unit-economics story for investors.</li>
-      </ul>
-      <p><em>We expect a loss in Year 1 and will work hard to minimize it while improving product and operations.</em></p>
-    </section>
+    <!-- Your API-powered waitlist form -->
+    <form id="waitlistForm" novalidate>
+      <!-- Honeypot to deter bots -->
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
-    <section>
-      <h2>3) How does this become sustainable?</h2>
-      <ul>
-        <li><strong>Year 2: modest, transparent fee.</strong> A small published platform fee keeps total price competitive and clear.</li>
-        <li><strong>Scale fairly:</strong> as bookings grow, we stay disciplined on costs so partners continue to win and guests still pay less.</li>
-        <li><strong>Volume drives profit:</strong> by Year 2, higher booking numbers mean even a low margin yields meaningful returns.</li>
-      </ul>
-    </section>
+      <div class="grid">
+        <div>
+          <label for="first">First name</label>
+          <input id="first" name="first_name" type="text" placeholder="e.g., Francisco" />
+        </div>
 
+        <div>
+          <label for="last">Last name</label>
+          <input id="last" name="last_name" type="text" placeholder="e.g., Dagohoy" />
+        </div>
 
-    <div class="card-grid" aria-label="What happens next">
-      <article class="card">
-        <h3>Year 2: modest fee</h3>
-        <p>Introduce a clear, published platform fee. Still competitive, still fair.</p>
-      </article>
-      <article class="card">
-        <h3>Scale with discipline</h3>
-        <p>Automate the boring parts, keep overhead light, and protect partner earnings.</p>
-      </article>
-      <article class="card">
-        <h3>Proudly sustainable</h3>
-        <p>Fair to partners, fair to guests, healthy for the team. No gimmicks.</p>
-      </article>
-    </div>
+        <div class="full">
+          <label for="email">Email <span class="help">(required)</span></label>
+          <input id="email" name="email" type="email" required placeholder="dagohoy@email.com" />
+          <div class="help">We’ll only email when there’s real news or an invite for you.</div>
+        </div>
 
-    <section>
-      <h2>4) How we’ll be accountable</h2>
-      <ul>
-        <li>Publish any platform fee in plain language at checkout.</li>
-        <li>No surprise add-ons—ever.</li>
-        <li>Share quarterly notes on improvements, uptime, and support.</li>
-      </ul>
-    </section>
+        <div class="full">
+          <label for="phone">Phone <span class="help">(optional)</span></label>
+          <input id="phone" name="phone" type="tel" placeholder="5551234567" />
+        </div>
 
-    <section>
-  <h2>Be part of it</h2>
-  <p>
-    Partners: join us through the <a href="/partners.html">For Partners</a> page. <br>
-    Travelers: get early access on the <a href="/waitlist.html">Waitlist</a>.
-  </p>
-</section>
+        <div class="full">
+          <label for="notes">Anything we should know? <span class="help">(optional; not stored yet)</span></label>
+          <textarea id="notes" name="notes" placeholder="Tell us what would make Lolaelo most useful to you."></textarea>
+          <div class="help">For now we only store email + phone. If you want us to save notes too, we can extend the API later.</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="submitBtn" class="btn" type="submit">Join the waitlist</button>
+        <a class="btn secondary" href="/">Back to Home</a>
+      </div>
+      <div id="flash" class="flash" style="display:none"></div>
+    </form>
   </main>
 
   <footer>
-    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> · <a href="/partners.html">For Partners</a> · <a href="/waitlist.html">Waitlist</a> · <a href="#">Privacy</a> · <a href="#">Terms</a>
+    © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> ·
+    <a href="/our-strategy.html">Our Strategy</a> · <a href="/partners.html">For Partners</a> ·
+    <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="assets/lolaelo-api.js"></script>
+  <script>
+    const form = document.getElementById("waitlistForm");
+    const flash = document.getElementById("flash");
+    const submitBtn = document.getElementById("submitBtn");
+
+    function showFlash(type, text) {
+      flash.className = "flash " + (type === "ok" ? "ok" : "err");
+      flash.textContent = text;
+      flash.style.display = "block";
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+
+      if (!email) { showFlash("err", "Please enter a valid email."); return; }
+
+      submitBtn.disabled = true;
+      showFlash("ok", "Submitting…");
+
+      try {
+        // Only email + phone are stored by the API today
+        const data = await apiPost("/waitlist", { email, phone: phone || undefined });
+
+        showFlash("ok", "You're on the waitlist. Thank you!");
+        form.reset();
+      } catch (err) {
+        const msg = (err && err.message) ? err.message : "Unexpected error";
+        if (msg.includes("409")) {
+          showFlash("err", "This email is already on the waitlist.");
+        } else if (msg.includes("429")) {
+          showFlash("err", "Too many requests. Please try again in a minute.");
+        } else if (msg.toLowerCase().includes("invalid email")) {
+          showFlash("err", "Please enter a valid email.");
+        } else {
+          showFlash("err", "Error: " + msg);
+        }
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
