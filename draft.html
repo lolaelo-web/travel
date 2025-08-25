@@ -55,13 +55,13 @@
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .full{ grid-column:1 / -1; }
     label{ display:block; font-weight:600; font-size:.9375rem; margin:0 0 6px; }
-    input, textarea, select{
+    input, textarea{
       width:100%; border:1px solid var(--line); background:var(--input);
       border-radius:10px; padding:12px 12px; font-size:15px; color:#222;
       outline:none; transition:border-color .15s ease, box-shadow .15s ease;
       font-family: inherit;
     }
-    input:focus, textarea:focus, select:focus{ border-color:#111; box-shadow:0 0 0 2px #11111114; }
+    input:focus, textarea:focus{ border-color:#111; box-shadow:0 0 0 2px #11111114; }
     textarea{ min-height:120px; resize:vertical; }
     .help{ color:var(--muted); font-size:.85rem; }
     .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
@@ -112,20 +112,25 @@
         </div>
 
         <div>
-          <label for="contact">Your Name <span class="help">(required)</span></label>
+          <label for="contact">Contact Name <span class="help">(required)</span></label>
           <input id="contact" name="contact" required placeholder="e.g., Ana Santos" />
         </div>
 
         <div>
           <label for="email">Email <span class="help">(required)</span></label>
-          <input id="email" name="email" type="email" required placeholder="you@hotel.com" />
+          <input id="email" name="email" type="email" required placeholder="you@company.com" />
+        </div>
+
+        <div class="full">
+          <label for="location">Location <span class="help">(required)</span></label>
+          <input id="location" name="location" required placeholder="e.g., General Luna, Philippines" />
         </div>
 
         <div class="full">
           <label for="phone">
-            Phone <span class="help">(required)</span>
+            Phone <span class="help">(required — used for WhatsApp/Viber updates, never marketing calls)</span>
           </label>
-          <input id="phone" name="phone" type="tel" placeholder="5551234567" />
+          <input id="phone" name="phone" type="tel" required placeholder="5551234567" />
         </div>
 
         <div class="full">
@@ -167,11 +172,12 @@
       const companyName = document.getElementById("company").value.trim();
       const contactName = document.getElementById("contact").value.trim();
       const email       = document.getElementById("email").value.trim();
-      const phone       = document.getElementById("phone").value.trim() || undefined;
+      const location    = document.getElementById("location").value.trim();
+      const phone       = document.getElementById("phone").value.trim();
       const notes       = document.getElementById("notes").value.trim() || undefined;
 
-      if (!companyName || !contactName || !email) {
-        showFlash("err", "Please fill in company, your name, and email.");
+      if (!companyName || !contactName || !email || !location || !phone) {
+        showFlash("err", "Please fill in all required fields.");
         return;
       }
 
@@ -179,7 +185,7 @@
       showFlash("ok", "Sending…");
 
       try {
-        await apiPost("/partners/applications", { companyName, contactName, email, phone, notes });
+        await apiPost("/partners/applications", { companyName, contactName, email, location, phone, notes });
         showFlash("ok", "Thanks for reaching out — we’ll follow up shortly.");
         form.reset();
       } catch (err) {
