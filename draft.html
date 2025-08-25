@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Join the Lolaelo Waitlist</title>
+  <title>Lolaelo — For Partners</title>
   <link rel="icon" href="/logo.png" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -49,7 +49,7 @@
     }
     .bubble-link:hover{ transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.15); filter:brightness(.98); }
     h1{ font-size:clamp(28px,4.5vw,42px); line-height:1.2; margin:10px 0 6px; text-align:center; font-weight:600; }
-    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:64ch; font-size:.9375rem; }
+    .sub{ text-align:center; color:var(--muted); margin:0 auto 14px; max-width:66ch; font-size:.9375rem; }
     hr.divider{ border:none; border-top:1px solid var(--line); margin:16px 0 18px; }
     form{ width:100%; max-width:720px; margin:0 auto; }
     .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
@@ -62,6 +62,7 @@
       font-family: inherit;
     }
     input:focus, textarea:focus, select:focus{ border-color:#111; box-shadow:0 0 0 2px #11111114; }
+    textarea{ min-height:120px; resize:vertical; }
     .help{ color:var(--muted); font-size:.85rem; }
     .actions{ display:flex; gap:10px; align-items:center; margin-top:10px; }
     .btn{ appearance:none; border:1px solid #111; background:#111; color:#fff;
@@ -72,7 +73,7 @@
     .err{ background:var(--errbg); color:var(--err); }
     footer{
       width:100%; text-align:center; padding:14px 10px 22px;
-      font-size:13px; color:var(--muted); background:rgba(255,255,255,.72);
+      font-size:13px; color:#444; background:rgba(255,255,255,.72);
       backdrop-filter:blur(3px); border-top:1px solid rgba(0,0,0,.06);
       margin-top:auto;
     }
@@ -92,50 +93,49 @@
       <a class="bubble-link" href="/">Home</a>
       <a class="bubble-link" href="/our-story.html">Our Story</a>
       <a class="bubble-link" href="/our-strategy.html">Our Strategy</a>
-      <a class="bubble-link" href="/partners.html">For Partners</a>
+      <a class="bubble-link" href="/waitlist.html">Join the Waitlist</a>
     </nav>
 
-    <h1>Join the Lolaelo Waitlist</h1>
-    <p class="sub">Get early access and real updates—no spam. We’ll reach out when invites open or we have meaningful news.</p>
+    <h1>For Partners</h1>
+    <p class="sub">Tell us a bit about your property. We’ll follow up with next steps. No spam, ever.</p>
 
     <hr class="divider" />
 
-    <!-- Your API-powered waitlist form -->
-    <form id="waitlistForm" novalidate>
-      <!-- Honeypot to deter bots -->
+    <!-- API-powered Partner Application -->
+    <form id="partnerForm" novalidate>
       <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
 
       <div class="grid">
-        <div>
-          <label for="first">First name</label>
-          <input id="first" name="first_name" type="text" placeholder="e.g., Francisco" />
-        </div>
-
-        <div>
-          <label for="last">Last name</label>
-          <input id="last" name="last_name" type="text" placeholder="e.g., Dagohoy" />
-        </div>
-
         <div class="full">
+          <label for="company">Company / Property Name <span class="help">(required)</span></label>
+          <input id="company" name="company" required placeholder="e.g., Cloud 9 Villas" />
+        </div>
+
+        <div>
+          <label for="contact">Your Name <span class="help">(required)</span></label>
+          <input id="contact" name="contact" required placeholder="e.g., Ana Santos" />
+        </div>
+
+        <div>
           <label for="email">Email <span class="help">(required)</span></label>
-          <input id="email" name="email" type="email" required placeholder="dagohoy@email.com" />
-          <div class="help">We’ll only email when there’s real news or an invite for you.</div>
+          <input id="email" name="email" type="email" required placeholder="you@company.com" />
         </div>
 
         <div class="full">
-          <label for="phone">Phone <span class="help">(optional — used only for WhatsApp/Viber updates, never marketing calls)</span></label>
+          <label for="phone">
+            Phone <span class="help">(optional — used only for WhatsApp/Viber updates, never marketing calls)</span>
+          </label>
           <input id="phone" name="phone" type="tel" placeholder="5551234567" />
         </div>
 
         <div class="full">
-          <label for="notes">Anything we should know? <span class="help">(optional; not stored yet)</span></label>
-          <textarea id="notes" name="notes" placeholder="Tell us what would make Lolaelo most useful to you."></textarea>
-          <div class="help">For now we only store email + phone. If you want us to save notes too, we can extend the API later.</div>
+          <label for="notes">Notes (optional)</label>
+          <textarea id="notes" name="notes" placeholder="Tell us about your property, location, units, or anything relevant."></textarea>
         </div>
       </div>
 
       <div class="actions">
-        <button id="submitBtn" class="btn" type="submit">Join the waitlist</button>
+        <button id="submitBtn" class="btn" type="submit">Send</button>
         <a class="btn secondary" href="/">Back to Home</a>
       </div>
       <div id="flash" class="flash" style="display:none"></div>
@@ -144,14 +144,14 @@
 
   <footer>
     © <span id="year"></span> Lolaelo · <a href="/">Home</a> · <a href="/our-story.html">Our Story</a> ·
-    <a href="/our-strategy.html">Our Strategy</a> · <a href="/partners.html">For Partners</a> ·
+    <a href="/our-strategy.html">Our Strategy</a> · <a href="/waitlist.html">Join the Waitlist</a> ·
     <a href="#">Privacy</a> · <a href="#">Terms</a>
   </footer>
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="assets/lolaelo-api.js"></script>
   <script>
-    const form = document.getElementById("waitlistForm");
+    const form = document.getElementById("partnerForm");
     const flash = document.getElementById("flash");
     const submitBtn = document.getElementById("submitBtn");
 
@@ -164,28 +164,28 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const email = document.getElementById("email").value.trim();
-      const phone = document.getElementById("phone").value.trim();
+      const companyName = document.getElementById("company").value.trim();
+      const contactName = document.getElementById("contact").value.trim();
+      const email       = document.getElementById("email").value.trim();
+      const phone       = document.getElementById("phone").value.trim() || undefined;
+      const notes       = document.getElementById("notes").value.trim() || undefined;
 
-      if (!email) { showFlash("err", "Please enter a valid email."); return; }
+      if (!companyName || !contactName || !email) {
+        showFlash("err", "Please fill in company, your name, and email.");
+        return;
+      }
 
       submitBtn.disabled = true;
-      showFlash("ok", "Submitting…");
+      showFlash("ok", "Sending…");
 
       try {
-        // Only email + phone are stored by the API today
-        const data = await apiPost("/waitlist", { email, phone: phone || undefined });
-
-        showFlash("ok", "Thanks for joining — we’ll reach out only when we have REAL updates or invites ready - no spam - except for breakfast.");
+        await apiPost("/partners/applications", { companyName, contactName, email, phone, notes });
+        showFlash("ok", "Thanks for reaching out — we’ll follow up shortly.");
         form.reset();
       } catch (err) {
         const msg = (err && err.message) ? err.message : "Unexpected error";
-        if (msg.includes("409")) {
-          showFlash("err", "This email is already on the waitlist.");
-        } else if (msg.includes("429")) {
-          showFlash("err", "Too many requests. Please try again in a minute.");
-        } else if (msg.toLowerCase().includes("invalid email")) {
-          showFlash("err", "Please enter a valid email.");
+        if (msg.includes("429")) {
+          showFlash("err", "Too many submissions. Please try again in a minute.");
         } else {
           showFlash("err", "Error: " + msg);
         }
