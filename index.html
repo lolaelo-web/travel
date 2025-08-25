@@ -200,5 +200,22 @@
     });
   </script>
   <script src="assets/lolaelo-api.js"></script>
+  <script>
+// Simple test: show API health status on homepage
+apiGet("/health")
+  .then(d => {
+    const el = document.createElement("div");
+    el.style = "margin-top:20px; padding:10px; background:#f0fdf4; color:#166534; font-family:sans-serif; font-size:14px;";
+    el.textContent = "✅ Lolaelo API is live. Status: " + JSON.stringify(d);
+    document.body.appendChild(el);
+  })
+  .catch(err => {
+    const el = document.createElement("div");
+    el.style = "margin-top:20px; padding:10px; background:#fef2f2; color:#991b1b; font-family:sans-serif; font-size:14px;";
+    el.textContent = "❌ API check failed: " + err.message;
+    document.body.appendChild(el);
+  });
+</script>
+
 </body>
 </html>
