@@ -18,7 +18,7 @@
       border-radius:16px; padding:24px 22px; box-shadow:0 8px 40px rgba(0,0,0,.45);
     }
     h1{ margin:0 0 8px; font-size:22px; }
-    p{ margin:0 0 16px; color:var(--muted); }
+    p{ margin:0 0 12px; color:var(--muted); }
     label{ display:block; font-size:13px; color:#cfe0ff; margin:14px 0 6px; }
     input{
       width:100%; padding:12px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.08);
@@ -26,74 +26,65 @@
     }
     input:focus{ border-color:#2e7bff; box-shadow:0 0 0 3px rgba(46,123,255,.20); }
     button{
-      margin-top:16px; width:100%; padding:12px; border-radius:999px; border:1px solid var(--accent);
+      margin-top:14px; width:100%; padding:12px; border-radius:999px; border:1px solid var(--accent);
       background:var(--accent); color:white; font-weight:700; cursor:pointer;
     }
     button.secondary{
       background:transparent; border-color:#2e7bff; color:#d7e5ff; margin-top:10px;
     }
     .row{ display:flex; gap:10px; }
-    .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+    .hint{ font-size:12px; color:#a9bbde; margin-top:6px; }
+    .link{ margin-top:10px; font-size:13px; color:#ffd6c8; }
+    .link a{ color:#ffb59f; text-decoration:underline; }
     .ok{ color:#67e28f; font-weight:600; }
     .err{ color:#ff9a88; font-weight:600; }
-    .small{ font-size:12px; color:#a9bbde; margin-top:14px; }
     .hidden{ display:none; }
     .topbar{ position:fixed; top:12px; left:0; right:0; display:flex; justify-content:center; pointer-events:none; }
     .toast{
       pointer-events:auto; min-width:280px; max-width:520px; background:#0e1830; border:1px solid rgba(255,255,255,.07);
       padding:10px 12px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.45); font-size:14px;
     }
-    .me{ margin-top:14px; padding:10px 12px; border:1px dashed rgba(255,255,255,.12); border-radius:12px; }
-    code{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
   </style>
 </head>
 <body>
   <div class="topbar"><div id="toast" class="toast hidden"></div></div>
 
   <div class="card" role="main">
-    <h1>Extranet sign in</h1>
-    <p>Use your work email. Enter password or a 6-digit code (if your API uses codes).</p>
+    <h1>Sign in to Lolaelo Extranet</h1>
+    <p>Enter your work email. We’ll text/email you a 6-digit code to sign in.</p>
 
-    <!-- Optional: wrap fields in a <form>, but not required -->
-    <label for="email">Email</label>
+    <label for="email">Work email</label>
     <input id="email" type="email" placeholder="you@hotel.com" autocomplete="email" />
 
-    <label for="password">Password (leave blank if using code)</label>
-    <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
-
     <div class="row">
-      <button id="btnLogin">Sign in</button>
+      <button id="btnRequest">Send code</button>
       <button id="btnClear" class="secondary" title="Forget saved session">Clear session</button>
     </div>
 
-    <div class="hint">If your flow is code-based, leave password empty and enter the code below.</div>
-    <label for="code">6-digit code (leave blank if using password)</label>
+    <label for="code">6-digit code</label>
     <input id="code" type="text" inputmode="numeric" placeholder="123456" maxlength="6" />
 
-    <div id="meBlock" class="hidden me">
-      <div><strong>Signed in:</strong> <span id="meEmail"></span></div>
-      <div class="small">Token stored in <code>localStorage</code>. You’ll be redirected automatically.</div>
-    </div>
+    <button id="btnVerify">Verify & Sign in</button>
 
-    <div id="msg" class="small"></div>
+    <div class="hint">For testing, the code is shown after you click “Send code”.</div>
+    <div class="link">New partner? <a href="#" id="linkSignup">Request access</a></div>
   </div>
 
   <script>
-    // -------- Config (must match partners_app.js) --------
+    // Config (must match partners_app.js)
     const API_BASE = "https://lolaelo-api.onrender.com";
     const SESSION_KEY = "lolaelo_session";
     const APP_PAGE = "partners_app.html";
 
-    // -------- DOM refs --------
+    // DOM
     const el = (id) => document.getElementById(id);
     const toastBox = el('toast');
     const emailInput = el('email');
-    const passwordInput = el('password');
     const codeInput = el('code');
-    const btnLogin = el('btnLogin');
+    const btnRequest = el('btnRequest');
+    const btnVerify = el('btnVerify');
     const btnClear = el('btnClear');
-    const meBlock = el('meBlock');
-    const meEmail = el('meEmail');
+    const linkSignup = el('linkSignup');
 
     function toast(html, ok=false){
       toastBox.innerHTML = html;
@@ -106,54 +97,63 @@
 
     btnClear.onclick = () => {
       localStorage.removeItem(SESSION_KEY);
-      meBlock.classList.add('hidden');
       toast('Session cleared.', true);
     };
 
-    btnLogin.onclick = async (evt) => {
-      evt.preventDefault();
+    // “Request access” just focuses email and triggers Send code
+    linkSignup.onclick = (e) => { e.preventDefault(); emailInput.focus(); };
+
+    // 1) Send code
+    btnRequest.onclick = async () => {
       const email = (emailInput.value || '').trim().toLowerCase();
-      const password = (passwordInput.value || '').trim();
-      const code = (codeInput.value || '').trim();
-      if (!email) { toast('Email is required.'); return; }
-
-      // Build payload accepted by /extranet/login
-      const payload = { email };
-      if (password) payload.password = password;
-      if (!password && code) payload.code = code;
-
+      if (!email) return toast('Enter your email.');
       try {
-        const res = await fetch(`${API_BASE}/extranet/login`, {
+        const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ email })
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.message || `Login failed (${res.status})`);
-        if (!data.token) throw new Error('No token returned by API');
-
-        // Save token and sanity-check session
-        localStorage.setItem(SESSION_KEY, data.token);
-        const s = await fetch(`${API_BASE}/extranet/session`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${data.token}` }
-        });
-        const me = await s.json().catch(() => ({}));
-        if (!s.ok) throw new Error(me.message || 'Session check failed');
-
-        meEmail.textContent = me.email || '(no email)';
-        meBlock.classList.remove('hidden');
-        toast('Signed in ✔️ Redirecting…', true);
-
-        // Go to protected app
-        location.href = APP_PAGE;
+        if (!res.ok) throw new Error(data.error || `Could not send code (${res.status})`);
+        toast(`Code sent to <b>${data.email}</b>. <span class="hint">Dev code: <b>${data.code}</b></span>`, true);
+        codeInput.focus();
       } catch (e) {
-        toast(e.message || 'Network or server error.');
+        toast(e.message || 'Network error.');
         console.error(e);
       }
     };
 
-    // Try restoring an existing session on load
+    // 2) Verify & sign in
+    btnVerify.onclick = async () => {
+      const email = (emailInput.value || '').trim().toLowerCase();
+      const code = (codeInput.value || '').trim();
+      if (!email || !code) return toast('Email and code required.');
+      try {
+        const res = await fetch(`${API_BASE}/extranet/login/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error || `Invalid or expired code (${res.status})`);
+        if (!data.token) throw new Error('No token returned by API');
+
+        localStorage.setItem(SESSION_KEY, data.token);
+        // Optional: session sanity check
+        const s = await fetch(`${API_BASE}/extranet/session`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${data.token}` }
+        });
+        if (!s.ok) throw new Error('Session check failed');
+        toast('Signed in. Redirecting…', true);
+        location.href = APP_PAGE;
+      } catch (e) {
+        toast(e.message || 'Network error.');
+        console.error(e);
+      }
+    };
+
+    // Try restoring existing session on load
     (async function restore(){
       const token = localStorage.getItem(SESSION_KEY);
       if (!token) return;
@@ -162,16 +162,8 @@
           method: 'GET',
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const me = await s.json().catch(() => ({}));
-        if (!s.ok) throw new Error(me.message || 'Session invalid');
-        meEmail.textContent = me.email || '(no email)';
-        meBlock.classList.remove('hidden');
-        toast('Session restored ✔️ Redirecting…', true);
-        location.href = APP_PAGE;
-      } catch {
-        localStorage.removeItem(SESSION_KEY);
-        meBlock.classList.add('hidden');
-      }
+        if (s.ok) location.href = APP_PAGE;
+      } catch {}
     })();
   </script>
 </body>
