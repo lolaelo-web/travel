@@ -4,6 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lolaelo Extranet — Sign in</title>
+
+  <!-- Prevent caching so Back can't revive stale pages -->
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root{ --bg:#0b1320; --card:#111a2b; --fg:#e8eefc; --muted:#9bb0d3; --accent:#ff6a3d; }
@@ -29,15 +35,11 @@
       margin-top:14px; width:100%; padding:12px; border-radius:999px; border:1px solid var(--accent);
       background:var(--accent); color:white; font-weight:700; cursor:pointer;
     }
-    button.secondary{
-      background:transparent; border-color:#2e7bff; color:#d7e5ff; margin-top:10px;
-    }
+    button.secondary{ background:transparent; border-color:#2e7bff; color:#d7e5ff; margin-top:10px; }
     .row{ display:flex; gap:10px; }
     .hint{ font-size:12px; color:#a9bbde; margin-top:6px; }
     .link{ margin-top:10px; font-size:13px; color:#ffd6c8; }
     .link a{ color:#ffb59f; text-decoration:underline; }
-    .ok{ color:#67e28f; font-weight:600; }
-    .err{ color:#ff9a88; font-weight:600; }
     .hidden{ display:none; }
     .topbar{ position:fixed; top:12px; left:0; right:0; display:flex; justify-content:center; pointer-events:none; }
     .toast{
@@ -51,7 +53,7 @@
 
   <div class="card" role="main">
     <h1>Sign in to Lolaelo Extranet</h1>
-    <p>Enter your work email. We’ll text/email you a 6-digit code to sign in.</p>
+    <p>Enter your work email. We’ll send a 6-digit code to sign in.</p>
 
     <label for="email">Work email</label>
     <input id="email" type="email" placeholder="you@hotel.com" autocomplete="email" />
@@ -71,99 +73,72 @@
   </div>
 
   <script>
-    // Config (must match partners_app.js)
     const API_BASE = "https://lolaelo-api.onrender.com";
     const SESSION_KEY = "lolaelo_session";
     const APP_PAGE = "partners_app.html";
 
-    // DOM
     const el = (id) => document.getElementById(id);
     const toastBox = el('toast');
     const emailInput = el('email');
     const codeInput = el('code');
-    const btnRequest = el('btnRequest');
-    const btnVerify = el('btnVerify');
-    const btnClear = el('btnClear');
-    const linkSignup = el('linkSignup');
 
     function toast(html, ok=false){
       toastBox.innerHTML = html;
       toastBox.classList.remove('hidden');
-      toastBox.style.borderColor = ok ? '#2bbb6f' : 'rgba(255,255,255,.07)';
-      toastBox.style.color = ok ? '#bff7d2' : '#e8eefc';
-      clearTimeout(window.__toast);
-      window.__toast = setTimeout(() => toastBox.classList.add('hidden'), 5000);
+      clearTimeout(window.__t); window.__t = setTimeout(()=>toastBox.classList.add('hidden'), 4000);
     }
 
-    btnClear.onclick = () => {
+    el('btnClear').onclick = () => {
       localStorage.removeItem(SESSION_KEY);
-      toast('Session cleared.', true);
+      toast('Session cleared', true);
     };
 
-    // “Request access” just focuses email and triggers Send code
-    linkSignup.onclick = (e) => { e.preventDefault(); emailInput.focus(); };
+    el('linkSignup').onclick = (e) => { e.preventDefault(); emailInput.focus(); };
 
-    // 1) Send code
-    btnRequest.onclick = async () => {
+    // Send code
+    el('btnRequest').onclick = async () => {
       const email = (emailInput.value || '').trim().toLowerCase();
       if (!email) return toast('Enter your email.');
-      try {
-        const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || `Could not send code (${res.status})`);
-        toast(`Code sent to <b>${data.email}</b>. <span class="hint">Dev code: <b>${data.code}</b></span>`, true);
-        codeInput.focus();
-      } catch (e) {
-        toast(e.message || 'Network error.');
-        console.error(e);
-      }
+      const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok) return toast(data.error || 'Could not send code');
+      toast(`Code sent to <b>${data.email}</b>. Dev code: <b>${data.code}</b>`, true);
+      codeInput.focus();
     };
 
-    // 2) Verify & sign in
-    btnVerify.onclick = async () => {
+    // Verify & sign in
+    el('btnVerify').onclick = async () => {
       const email = (emailInput.value || '').trim().toLowerCase();
-      const code = (codeInput.value || '').trim();
+      const code  = (codeInput.value  || '').trim();
       if (!email || !code) return toast('Email and code required.');
-      try {
-        const res = await fetch(`${API_BASE}/extranet/login/verify`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, code })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data.error || `Invalid or expired code (${res.status})`);
-        if (!data.token) throw new Error('No token returned by API');
+      const res = await fetch(`${API_BASE}/extranet/login/verify`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code })
+      });
+      const data = await res.json().catch(()=>({}));
+      if (!res.ok || !data.token) return toast(data.error || 'Invalid/expired code');
 
-        localStorage.setItem(SESSION_KEY, data.token);
-        // Optional: session sanity check
-        const s = await fetch(`${API_BASE}/extranet/session`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${data.token}` }
-        });
-        if (!s.ok) throw new Error('Session check failed');
-        toast('Signed in. Redirecting…', true);
-        location.href = APP_PAGE;
-      } catch (e) {
-        toast(e.message || 'Network error.');
-        console.error(e);
-      }
+      localStorage.setItem(SESSION_KEY, data.token);
+
+      // sanity check, then navigate WITHOUT adding history
+      const s = await fetch(`${API_BASE}/extranet/session`, {
+        headers: { 'Authorization': `Bearer ${data.token}`, 'x-partner-token': data.token }
+      }).catch(()=>null);
+      if (!s || !s.ok) return toast('Session check failed');
+      location.replace(APP_PAGE);   // << important (no history entry)
     };
 
-    // Try restoring existing session on load
+    // Restore existing session (also with replace)
     (async function restore(){
-      const token = localStorage.getItem(SESSION_KEY);
-      if (!token) return;
-      try {
-        const s = await fetch(`${API_BASE}/extranet/session`, {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (s.ok) location.href = APP_PAGE;
-      } catch {}
+      const t = localStorage.getItem(SESSION_KEY);
+      if (!t) return;
+      const s = await fetch(`${API_BASE}/extranet/session`, {
+        headers: { 'Authorization': `Bearer ${t}`, 'x-partner-token': t }
+      }).catch(()=>null);
+      if (s && s.ok) location.replace(APP_PAGE);
     })();
   </script>
 </body>
