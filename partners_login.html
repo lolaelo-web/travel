@@ -68,7 +68,7 @@
 
     <button id="btnVerify">Verify & Sign in</button>
 
-    <div class="hint">For testing, the code is shown after you click “Send code”.</div>
+    <div class="hint">For testing, the code may be shown after you click “Send code”.</div>
     <div class="link">New partner? <a href="#" id="linkSignup">Request access</a></div>
   </div>
 
@@ -105,7 +105,11 @@
       });
       const data = await res.json().catch(()=>({}));
       if (!res.ok) return toast(data.error || 'Could not send code');
-      toast(`Code sent to <b>${data.email}</b>. Dev code: <b>${data.code}</b>`, true);
+
+      const msg = data.code
+        ? `Code sent to <b>${data.email}</b>. Dev code: <b>${data.code}</b>`
+        : `Code sent to <b>${data.email}</b>. Check your email for the code.`;
+      toast(msg, true);
       codeInput.focus();
     };
 
