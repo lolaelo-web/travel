@@ -2,8 +2,8 @@
 
 // ==== Config ====
 const API_BASE = "https://lolaelo-api.onrender.com";
-const SESSION_KEY = "lolaelo_session";          // token saved by the login page
-const LOGIN_PAGE = "partners_login.html";       // adjust if you renamed
+const SESSION_KEY = "lolaelo_session";
+const LOGIN_PAGE = "partners_login.html";
 
 // ==== DOM helpers ====
 const $ = (id) => document.getElementById(id);
@@ -11,7 +11,7 @@ const elEmail = $("partnerEmail");
 const elLogout = $("logoutBtn");
 const form = $("propertyForm");
 const toast = $("toast");
-const saveBtn = $("saveBtn"); // optional, only if present in HTML
+const saveBtn = $("saveBtn");
 
 function getToken() {
   return localStorage.getItem(SESSION_KEY);
@@ -25,16 +25,16 @@ function setToast(msg, ok = true) {
 
 async function fetchWithAuth(path, opts = {}) {
   const token = getToken();
-  if (!token) { location.href = LOGIN_PAGE; return; }
+  if (!token) { location.replace(LOGIN_PAGE); return; }
   const headers = Object.assign({}, opts.headers || {}, {
     "Content-Type": "application/json",
     "Authorization": `Bearer ${token}`,
-    "x-partner-token": token, // compatibility
+    "x-partner-token": token,
   });
   const res = await fetch(`${API_BASE}${path}`, { ...opts, headers, credentials: "omit" });
   if (res && res.status === 401) {
     localStorage.removeItem(SESSION_KEY);
-    location.href = LOGIN_PAGE;
+    location.replace(LOGIN_PAGE);
     return;
   }
   return res;
@@ -50,7 +50,7 @@ async function ensureSession() {
 async function loadProperty() {
   const res = await fetchWithAuth("/extranet/property", { method: "GET" });
   if (!res) return;
-  if (res.status === 404) return; // no profile yet
+  if (res.status === 404) return;
   if (!res.ok) { setToast("Failed to load profile", false); return; }
   const p = await res.json();
   $("name").value = p.name || "";
@@ -66,7 +66,6 @@ async function saveProperty(evt) {
   evt.preventDefault();
   setToast("");
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Saving…"; }
-
   const payload = {
     name: $("name").value.trim(),
     addressLine: $("addressLine").value.trim() || null,
@@ -81,15 +80,13 @@ async function saveProperty(evt) {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save Profile"; }
     return;
   }
-
   const res = await fetchWithAuth("/extranet/property", {
     method: "PUT",
     body: JSON.stringify(payload),
   });
   if (!res) return;
-  if (res.ok) {
-    setToast("Saved");
-  } else {
+  if (res.ok) setToast("Saved");
+  else {
     const err = await res.json().catch(() => ({}));
     setToast(err.message || "Save failed", false);
   }
@@ -101,23 +98,35 @@ async function logout() {
   try {
     await fetch(`${API_BASE}/extranet/logout`, {
       method: "POST",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "x-partner-token": token
-      }
+      headers: { "Authorization": `Bearer ${token}`, "x-partner-token": token }
     }).catch(() => {});
   } finally {
     localStorage.removeItem(SESSION_KEY);
-    location.href = LOGIN_PAGE;
+    // Replace so Back won't show a cached protected page
+    location.replace(LOGIN_PAGE);
   }
 }
 
 // ==== Init ====
 (async function init() {
   const token = getToken();
-  if (!token) { location.href = LOGIN_PAGE; return; }
+  if (!token) { location.replace(LOGIN_PAGE); return; }
   elLogout?.addEventListener("click", logout);
   form?.addEventListener("submit", saveProperty);
   await ensureSession();
   await loadProperty();
 })();
+
+// Re-validate when coming from back/forward cache
+window.addEventListener("pageshow", (e) => {
+  const navEntry = performance.getEntriesByType("navigation")[0];
+  const isBFCache = e.persisted || (navEntry && navEntry.type === "back_forward");
+  if (isBFCache) {
+    if (!getToken()) {
+      location.replace(LOGIN_PAGE);
+    } else {
+      // Double-check server session in case it was revoked
+      ensureSession();
+    }
+  }
+});
