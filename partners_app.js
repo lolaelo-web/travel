@@ -102,31 +102,35 @@ async function logout() {
     }).catch(() => {});
   } finally {
     localStorage.removeItem(SESSION_KEY);
-    // Replace so Back won't show a cached protected page
+    // Replace so Back won't re-open this page
     location.replace(LOGIN_PAGE);
   }
 }
 
 // ==== Init ====
 (async function init() {
-  const token = getToken();
-  if (!token) { location.replace(LOGIN_PAGE); return; }
+  if (!getToken()) { location.replace(LOGIN_PAGE); return; }
   elLogout?.addEventListener("click", logout);
   form?.addEventListener("submit", saveProperty);
   await ensureSession();
   await loadProperty();
 })();
 
-// Re-validate when coming from back/forward cache
+// Re-validate when coming back from BFCache or Back
 window.addEventListener("pageshow", (e) => {
-  const navEntry = performance.getEntriesByType("navigation")[0];
-  const isBFCache = e.persisted || (navEntry && navEntry.type === "back_forward");
-  if (isBFCache) {
+  const nav = performance.getEntriesByType("navigation")[0];
+  const fromBF = e.persisted || (nav && nav.type === "back_forward");
+  if (fromBF) {
     if (!getToken()) {
       location.replace(LOGIN_PAGE);
     } else {
-      // Double-check server session in case it was revoked
-      ensureSession();
+      ensureSession(); // if token revoked server-side, this will bounce
     }
   }
+});
+
+// Force a reload (and thus JS re-run) on back navigation to this page
+window.addEventListener("popstate", () => {
+  if (!getToken()) location.replace(LOGIN_PAGE);
+  else location.reload();
 });
