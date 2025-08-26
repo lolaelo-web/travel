@@ -35,6 +35,7 @@
       margin-top:14px; width:100%; padding:12px; border-radius:999px; border:1px solid var(--accent);
       background:var(--accent); color:white; font-weight:700; cursor:pointer;
     }
+    button[disabled]{ opacity:.6; cursor:not-allowed; }
     button.secondary{ background:transparent; border-color:#2e7bff; color:#d7e5ff; margin-top:10px; }
     .row{ display:flex; gap:10px; }
     .hint{ font-size:12px; color:#a9bbde; margin-top:6px; }
@@ -80,7 +81,8 @@
     const el = (id) => document.getElementById(id);
     const toastBox = el('toast');
     const emailInput = el('email');
-    const codeInput = el('code');
+    const codeInput   = el('code');
+    const btnRequest  = el('btnRequest');
 
     function toast(html, ok=false){
       toastBox.innerHTML = html;
@@ -95,22 +97,29 @@
 
     el('linkSignup').onclick = (e) => { e.preventDefault(); emailInput.focus(); };
 
-    // Send code
-    el('btnRequest').onclick = async () => {
+    // Send code (with loading state and dev-code shown only if API returns it)
+    btnRequest.onclick = async () => {
       const email = (emailInput.value || '').trim().toLowerCase();
       if (!email) return toast('Enter your email.');
-      const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json().catch(()=>({}));
-      if (!res.ok) return toast(data.error || 'Could not send code');
+      btnRequest.disabled = true;
+      try {
+        const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json().catch(()=>({}));
+        if (!res.ok) throw new Error(data.error || `Could not send code (${res.status})`);
 
-      const msg = data.code
-        ? `Code sent to <b>${data.email}</b>. Dev code: <b>${data.code}</b>`
-        : `Code sent to <b>${data.email}</b>. Check your email for the code.`;
-      toast(msg, true);
-      codeInput.focus();
+        const dev = data.code ? ` <span class="hint">Dev code: <b>${data.code}</b></span>` : '';
+        toast(`Code sent to <b>${data.email}</b>.${dev}`, true);
+        codeInput.focus();
+      } catch (e) {
+        toast(e.message || 'Network error.');
+        console.error(e);
+      } finally {
+        btnRequest.disabled = false;
+      }
     };
 
     // Verify & sign in
@@ -132,7 +141,7 @@
         headers: { 'Authorization': `Bearer ${data.token}`, 'x-partner-token': data.token }
       }).catch(()=>null);
       if (!s || !s.ok) return toast('Session check failed');
-      location.replace(APP_PAGE);   // << important (no history entry)
+      location.replace(APP_PAGE);   // no history entry
     };
 
     // Restore existing session (also with replace)
