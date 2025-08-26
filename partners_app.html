@@ -5,10 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Lolaelo Partners – App</title>
 
-  <!-- Prevent cache/BFCache so a logged-out user can't see a stale page via Back -->
+  <!-- Prevent cache/BFCache -->
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+
+  <!-- EARLY AUTH GUARD: runs before rendering -->
+  <script>
+    (function () {
+      try {
+        if (!localStorage.getItem('lolaelo_session')) {
+          // Replace so this page isn’t in history
+          location.replace('partners_login.html');
+        }
+      } catch (_) {}
+    })();
+  </script>
 
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#fafafa; }
