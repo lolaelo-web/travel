@@ -52,123 +52,127 @@
 
   <div class="card" role="main">
     <h1>Extranet sign in</h1>
-    <p>Use your work email. We’ll send a 6-digit code.</p>
+    <p>Use your work email. Enter password or a 6-digit code (if your API uses codes).</p>
 
+    <!-- Optional: wrap fields in a <form>, but not required -->
     <label for="email">Email</label>
     <input id="email" type="email" placeholder="you@hotel.com" autocomplete="email" />
 
+    <label for="password">Password (leave blank if using code)</label>
+    <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" />
+
     <div class="row">
-      <button id="btnRequest">Send code</button>
+      <button id="btnLogin">Sign in</button>
       <button id="btnClear" class="secondary" title="Forget saved session">Clear session</button>
     </div>
 
-    <div id="codeBlock" class="hidden">
-      <label for="code">Enter 6-digit code</label>
-      <input id="code" type="text" inputmode="numeric" placeholder="123456" maxlength="6" />
-      <button id="btnVerify">Verify & Sign in</button>
-      <div class="hint">For now (testing), the API also returns the code in the response.</div>
-    </div>
+    <div class="hint">If your flow is code-based, leave password empty and enter the code below.</div>
+    <label for="code">6-digit code (leave blank if using password)</label>
+    <input id="code" type="text" inputmode="numeric" placeholder="123456" maxlength="6" />
 
     <div id="meBlock" class="hidden me">
       <div><strong>Signed in:</strong> <span id="meEmail"></span></div>
-      <div class="small">Token stored in <code>localStorage</code>. Future page loads will use it.</div>
+      <div class="small">Token stored in <code>localStorage</code>. You’ll be redirected automatically.</div>
     </div>
 
     <div id="msg" class="small"></div>
   </div>
 
   <script>
+    // -------- Config (must match partners_app.js) --------
     const API_BASE = "https://lolaelo-api.onrender.com";
+    const SESSION_KEY = "lolaelo_session";
+    const APP_PAGE = "partners_app.html";
 
+    // -------- DOM refs --------
     const el = (id) => document.getElementById(id);
-    const toast = (html, ok=false) => {
-      const t = el('toast');
-      t.innerHTML = html;
-      t.classList.remove('hidden');
-      t.style.borderColor = ok ? '#2bbb6f' : 'rgba(255,255,255,.07)';
-      t.style.color = ok ? '#bff7d2' : '#e8eefc';
-      clearTimeout(window.__toast);
-      window.__toast = setTimeout(() => t.classList.add('hidden'), 5000);
-    };
-
-    const btnRequest = el('btnRequest');
-    const btnVerify  = el('btnVerify');
-    const btnClear   = el('btnClear');
+    const toastBox = el('toast');
     const emailInput = el('email');
-    const codeInput  = el('code');
-    const codeBlock  = el('codeBlock');
-    const meBlock    = el('meBlock');
-    const meEmail    = el('meEmail');
-    const msg        = el('msg');
+    const passwordInput = el('password');
+    const codeInput = el('code');
+    const btnLogin = el('btnLogin');
+    const btnClear = el('btnClear');
+    const meBlock = el('meBlock');
+    const meEmail = el('meEmail');
 
-    // Try existing session on load
-    (async function bootstrap(){
-      const token = localStorage.getItem('partner_token');
-      if (token) {
-        await whoAmI(token, {silent:true});
-      }
-    })();
+    function toast(html, ok=false){
+      toastBox.innerHTML = html;
+      toastBox.classList.remove('hidden');
+      toastBox.style.borderColor = ok ? '#2bbb6f' : 'rgba(255,255,255,.07)';
+      toastBox.style.color = ok ? '#bff7d2' : '#e8eefc';
+      clearTimeout(window.__toast);
+      window.__toast = setTimeout(() => toastBox.classList.add('hidden'), 5000);
+    }
 
     btnClear.onclick = () => {
-      localStorage.removeItem('partner_token');
+      localStorage.removeItem(SESSION_KEY);
       meBlock.classList.add('hidden');
       toast('Session cleared.', true);
     };
 
-    btnRequest.onclick = async () => {
+    btnLogin.onclick = async (evt) => {
+      evt.preventDefault();
       const email = (emailInput.value || '').trim().toLowerCase();
-      if (!email) return toast('Enter your email first.');
+      const password = (passwordInput.value || '').trim();
+      const code = (codeInput.value || '').trim();
+      if (!email) { toast('Email is required.'); return; }
+
+      // Build payload accepted by /extranet/login
+      const payload = { email };
+      if (password) payload.password = password;
+      if (!password && code) payload.code = code;
+
       try {
-        const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
+        const res = await fetch(`${API_BASE}/extranet/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
+          body: JSON.stringify(payload)
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Request failed');
-        codeBlock.classList.remove('hidden');
-        toast(`Code sent to <b>${data.email}</b>. (Dev: code <code>${data.code}</code>)`, true);
-      } catch (e) {
-        toast(e.message || 'Could not request code');
-      }
-    };
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || `Login failed (${res.status})`);
+        if (!data.token) throw new Error('No token returned by API');
 
-    btnVerify.onclick = async () => {
-      const email = (emailInput.value || '').trim().toLowerCase();
-      const code  = (codeInput.value || '').trim();
-      if (!email || !code) return toast('Email and code required.');
-      try {
-        const res = await fetch(`${API_BASE}/extranet/login/verify`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, code })
+        // Save token and sanity-check session
+        localStorage.setItem(SESSION_KEY, data.token);
+        const s = await fetch(`${API_BASE}/extranet/session`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${data.token}` }
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Verify failed');
-        localStorage.setItem('partner_token', data.token);
-        toast('Signed in ✔️', true);
-        await whoAmI(data.token);
-      } catch (e) {
-        toast(e.message || 'Could not verify');
-      }
-    };
+        const me = await s.json().catch(() => ({}));
+        if (!s.ok) throw new Error(me.message || 'Session check failed');
 
-    async function whoAmI(token, {silent=false}={}){
-      try {
-        const res = await fetch(`${API_BASE}/extranet/me`, {
-          headers: { 'x-partner-token': token }
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Auth failed');
-        meEmail.textContent = data.email || '(no email)';
+        meEmail.textContent = me.email || '(no email)';
         meBlock.classList.remove('hidden');
-        if (!silent) toast('Session restored ✔️', true);
+        toast('Signed in ✔️ Redirecting…', true);
+
+        // Go to protected app
+        location.href = APP_PAGE;
       } catch (e) {
-        if (!silent) toast(e.message || 'Session invalid');
-        localStorage.removeItem('partner_token');
+        toast(e.message || 'Network or server error.');
+        console.error(e);
+      }
+    };
+
+    // Try restoring an existing session on load
+    (async function restore(){
+      const token = localStorage.getItem(SESSION_KEY);
+      if (!token) return;
+      try {
+        const s = await fetch(`${API_BASE}/extranet/session`, {
+          method: 'GET',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const me = await s.json().catch(() => ({}));
+        if (!s.ok) throw new Error(me.message || 'Session invalid');
+        meEmail.textContent = me.email || '(no email)';
+        meBlock.classList.remove('hidden');
+        toast('Session restored ✔️ Redirecting…', true);
+        location.href = APP_PAGE;
+      } catch {
+        localStorage.removeItem(SESSION_KEY);
         meBlock.classList.add('hidden');
       }
-    }
+    })();
   </script>
 </body>
 </html>
