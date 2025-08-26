@@ -1,22 +1,23 @@
-// Config
+// partners_app.js
+
+// ==== Config ====
 const API_BASE = "https://lolaelo-api.onrender.com";
-const SESSION_KEY = "lolaelo_session"; // bearer token stored by login page
-const LOGIN_PAGE = "partners_login.html"; // your login filename
+const SESSION_KEY = "lolaelo_session";          // token saved by the login page
+const LOGIN_PAGE = "partners_login.html";       // adjust if you renamed
 
-// DOM
-const elEmail = document.getElementById("partnerEmail");
-const elLogout = document.getElementById("logoutBtn");
-const form = document.getElementById("propertyForm");
-const toast = document.getElementById("toast");
-
+// ==== DOM helpers ====
 const $ = (id) => document.getElementById(id);
+const elEmail = $("partnerEmail");
+const elLogout = $("logoutBtn");
+const form = $("propertyForm");
+const toast = $("toast");
 
 function getToken() {
   return localStorage.getItem(SESSION_KEY);
 }
 
 function setToast(msg, ok = true) {
-  toast.textContent = msg;
+  toast.textContent = msg || "";
   toast.className = `toast ${ok ? "ok" : "err"}`;
 }
 
@@ -32,7 +33,7 @@ async function fetchWithAuth(path, opts = {}) {
   });
   const res = await fetch(`${API_BASE}${path}`, { ...opts, headers, credentials: "omit" });
   if (res.status === 401) {
-    // Session invalid
+    // invalid/expired session
     localStorage.removeItem(SESSION_KEY);
     location.href = LOGIN_PAGE;
     return;
@@ -42,11 +43,8 @@ async function fetchWithAuth(path, opts = {}) {
 
 async function ensureSession() {
   const res = await fetchWithAuth("/extranet/session", { method: "GET" });
-  if (!res || !res.ok) {
-    return;
-  }
-  const data = await res.json();
-  // Show email if present
+  if (!res || !res.ok) return;
+  const data = await res.json().catch(() => ({}));
   if (data && data.email) elEmail.textContent = data.email;
 }
 
@@ -54,7 +52,7 @@ async function loadProperty() {
   const res = await fetchWithAuth("/extranet/property", { method: "GET" });
   if (!res) return;
   if (res.status === 404) {
-    // First time, nothing saved yet
+    // first time: no profile yet
     return;
   }
   if (!res.ok) {
@@ -73,7 +71,7 @@ async function loadProperty() {
 
 async function saveProperty(evt) {
   evt.preventDefault();
-  setToast("", true);
+  setToast("");
   const payload = {
     name: $("name").value.trim(),
     addressLine: $("addressLine").value.trim() || null,
@@ -105,14 +103,15 @@ function logout() {
   location.href = LOGIN_PAGE;
 }
 
+// ==== Init ====
 (async function init() {
   const token = getToken();
   if (!token) {
     location.href = LOGIN_PAGE;
     return;
   }
-  elLogout.addEventListener("click", logout);
-  form.addEventListener("submit", saveProperty);
+  elLogout?.addEventListener("click", logout);
+  form?.addEventListener("submit", saveProperty);
   await ensureSession();
   await loadProperty();
 })();
