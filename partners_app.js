@@ -5,6 +5,9 @@ const API_BASE = "https://lolaelo-api.onrender.com";
 const SESSION_KEY = "lolaelo_session";
 const LOGIN_PAGE = "partners_login.html";
 
+// --- HARD STOP BFCache (Chrome/Safari): having an unload listener disables BFCache.
+window.addEventListener("unload", () => {}); // no-op on purpose
+
 // ==== DOM helpers ====
 const $ = (id) => document.getElementById(id);
 const elEmail = $("partnerEmail");
@@ -13,9 +16,7 @@ const form = $("propertyForm");
 const toast = $("toast");
 const saveBtn = $("saveBtn");
 
-function getToken() {
-  return localStorage.getItem(SESSION_KEY);
-}
+function getToken() { return localStorage.getItem(SESSION_KEY); }
 
 function setToast(msg, ok = true) {
   if (!toast) return;
@@ -80,10 +81,7 @@ async function saveProperty(evt) {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = "Save Profile"; }
     return;
   }
-  const res = await fetchWithAuth("/extranet/property", {
-    method: "PUT",
-    body: JSON.stringify(payload),
-  });
+  const res = await fetchWithAuth("/extranet/property", { method: "PUT", body: JSON.stringify(payload) });
   if (!res) return;
   if (res.ok) setToast("Saved");
   else {
@@ -102,35 +100,39 @@ async function logout() {
     }).catch(() => {});
   } finally {
     localStorage.removeItem(SESSION_KEY);
-    // Replace so Back won't re-open this page
+    // Replace so "Back" won't return here
     location.replace(LOGIN_PAGE);
   }
 }
 
 // ==== Init ====
-(async function init() {
+(function init() {
   if (!getToken()) { location.replace(LOGIN_PAGE); return; }
+
+  // Trap Back: create a dummy history entry and handle popstate.
+  history.pushState({ p: "app" }, "", location.href);
+  window.addEventListener("popstate", () => {
+    // If token is gone, bounce to login. If token exists, reload to re-check with server.
+    if (!getToken()) location.replace(LOGIN_PAGE);
+    else location.reload();
+  });
+
   elLogout?.addEventListener("click", logout);
   form?.addEventListener("submit", saveProperty);
-  await ensureSession();
-  await loadProperty();
+
+  // Load
+  (async () => {
+    await ensureSession();
+    await loadProperty();
+  })();
 })();
 
-// Re-validate when coming back from BFCache or Back
+// Also re-check when returning via BFCache (some browsers still allow it)
 window.addEventListener("pageshow", (e) => {
   const nav = performance.getEntriesByType("navigation")[0];
   const fromBF = e.persisted || (nav && nav.type === "back_forward");
   if (fromBF) {
-    if (!getToken()) {
-      location.replace(LOGIN_PAGE);
-    } else {
-      ensureSession(); // if token revoked server-side, this will bounce
-    }
+    if (!getToken()) location.replace(LOGIN_PAGE);
+    else ensureSession();
   }
-});
-
-// Force a reload (and thus JS re-run) on back navigation to this page
-window.addEventListener("popstate", () => {
-  if (!getToken()) location.replace(LOGIN_PAGE);
-  else location.reload();
 });
