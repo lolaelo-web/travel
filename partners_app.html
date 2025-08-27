@@ -1,103 +1,296 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo Partners – App</title>
+  <title>Lolaelo Extranet — Partner Hub</title>
 
-  <!-- Prevent cache/BFCache -->
+  <!-- Prevent caching so Back can't revive stale pages -->
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <!-- EARLY AUTH GUARD: runs before rendering -->
-  <script>
-    (function () {
-      try {
-        if (!localStorage.getItem('lolaelo_session')) {
-          // Replace so this page isn’t in history
-          location.replace('partners_login.html');
-        }
-      } catch (_) {}
-    })();
-  </script>
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 0; background:#fafafa; }
-    header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:#111; color:#fff; }
-    header .brand { font-weight:600; letter-spacing:0.3px; }
-    header .right { display:flex; gap:12px; align-items:center; }
-    main { max-width: 880px; margin: 24px auto; background:#fff; padding:20px; border:1px solid #eee; border-radius:10px; }
-    h1 { margin: 0 0 12px 0; font-size: 20px; }
-    .muted { color:#666; font-size: 14px; margin:0 0 20px; }
-    form { display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
-    label { font-size: 13px; color:#333; }
-    input, textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; font-size:14px; }
-    textarea { grid-column: 1 / -1; min-height: 120px; }
-    .full { grid-column: 1 / -1; }
-    .actions { display:flex; gap:12px; margin-top: 10px; }
-    button { padding:10px 14px; border-radius:8px; border:1px solid #222; background:#222; color:#fff; cursor:pointer; }
-    button[disabled] { opacity:.6; cursor:not-allowed; }
-    .note { font-size: 12px; color:#555; margin-top:6px; }
-    .toast { margin-top: 14px; font-size: 14px; }
-    .toast.ok { color: #0a7a28; }
-    .toast.err { color: #b00020; }
+    :root{ --bg:#0b1320; --card:#111a2b; --fg:#e8eefc; --muted:#9bb0d3; --accent:#ff6a3d; --line:rgba(255,255,255,.08); }
+    *{ box-sizing:border-box }
+    body{
+      margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;
+      background: radial-gradient(1000px 600px at 20% -10%, #1a2b4a 0%, #0b1320 60%, #0b1320 100%);
+      color:var(--fg); min-height:100vh; display:flex; flex-direction:column;
+    }
+    .wrap{ flex:1; display:flex; align-items:center; justify-content:center; padding:24px }
+    .shell{ width:100%; max-width:980px }
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .brand .dot{ width:10px; height:10px; border-radius:999px; background:#2bbb6f; box-shadow:0 0 0 3px rgba(43,187,111,.25) }
+    .brand .title{ font-size:16px; color:#cfe0ff }
+    .actions{ display:flex; gap:8px }
+    .btn{
+      appearance:none; border:1px solid var(--accent); background:var(--accent); color:#fff;
+      padding:9px 14px; border-radius:999px; font-weight:700; cursor:pointer;
+    }
+    .btn.secondary{ background:transparent; border-color:#2e7bff; color:#d7e5ff }
+    .btn.ghost{ background:transparent; border-color:var(--line); color:#cfe0ff }
+    .card{
+      background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 18px;
+      box-shadow:0 8px 40px rgba(0,0,0,.45);
+    }
+    .hero{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:16px }
+    .hero h1{ margin:0; font-size:22px }
+    .hero p{ margin:6px 0 0; color:var(--muted); font-size:14px }
+    .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:8px }
+    .tile{
+      display:block; padding:16px; border:1px solid var(--line); background:#0e1830; border-radius:14px;
+      text-decoration:none; color:var(--fg); transition:.18s transform, .18s border-color, .18s background;
+      min-height:120px;
+    }
+    .tile:hover{ transform:translateY(-2px); border-color:#2e7bff; background:#0f1b36 }
+    .tile h3{ margin:0 0 6px; font-size:16px }
+    .tile p{ margin:0; color:var(--muted); font-size:13px; line-height:1.35 }
+    .badge{ display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#193258; color:#bcd3ff; margin-left:6px; border:1px solid rgba(255,255,255,.08) }
+    .status{ font-size:12px; color:#a9bbde; }
+    .status .ok{ color:#67e28f; font-weight:600 }
+    .status .todo{ color:#ff9a88; font-weight:600 }
+
+    .section{ margin-top:16px }
+    .section h2{ margin:0 0 10px; font-size:18px }
+    label{ display:block; font-size:13px; color:#cfe0ff; margin:12px 0 6px }
+    input, textarea{
+      width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); background:#0e1830; color:var(--fg); outline:none;
+    }
+    textarea{ min-height:110px; resize:vertical }
+    input:focus, textarea:focus{ border-color:#2e7bff; box-shadow:0 0 0 3px rgba(46,123,255,.20) }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+    .backlink{ display:inline-block; margin-top:8px; font-size:13px; color:#ffb59f; text-decoration:underline; cursor:pointer }
+
+    .top-toast{ position:fixed; top:12px; left:0; right:0; display:flex; justify-content:center; pointer-events:none; z-index:10 }
+    .toast{
+      pointer-events:auto; min-width:280px; max-width:520px; background:#0e1830; border:1px solid rgba(255,255,255,.07);
+      padding:10px 12px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.45); font-size:14px; color:#e8eefc;
+    }
+    .hidden{ display:none }
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">Lolaelo Partners</div>
-    <div class="right">
-      <div id="partnerEmail" style="opacity:.9"></div>
-      <button id="logoutBtn" title="Sign out">Logout</button>
+  <div class="top-toast"><div id="toast" class="toast hidden"></div></div>
+
+  <div class="wrap">
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="title">Lolaelo Extranet</div>
+        </div>
+        <div class="actions">
+          <button id="btnLogout" class="btn ghost" title="Sign out">Sign out</button>
+        </div>
+      </div>
+
+      <!-- HUB -->
+      <div id="hub" class="card" role="main" aria-label="Partner Hub">
+        <div class="hero">
+          <div>
+            <h1>Welcome, <span id="partnerName">Partner</span></h1>
+            <p id="partnerEmail" class="muted">—</p>
+          </div>
+          <div class="status">
+            Profile: <span id="profileStatus" class="todo">Checking…</span>
+          </div>
+        </div>
+
+        <div class="grid">
+          <a id="tileProfile" class="tile" href="#profile">
+            <h3>Property Profile <span class="badge" id="profileBadge">Set up</span></h3>
+            <p>Manage your property details, contact info and description.</p>
+          </a>
+
+          <a class="tile" href="#" onclick="alert('Documents is coming soon.'); return false;">
+            <h3>Documents <span class="badge">Soon</span></h3>
+            <p>Upload W-9, insurance, or vendor agreements (coming soon).</p>
+          </a>
+
+          <a class="tile" href="#" onclick="alert('Billing is coming soon.'); return false;">
+            <h3>Billing & Invoices <span class="badge">Soon</span></h3>
+            <p>View invoices and payment status (coming soon).</p>
+          </a>
+
+          <a class="tile" href="mailto:support@lolaelo.com">
+            <h3>Support</h3>
+            <p>Questions? Email our team — we’re happy to help.</p>
+          </a>
+        </div>
+      </div>
+
+      <!-- PROPERTY PROFILE (inline “subpage”) -->
+      <div id="profile" class="card section hidden" aria-label="Property Profile">
+        <h2>Property Profile</h2>
+        <div class="row">
+          <div>
+            <label for="pp_name">Property name *</label>
+            <input id="pp_name" type="text" placeholder="Hotel Buena Vista" />
+          </div>
+          <div>
+            <label for="pp_contactEmail">Contact email</label>
+            <input id="pp_contactEmail" type="email" placeholder="frontdesk@hotel.com" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="pp_phone">Phone</label>
+            <input id="pp_phone" type="tel" placeholder="+1 (555) 555-1234" />
+          </div>
+          <div>
+            <label for="pp_country">Country</label>
+            <input id="pp_country" type="text" placeholder="United States" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="pp_address">Address</label>
+            <input id="pp_address" type="text" placeholder="123 Ocean Ave" />
+          </div>
+          <div>
+            <label for="pp_city">City</label>
+            <input id="pp_city" type="text" placeholder="Miami, FL" />
+          </div>
+        </div>
+
+        <label for="pp_desc">Description</label>
+        <textarea id="pp_desc" placeholder="Short description of your property, amenities, and any partner notes."></textarea>
+
+        <div style="display:flex; gap:8px; margin-top:14px">
+          <button id="btnSave" class="btn">Save changes</button>
+          <button id="btnBack" class="btn secondary" type="button">Back to menu</button>
+        </div>
+
+        <div class="backlink" id="linkBack">← Back to main menu</div>
+      </div>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <h1>Property Profile</h1>
-    <p class="muted">This page is protected. Your session is verified on load.</p>
+  <script>
+    // --- Config ---------------------------------------------------------------
+    const API_BASE    = "https://lolaelo-api.onrender.com";
+    const SESSION_KEY = "lolaelo_session";
+    const LOGIN_PAGE  = "partners_login.html";
 
-    <form id="propertyForm">
-      <div class="full">
-        <label>Property Name *</label>
-        <input id="name" required placeholder="e.g., Casa by the Bay" />
-      </div>
+    // --- DOM helpers ---------------------------------------------------------
+    const $ = (id) => document.getElementById(id);
+    const toastBox = $('toast');
+    function toast(html, ok=false){
+      toastBox.innerHTML = html;
+      toastBox.style.borderColor = ok ? '#2bbb6f' : 'rgba(255,255,255,.07)';
+      toastBox.style.color = ok ? '#bff7d2' : '#e8eefc';
+      toastBox.classList.remove('hidden');
+      clearTimeout(window.__t); window.__t = setTimeout(()=>toastBox.classList.add('hidden'), 4000);
+    }
+    function show(id){ $(id).classList.remove('hidden') }
+    function hide(id){ $(id).classList.add('hidden') }
 
-      <div>
-        <label>Address</label>
-        <input id="addressLine" placeholder="Street and number" />
-      </div>
+    // --- Auth guard + session restore ----------------------------------------
+    const token = localStorage.getItem(SESSION_KEY);
+    if (!token) location.replace(LOGIN_PAGE);
 
-      <div>
-        <label>City</label>
-        <input id="city" placeholder="City" />
-      </div>
+    async function authed(path, options={}){
+      return fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          'Authorization': `Bearer ${token}`,
+          'x-partner-token': token
+        }
+      });
+    }
 
-      <div>
-        <label>Country</label>
-        <input id="country" placeholder="Country" />
-      </div>
+    // --- UI state -------------------------------------------------------------
+    $('btnLogout').onclick = async () => {
+      try { await authed('/extranet/logout', { method:'POST' }); } catch {}
+      localStorage.removeItem(SESSION_KEY);
+      location.replace(LOGIN_PAGE);
+    };
 
-      <div>
-        <label>Contact Email</label>
-        <input id="contactEmail" type="email" placeholder="name@hotel.com" />
-      </div>
+    const openProfile = () => { hide('hub'); show('profile'); };
+    const backToHub   = () => { hide('profile'); show('hub'); };
 
-      <div>
-        <label>Phone</label>
-        <input id="phone" placeholder="+63 912 345 6789" />
-      </div>
+    $('tileProfile').addEventListener('click', (e) => { e.preventDefault(); openProfile(); });
+    $('btnBack').onclick = backToHub;
+    $('linkBack').onclick = backToHub;
 
-      <textarea id="description" placeholder="Short description"></textarea>
+    // --- Load partner + profile ----------------------------------------------
+    (async function init(){
+      try {
+        // partner
+        const me = await authed('/extranet/session');
+        if (!me.ok) return location.replace(LOGIN_PAGE);
+        const partner = await me.json().catch(()=>({}));
+        $('partnerName').textContent  = partner.name || partner.email?.split('@')[0] || 'Partner';
+        $('partnerEmail').textContent = partner.email || '';
 
-      <div class="full actions">
-        <button id="saveBtn" type="submit">Save Profile</button>
-        <div class="note">Photos will be added later.</div>
-      </div>
-      <div id="toast" class="toast" role="status"></div>
-    </form>
-  </main>
+        // property
+        let statusEl = $('profileStatus'), badgeEl = $('profileBadge');
+        const r = await authed('/extranet/property');
+        if (r.ok) {
+          const p = await r.json();
+          $('pp_name').value         = p.name || '';
+          $('pp_contactEmail').value = p.contactEmail || '';
+          $('pp_phone').value        = p.phone || '';
+          $('pp_country').value      = p.country || '';
+          $('pp_address').value      = p.addressLine || '';
+          $('pp_city').value         = p.city || '';
+          $('pp_desc').value         = p.description || '';
 
-  <script src="./partners_app.js" defer></script>
+          statusEl.textContent = 'Complete';
+          statusEl.className = 'ok';
+          badgeEl.textContent = 'Edit';
+        } else {
+          statusEl.textContent = 'Missing info';
+          statusEl.className = 'todo';
+          badgeEl.textContent = 'Set up';
+        }
+      } catch (e) {
+        console.error(e);
+        toast('Could not load your session. Please sign in again.');
+        setTimeout(()=>location.replace(LOGIN_PAGE), 1200);
+      }
+    })();
+
+    // --- Save profile ---------------------------------------------------------
+    $('btnSave').onclick = async () => {
+      const payload = {
+        name: $('pp_name').value.trim(),
+        contactEmail: $('pp_contactEmail').value.trim() || null,
+        phone: $('pp_phone').value.trim() || null,
+        country: $('pp_country').value.trim() || null,
+        addressLine: $('pp_address').value.trim() || null,
+        city: $('pp_city').value.trim() || null,
+        description: $('pp_desc').value.trim() || null,
+      };
+      if (!payload.name) return toast('Property name is required.');
+
+      try{
+        const res = await authed('/extranet/property', {
+          method:'PUT',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(()=>({})); 
+          throw new Error(d.message || 'Save failed');
+        }
+        toast('Saved.', true);
+        $('profileStatus').textContent = 'Complete';
+        $('profileStatus').className = 'ok';
+        $('profileBadge').textContent = 'Edit';
+      }catch(e){
+        console.error(e); toast(e.message || 'Network error.');
+      }
+    };
+
+    // If a BFCache restore happens, force fresh load
+    window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
+  </script>
 </body>
 </html>
