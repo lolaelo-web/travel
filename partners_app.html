@@ -57,8 +57,11 @@
     .section h2{ margin:0 0 10px; font-size:18px }
     label{ display:block; font-size:13px; color:#cfe0ff; margin:12px 0 6px }
     input, textarea{
-      width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); background:#0e1830; color:#var(--fg); outline:none;
-    }
+        width:100%; padding:12px; border-radius:10px; border:1px solid var(--line);
+        background:#0e1830; color:var(--fg); outline:none;
+      }
+    input::placeholder, textarea::placeholder{ color:#9bb0d3; opacity:1; }
+
     textarea{ min-height:110px; resize:vertical }
     input:focus, textarea:focus{ border-color:#2e7bff; box-shadow:0 0 0 3px rgba(46,123,255,.20) }
     .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
