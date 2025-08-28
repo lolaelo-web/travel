@@ -3,106 +3,356 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo Extranet — App</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Lolaelo Extranet — Partner Hub</title>
+
+  <!-- Prevent caching so Back can't revive stale pages -->
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{ --bg:#0b1320; --card:#111a2b; --fg:#e8eefc; --muted:#9bb0d3; --accent:#ff6a3d; }
-    *{ box-sizing:border-box; }
+    :root{ --bg:#0b1320; --card:#111a2b; --fg:#e8eefc; --muted:#9bb0d3; --accent:#ff6a3d; --line:rgba(255,255,255,.08); }
+    *{ box-sizing:border-box }
     body{
       margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;
       background: radial-gradient(1000px 600px at 20% -10%, #1a2b4a 0%, #0b1320 60%, #0b1320 100%);
-      color:var(--fg); min-height:100vh; display:flex; align-items:center; justify-content:center;
+      color:var(--fg); min-height:100vh; display:flex; flex-direction:column;
     }
-    .shell{ width:100%; max-width:920px; padding:24px; }
-    .top{ display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; }
+    .wrap{ flex:1; display:flex; align-items:center; justify-content:center; padding:24px }
+    .shell{ width:100%; max-width:980px }
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .brand .dot{ width:10px; height:10px; border-radius:999px; background:#2bbb6f; box-shadow:0 0 0 3px rgba(43,187,111,.25) }
+    .brand .title{ font-size:16px; color:#cfe0ff }
+    .actions{ display:flex; gap:8px }
+    .btn{
+      appearance:none; border:1px solid var(--accent); background:var(--accent); color:#fff;
+      padding:9px 14px; border-radius:999px; font-weight:700; cursor:pointer;
+    }
+    .btn.secondary{ background:transparent; border-color:#2e7bff; color:#d7e5ff }
+    .btn.ghost{ background:transparent; border-color:var(--line); color:#cfe0ff }
     .card{
-      background:var(--card); border:1px solid rgba(255,255,255,.06);
-      border-radius:16px; padding:18px; box-shadow:0 8px 40px rgba(0,0,0,.45);
+      background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px 18px;
+      box-shadow:0 8px 40px rgba(0,0,0,.45);
     }
-    button{
-      padding:10px 14px; border-radius:999px; border:1px solid var(--accent);
-      background:var(--accent); color:white; font-weight:700; cursor:pointer;
+    .hero{ display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:16px }
+    .hero h1{ margin:0; font-size:22px }
+    .hero p{ margin:6px 0 0; color:var(--muted); font-size:14px }
+    .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:8px }
+    .tile{
+      display:block; padding:16px; border:1px solid var(--line); background:#0e1830; border-radius:14px;
+      text-decoration:none; color:var(--fg); transition:.18s transform, .18s border-color, .18s background;
+      min-height:120px;
     }
-    button.secondary{ background:transparent; border-color:#2e7bff; color:#d7e5ff; }
-    .muted{ color:var(--muted); font-size:13px; }
-    pre{ background:#0e1830; padding:12px; border-radius:10px; overflow:auto; }
-    .hidden{ display:none; }
+    .tile:hover{ transform:translateY(-2px); border-color:#2e7bff; background:#0f1b36 }
+    .tile h3{ margin:0 0 6px; font-size:16px }
+    .tile p{ margin:0; color:var(--muted); font-size:13px; line-height:1.35 }
+    .badge{ display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#193258; color:#bcd3ff; margin-left:6px; border:1px solid rgba(255,255,255,.08) }
+    .status{ font-size:12px; color:#a9bbde; }
+    .status .ok{ color:#67e28f; font-weight:600 }
+    .status .todo{ color:#ff9a88; font-weight:600 }
+
+    .section{ margin-top:16px }
+    .section h2{ margin:0 0 10px; font-size:18px }
+    label{ display:block; font-size:13px; color:#cfe0ff; margin:12px 0 6px }
+    input, textarea{
+      width:100%; padding:12px; border-radius:10px; border:1px solid var(--line); background:#0e1830; color:#var(--fg); outline:none;
+    }
+    textarea{ min-height:110px; resize:vertical }
+    input:focus, textarea:focus{ border-color:#2e7bff; box-shadow:0 0 0 3px rgba(46,123,255,.20) }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+    .backlink{ display:inline-block; margin-top:8px; font-size:13px; color:#ffb59f; text-decoration:underline; cursor:pointer }
+
+    .top-toast{ position:fixed; top:12px; left:0; right:0; display:flex; justify-content:center; pointer-events:none; z-index:10 }
+    .toast{
+      pointer-events:auto; min-width:280px; max-width:520px; background:#0e1830; border:1px solid rgba(255,255,255,.07);
+      padding:10px 12px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.45); font-size:14px; color:#e8eefc;
+    }
+    .hidden{ display:none }
+
+    /* Photos grid */
+    .photos{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:10px; margin-top:10px }
+    .photos .ph{ background:#0e1830; border:1px solid var(--line); border-radius:10px; padding:8px; }
+    .photos img{ width:100%; height:100px; object-fit:cover; border-radius:6px; display:block; }
+    .photos .meta{ font-size:11px; color:#a9bbde; margin-top:6px; word-break:break-all }
   </style>
 </head>
 <body>
-  <div class="shell">
-    <div class="top">
-      <h1 style="margin:0;font-size:22px;">Lolaelo Extranet</h1>
-      <div>
-        <button id="btnSignOut" class="secondary">Sign out</button>
+  <div class="top-toast"><div id="toast" class="toast hidden"></div></div>
+
+  <div class="wrap">
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <span class="dot" aria-hidden="true"></span>
+          <div class="title" id="brandTitle">Lolaelo Extranet</div>
+        </div>
+        <div class="actions">
+          <button id="btnLogout" class="btn ghost" title="Sign out">Sign out</button>
+        </div>
       </div>
-    </div>
 
-    <div id="gate" class="card">
-      <div class="muted">Checking session…</div>
-    </div>
+      <!-- HUB -->
+      <div id="hub" class="card" role="main" aria-label="Partner Hub">
+        <div class="hero">
+          <div>
+            <h1 id="welcomeH1">Welcome</h1>
+            <p id="partnerEmail" class="muted">—</p>
+          </div>
+          <div class="status">
+            Profile: <span id="profileStatus" class="todo">Checking…</span>
+          </div>
+        </div>
 
-    <div id="app" class="card hidden">
-      <p class="muted">You are signed in. Sample secure call below.</p>
-      <button id="btnLoad">Load My Photos</button>
-      <pre id="out" class="hidden"></pre>
+        <div class="grid">
+          <a id="tileProfile" class="tile" href="#profile">
+            <h3>Company Profile <span class="badge" id="profileBadge">Set up</span></h3>
+            <p>Manage your company details, contact info and description.</p>
+          </a>
+
+          <a class="tile" href="#" id="tilePhotos">
+            <h3>My Photos</h3>
+            <p>Browse the photos you’ve uploaded.</p>
+          </a>
+
+          <a class="tile" href="#" onclick="alert('Documents is coming soon.'); return false;">
+            <h3>Documents <span class="badge">Soon</span></h3>
+            <p>Upload W-9, insurance, or vendor agreements (coming soon).</p>
+          </a>
+
+          <a class="tile" href="#" onclick="alert('Payment history is coming soon.'); return false;">
+            <h3>Payment History <span class="badge">Soon</span></h3>
+            <p>See past payouts and payment status (coming soon).</p>
+          </a>
+
+          <a class="tile" href="mailto:support@lolaelo.com">
+            <h3>Support</h3>
+            <p>Questions? Email our team — we’re happy to help.</p>
+          </a>
+        </div>
+
+        <div id="photosPanel" class="section hidden">
+          <h2>Your Photos</h2>
+          <div id="photosGrid" class="photos"></div>
+          <div class="backlink" id="photosBack">← Back to main menu</div>
+        </div>
+      </div>
+
+      <!-- COMPANY PROFILE (inline “subpage”) -->
+      <div id="profile" class="card section hidden" aria-label="Company Profile">
+        <h2>Company Profile</h2>
+        <div class="row">
+          <div>
+            <label for="pp_name">Company name *</label>
+            <input id="pp_name" type="text" placeholder="Hotel Buena Vista" />
+          </div>
+          <div>
+            <label for="pp_contactEmail">Contact email</label>
+            <input id="pp_contactEmail" type="email" placeholder="frontdesk@hotel.com" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="pp_phone">Phone</label>
+            <input id="pp_phone" type="tel" placeholder="+1 (555) 555-1234" />
+          </div>
+          <div>
+            <label for="pp_country">Country</label>
+            <input id="pp_country" type="text" placeholder="United States" />
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <label for="pp_address">Address</label>
+            <input id="pp_address" type="text" placeholder="123 Ocean Ave" />
+          </div>
+          <div>
+            <label for="pp_city">City</label>
+            <input id="pp_city" type="text" placeholder="Miami, FL" />
+          </div>
+        </div>
+
+        <label for="pp_desc">Description</label>
+        <textarea id="pp_desc" placeholder="Short description of your company, amenities, and any partner notes."></textarea>
+
+        <div style="display:flex; gap:8px; margin-top:14px">
+          <button id="btnSave" class="btn">Save changes</button>
+          <button id="btnBack" class="btn secondary" type="button">Back to menu</button>
+        </div>
+
+        <div class="backlink" id="linkBack">← Back to main menu</div>
+      </div>
     </div>
   </div>
 
   <script>
-    const API_BASE = "https://lolaelo-api.onrender.com";
+    // --- Config ---------------------------------------------------------------
+    const API_BASE    = "https://lolaelo-api.onrender.com";
     const SESSION_KEY = "lolaelo_session";
-    const LOGIN_PAGE = "partners_login.html";
+    const LOGIN_PAGE  = "partners_login.html";
 
-    const el = (id) => document.getElementById(id);
-    const gate = el("gate");
-    const app  = el("app");
-    const out  = el("out");
+    // --- DOM helpers ---------------------------------------------------------
+    const $ = (id) => document.getElementById(id);
+    const toastBox = $('toast');
+    function toast(html, ok=false){
+      toastBox.innerHTML = html;
+      toastBox.style.borderColor = ok ? '#2bbb6f' : 'rgba(255,255,255,.07)';
+      toastBox.style.color = ok ? '#bff7d2' : '#e8eefc';
+      toastBox.classList.remove('hidden');
+      clearTimeout(window.__t); window.__t = setTimeout(()=>toastBox.classList.add('hidden'), 4000);
+    }
+    function show(id){ $(id).classList.remove('hidden') }
+    function hide(id){ $(id).classList.add('hidden') }
 
-    // Single, deterministic gate — NO polling, NO redirects to /extranet/session
-    (function gatecheck(){
-      const token = localStorage.getItem(SESSION_KEY);
-      if (!token) {
-        // No token → go to login exactly once
-        location.replace(LOGIN_PAGE);
-        return;
-      }
-      // Token exists → show app immediately; protected calls will use the token
-      gate.classList.add("hidden");
-      app.classList.remove("hidden");
-      window.partnerToken = token;
-    })();
+    // --- Auth & fetch helpers -------------------------------------------------
+    const token = localStorage.getItem(SESSION_KEY);
+    if (!token) location.replace(LOGIN_PAGE);
 
-    // Example secure call (uses token; if 401, sign out gracefully)
-    el("btnLoad").onclick = async () => {
-      out.classList.remove("hidden");
-      out.textContent = "Loading...";
-      try {
-        const r = await fetch(`${API_BASE}/extranet/property/photos`, {
-          headers: {
-            "x-partner-token": window.partnerToken || "",
-            "Authorization": `Bearer ${window.partnerToken || ""}`
-          }
-        });
-        if (r.status === 401 || r.status === 403) {
-          // Session invalid → clear once and go to login (no loop)
-          localStorage.removeItem(SESSION_KEY);
-          location.replace(LOGIN_PAGE);
-          return;
+    async function authed(path, options={}){
+      const r = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+          ...(options.headers || {}),
+          'Authorization': `Bearer ${token}`,
+          'x-partner-token': token
         }
-        const data = await r.json().catch(()=> ({}));
-        out.textContent = JSON.stringify(data, null, 2);
-      } catch (e) {
-        console.error(e);
-        out.textContent = "Network error.";
+      });
+      if (r.status === 401 || r.status === 403) {
+        // one-way sign-out
+        localStorage.removeItem(SESSION_KEY);
+        location.replace(LOGIN_PAGE);
+        throw new Error("unauthorized");
       }
-    };
+      return r;
+    }
 
-    // Sign out
-    el("btnSignOut").onclick = () => {
+    // --- UI state -------------------------------------------------------------
+    $('btnLogout').onclick = async () => {
+      try { await authed('/extranet/logout', { method:'POST' }); } catch {}
       localStorage.removeItem(SESSION_KEY);
       location.replace(LOGIN_PAGE);
     };
+
+    const openProfile = () => { hide('hub'); show('profile'); };
+    const backToHub   = () => { hide('profile'); hide('photosPanel'); show('hub'); };
+
+    $('tileProfile').addEventListener('click', (e) => { e.preventDefault(); openProfile(); });
+    $('btnBack').onclick = backToHub;
+    $('linkBack').onclick = backToHub;
+
+    // Photos “subpage”
+    $('tilePhotos').addEventListener('click', async (e) => {
+      e.preventDefault();
+      hide('hub'); show('photosPanel');
+      await loadPhotos();
+    });
+    $('photosBack').onclick = backToHub;
+
+    // --- Load session + profile ----------------------------------------------
+    (async function init(){
+      try {
+        // session (name/email)
+        const me = await authed('/extranet/session');
+        const s = await me.json().catch(()=>({}));
+        const company = s.name || 'Partner';
+        $('brandTitle').textContent = company;                      // top-left brand
+        $('welcomeH1').textContent  = `Welcome, ${company}`;
+        $('partnerEmail').textContent = s.email || '';
+
+        // property (profile status + fields)
+        const r = await authed('/extranet/property');
+        if (r.ok) {
+          const p = await r.json();
+          $('pp_name').value         = p.name || company || '';
+          $('pp_contactEmail').value = p.contactEmail || s.email || '';
+          $('pp_phone').value        = p.phone || '';
+          $('pp_country').value      = p.country || '';
+          $('pp_address').value      = p.addressLine || '';
+          $('pp_city').value         = p.city || '';
+          $('pp_desc').value         = p.description || '';
+          $('profileStatus').textContent = 'Complete';
+          $('profileStatus').className = 'ok';
+          $('profileBadge').textContent = 'Edit';
+        } else {
+          $('profileStatus').textContent = 'Missing info';
+          $('profileStatus').className = 'todo';
+          $('profileBadge').textContent = 'Set up';
+        }
+      } catch (e) {
+        console.error(e);
+        toast('Could not load your session. Please sign in again.');
+        setTimeout(()=>location.replace(LOGIN_PAGE), 1200);
+      }
+    })();
+
+    // --- Save profile ---------------------------------------------------------
+    $('btnSave').onclick = async () => {
+      const payload = {
+        name: $('pp_name').value.trim(),
+        contactEmail: $('pp_contactEmail').value.trim() || null,
+        phone: $('pp_phone').value.trim() || null,
+        country: $('pp_country').value.trim() || null,
+        addressLine: $('pp_address').value.trim() || null,
+        city: $('pp_city').value.trim() || null,
+        description: $('pp_desc').value.trim() || null,
+      };
+      if (!payload.name) return toast('Company name is required.');
+
+      try{
+        const res = await authed('/extranet/property', {
+          method:'PUT',
+          headers:{ 'Content-Type':'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(()=>({})); 
+          throw new Error(d.message || 'Save failed');
+        }
+        toast('Saved.', true);
+        $('profileStatus').textContent = 'Complete';
+        $('profileStatus').className = 'ok';
+        $('profileBadge').textContent = 'Edit';
+      }catch(e){
+        console.error(e); toast(e.message || 'Network error.');
+      }
+    };
+
+    // --- Photos loader --------------------------------------------------------
+    async function loadPhotos(){
+      const grid = $('photosGrid');
+      grid.innerHTML = '<div class="muted">Loading…</div>';
+      try {
+        const r = await authed('/extranet/property/photos');
+        const arr = await r.json().catch(()=>[]);
+        if (!Array.isArray(arr) || arr.length === 0) {
+          grid.innerHTML = '<div class="muted">No photos yet.</div>';
+          return;
+        }
+        grid.innerHTML = '';
+        arr.forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'ph';
+          const img = document.createElement('img');
+          img.src = p.url || '';
+          img.alt = p.alt || '';
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = p.caption || p.key || '';
+          div.appendChild(img);
+          div.appendChild(meta);
+          grid.appendChild(div);
+        });
+      } catch (e) {
+        console.error(e);
+        grid.innerHTML = '<div class="muted">Failed to load photos.</div>';
+      }
+    }
+
+    // If a BFCache restore happens, force fresh load
+    window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
   </script>
 </body>
 </html>
