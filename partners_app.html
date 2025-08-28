@@ -315,9 +315,14 @@
           throw new Error(d.message || 'Save failed');
         }
         toast('Saved.', true);
-        $('profileStatus').textContent = 'Complete';
-        $('profileStatus').className = 'ok';
-        $('profileBadge').textContent = 'Edit';
+            // Update UI immediately with the new name
+            const newName = $('pp_name').value.trim() || 'Partner';
+            $('profileStatus').textContent = 'Complete';
+            $('profileStatus').className = 'ok';
+            $('profileBadge').textContent = 'Edit';
+            $('brandTitle').textContent = newName;
+            $('welcomeH1').textContent  = `Welcome, ${newName}`;
+
       }catch(e){
         console.error(e); toast(e.message || 'Network error.');
       }
