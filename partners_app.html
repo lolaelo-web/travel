@@ -134,13 +134,13 @@
             <p>Questions? Email our team — we’re happy to help.</p>
           </a>
         </div>
+      </div> <!-- end of #hub -->
 
-        <div id="photosPanel" class="section hidden">
-          <h2>Your Photos</h2>
-          <div id="photosGrid" class="photos"></div>
-          <div class="backlink" id="photosBack">← Back to main menu</div>
-        </div>
-      </div>
+<div id="photosPanel" class="card section hidden">
+  <h2>Your Photos</h2>
+  <div id="photosGrid" class="photos"></div>
+  <div class="backlink"><a href="#" id="photosBack">← Back to main menu</a></div>
+</div>
 
       <!-- COMPANY PROFILE (inline “subpage”) -->
       <div id="profile" class="card section hidden" aria-label="Company Profile">
@@ -247,12 +247,18 @@
     $('linkBack').onclick = backToHub;
 
     // Photos “subpage”
-    $('tilePhotos').addEventListener('click', async (e) => {
+     $('tilePhotos').addEventListener('click', async (e) => {
       e.preventDefault();
-      hide('hub'); show('photosPanel');
+      hide('hub');
+      show('photosPanel');
       await loadPhotos();
     });
-    $('photosBack').onclick = backToHub;
+    
+    $('photosBack').addEventListener('click', (e) => {
+      e.preventDefault();
+      hide('photosPanel');
+      show('hub');
+    });
 
     // --- Load session + profile ----------------------------------------------
     (async function init(){
