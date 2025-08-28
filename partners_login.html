@@ -76,82 +76,84 @@
   <script>
     const API_BASE = "https://lolaelo-api.onrender.com";
     const SESSION_KEY = "lolaelo_session";
-    const APP_PAGE = "partners_app.html";
+    const APP_PAGE = "/travel/partners_app.html";
 
     const el = (id) => document.getElementById(id);
-    const toastBox = el('toast');
+    const toastBox   = el('toast');
     const emailInput = el('email');
-    const codeInput   = el('code');
-    const btnRequest  = el('btnRequest');
+    const codeInput  = el('code');
+    const btnRequest = el('btnRequest');
+    const btnVerify  = el('btnVerify');
+    const btnClear   = el('btnClear');
 
-    function toast(html, ok=false){
+    function toast(html){
       toastBox.innerHTML = html;
       toastBox.classList.remove('hidden');
-      clearTimeout(window.__t); window.__t = setTimeout(()=>toastBox.classList.add('hidden'), 4000);
+      clearTimeout(window.__t);
+      window.__t = setTimeout(()=>toastBox.classList.add('hidden'), 4000);
     }
 
-    el('btnClear').onclick = () => {
+    btnClear.onclick = () => {
       localStorage.removeItem(SESSION_KEY);
-      toast('Session cleared', true);
+      codeInput.value = "";
+      toast('Session cleared');
     };
 
     el('linkSignup').onclick = (e) => { e.preventDefault(); emailInput.focus(); };
 
-    // Send code (with loading state and dev-code shown only if API returns it)
+    // --- Send code ---
     btnRequest.onclick = async () => {
       const email = (emailInput.value || '').trim().toLowerCase();
-      if (!email) return toast('Enter your email.');
+      if (!email || !email.includes("@")) return toast('Enter a valid email.');
       btnRequest.disabled = true;
       try {
-        const res = await fetch(`${API_BASE}/extranet/login/request-code`, {
+        const res = await fetch(`${API_BASE}/login/request-code`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email })
         });
         const data = await res.json().catch(()=>({}));
-        if (!res.ok) throw new Error(data.error || `Could not send code (${res.status})`);
-
-        const dev = data.code ? ` <span class="hint">Dev code: <b>${data.code}</b></span>` : '';
-        toast(`Code sent to <b>${data.email}</b>.${dev}`, true);
+        if (!res.ok || !data.ok) throw new Error(data.error || `Could not send code (${res.status})`);
+        if (data.emailed) toast(`Code sent to <b>${email}</b>.`);
+        if (data.devCode) { codeInput.value = data.devCode; toast(`Dev code: <b>${data.devCode}</b> (prefilled)`); }
         codeInput.focus();
       } catch (e) {
-        toast(e.message || 'Network error.');
         console.error(e);
+        toast(e.message || 'Network error.');
       } finally {
         btnRequest.disabled = false;
       }
     };
 
-    // Verify & sign in
-    el('btnVerify').onclick = async () => {
+    // --- Verify & sign in ---
+    btnVerify.onclick = async () => {
       const email = (emailInput.value || '').trim().toLowerCase();
       const code  = (codeInput.value  || '').trim();
-      if (!email || !code) return toast('Email and code required.');
-      const res = await fetch(`${API_BASE}/extranet/login/verify`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, code })
-      });
-      const data = await res.json().catch(()=>({}));
-      if (!res.ok || !data.token) return toast(data.error || 'Invalid/expired code');
+      if (!email || !/^\d{6}$/.test(code)) return toast('Enter your email and a 6-digit code.');
 
-      localStorage.setItem(SESSION_KEY, data.token);
-
-      // sanity check, then navigate WITHOUT adding history
-      const s = await fetch(`${API_BASE}/extranet/session`, {
-        headers: { 'Authorization': `Bearer ${data.token}`, 'x-partner-token': data.token }
-      }).catch(()=>null);
-      if (!s || !s.ok) return toast('Session check failed');
-      location.replace(APP_PAGE);   // no history entry
+      try {
+        const res = await fetch(`${API_BASE}/login/verify-code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code })
+        });
+        const data = await res.json().catch(()=>({}));
+        if (!res.ok || !data.ok || !data.token) {
+          return toast(data.error || 'Invalid or expired code.');
+        }
+        localStorage.setItem(SESSION_KEY, data.token);
+        // Go to app hub
+        location.replace(APP_PAGE);
+      } catch (e) {
+        console.error(e);
+        toast('Verification failed.');
+      }
     };
 
-    // Restore existing session (also with replace)
-    (async function restore(){
+    // --- If a token already exists, skip login (optional) ---
+    (function restore(){
       const t = localStorage.getItem(SESSION_KEY);
-      if (!t) return;
-      const s = await fetch(`${API_BASE}/extranet/session`, {
-        headers: { 'Authorization': `Bearer ${t}`, 'x-partner-token': t }
-      }).catch(()=>null);
-      if (s && s.ok) location.replace(APP_PAGE);
+      if (t) location.replace(APP_PAGE);
     })();
   </script>
 </body>
