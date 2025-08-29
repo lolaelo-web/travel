@@ -139,7 +139,10 @@
 <div id="photosPanel" class="card section hidden">
   <h2>Your Photos</h2>
   <div id="photosGrid" class="photos"></div>
-  <div class="backlink"><a href="#" id="photosBack">← Back to main menu</a></div>
+    <div style="display:flex; gap:8px; margin-top:14px">
+    <button id="photosBackBtn" class="btn secondary" type="button">Back to menu</button>
+  </div>
+
 </div>
 
       <!-- COMPANY PROFILE (inline “subpage”) -->
@@ -254,11 +257,12 @@ if (lb) lb.onclick = backToHub;   // or just remove this line entirely
       await loadPhotos();
     });
     
-    $('photosBack').addEventListener('click', (e) => {
+    $('photosBackBtn').addEventListener('click', (e) => {
       e.preventDefault();
       hide('photosPanel');
       show('hub');
     });
+
 
     // --- Load session + profile ----------------------------------------------
     (async function init(){
