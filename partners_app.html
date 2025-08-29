@@ -222,8 +222,6 @@
     function show(id){ $(id).classList.remove('hidden') }
     function hide(id){ $(id).classList.add('hidden') }
     let photosState = [];
-    // --- Photos state ------------------------------------------------------------
-let photosState = [];
 
     // --- Auth & fetch helpers -------------------------------------------------
     const token = localStorage.getItem(SESSION_KEY);
@@ -259,9 +257,7 @@ let photosState = [];
 
     $('tileProfile').addEventListener('click', (e) => { e.preventDefault(); openProfile(); });
     $('btnBack').onclick = backToHub;
-    const lb = $('linkBack');
-if (lb) lb.onclick = backToHub;   // or just remove this line entirely
-
+   
     // Photos “subpage”
      $('tilePhotos').addEventListener('click', async (e) => {
       e.preventDefault();
