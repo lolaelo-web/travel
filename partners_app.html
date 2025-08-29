@@ -139,6 +139,7 @@
 <div id="photosPanel" class="card section hidden">
   <h2>Your Photos</h2>
   <div id="photosGrid" class="photos"></div>
+  <div class="backlink"><a href="#" id="photosBack">← Back to main menu</a></div>
 </div>
 
       <!-- COMPANY PROFILE (inline “subpage”) -->
@@ -185,7 +186,6 @@
           <button id="btnBack" class="btn secondary" type="button">Back to menu</button>
         </div>
 
-        <div class="backlink" id="linkBack">← Back to main menu</div>
       </div>
     </div>
   </div>
@@ -243,7 +243,8 @@
 
     $('tileProfile').addEventListener('click', (e) => { e.preventDefault(); openProfile(); });
     $('btnBack').onclick = backToHub;
-    $('linkBack').onclick = backToHub;
+    const lb = $('linkBack');
+if (lb) lb.onclick = backToHub;   // or just remove this line entirely
 
     // Photos “subpage”
      $('tilePhotos').addEventListener('click', async (e) => {
