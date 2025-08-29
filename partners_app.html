@@ -140,19 +140,6 @@
 <div id="photosPanel" class="card section hidden">
   <h2>Your Photos</h2>
 
-  <!-- Action bar -->
-  <div id="photosActions" style="display:flex; gap:8px; align-items:center; margin:6px 0 10px">
-    <button id="btnUploadPhoto" class="btn" type="button">Upload photo</button>
-    <input id="fileInput" type="file" accept="image/*" style="display:none" />
-  </div>
-
-  <div id="photosGrid" class="photos"></div>
-
-  <div style="display:flex; gap:8px; margin-top:14px">
-    <button id="photosBackBtn" class="btn secondary" type="button">Back to menu</button>
-  </div>
-</div>
-
 </div>
 
       <!-- COMPANY PROFILE (inline “subpage”) -->
@@ -291,10 +278,19 @@ $('fileInput').addEventListener('change', async (e) => {
       })
     });
     const data = await up.json();
-    const uploadUrl = data.uploadUrl || data.signedUrl || data.url;
-    const key       = data.key;
-    const publicUrl = data.publicUrl || data.public_url || data.url || (uploadUrl ? uploadUrl.split('?')[0] : null);
-    if (!uploadUrl || !key) throw new Error('Bad upload-url response');
+
+// tolerate multiple shapes
+const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
+const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
+
+// build a public URL if the API didn’t return one
+const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
+
+if (!uploadUrl || !key) {
+  console.warn('upload-url payload:', data);
+  throw new Error('Bad upload-url response');
+}
+
 
     const put = await fetch(uploadUrl, {
       method:'PUT',
@@ -321,40 +317,46 @@ $('fileInput').addEventListener('change', async (e) => {
 });
 
 
-    // --- Load session + profile ----------------------------------------------
-    (async function init(){
-      try {
-        // session (name/email)
-        const me = await authed('/extranet/session');
-        const s = await me.json().catch(()=>({}));
-        const company = s.name || 'Partner';
-        $('brandTitle').textContent = company;                      // top-left brand
-        $('welcomeH1').textContent  = `Welcome, ${company}`;
-        $('partnerEmail').textContent = s.email || '';
+// --- Load session + profile --------------------------------------------------
+(async function init(){
+  try {
+    // 1) session (email + fallback name)
+    const me = await authed('/extranet/session');
+    const s  = await me.json().catch(()=>({}));
+    $('partnerEmail').textContent = s.email || '';
+    let company = s.name || 'Partner';
 
-        // property (profile status + fields)
-        const r = await authed('/extranet/property');
-        if (r.ok) {
-          const p = await r.json();
-          $('pp_name').value         = p.name || company || '';
-          $('pp_contactEmail').value = p.contactEmail || s.email || '';
-          $('pp_phone').value        = p.phone || '';
-          $('pp_country').value      = p.country || '';
-          $('pp_address').value      = p.addressLine || '';
-          $('pp_city').value         = p.city || '';
-          $('pp_desc').value         = p.description || '';
-          $('profileStatus').textContent = 'Complete';
-          $('profileStatus').className = 'ok';
-        } else {
-          $('profileStatus').textContent = 'Missing info';
-          $('profileStatus').className = 'todo';
-        }
-      } catch (e) {
-        console.error(e);
-        toast('Could not load your session. Please sign in again.');
-        setTimeout(()=>location.replace(LOGIN_PAGE), 1200);
-      }
-    })();
+    // 2) property (prefer saved profile name)
+    const r = await authed('/extranet/property');
+    if (r.ok) {
+      const p = await r.json();
+      $('pp_name').value         = p.name || company || '';
+      $('pp_contactEmail').value = p.contactEmail || s.email || '';
+      $('pp_phone').value        = p.phone || '';
+      $('pp_country').value      = p.country || '';
+      $('pp_address').value      = p.addressLine || '';
+      $('pp_city').value         = p.city || '';
+      $('pp_desc').value         = p.description || '';
+
+      $('profileStatus').textContent = 'Complete';
+      $('profileStatus').className   = 'ok';
+
+      // prefer profile name if present
+      if (p.name) company = p.name;
+    } else {
+      $('profileStatus').textContent = 'Missing info';
+      $('profileStatus').className   = 'todo';
+    }
+
+    // 3) apply final company name to brand + welcome
+    $('brandTitle').textContent = company;
+    $('welcomeH1').textContent  = `Welcome, ${company}`;
+  } catch (e) {
+    console.error(e);
+    toast('Could not load your session. Please sign in again.');
+    setTimeout(()=>location.replace(LOGIN_PAGE), 1200);
+  }
+})();
 
     // --- Save profile ---------------------------------------------------------
     $('btnSave').onclick = async () => {
