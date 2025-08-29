@@ -153,6 +153,8 @@
   </div>
 </div>
 
+</div>
+
       <!-- COMPANY PROFILE (inline “subpage”) -->
       <div id="profile" class="card section hidden" aria-label="Company Profile">
         <h2>Company Profile</h2>
@@ -219,6 +221,7 @@
     }
     function show(id){ $(id).classList.remove('hidden') }
     function hide(id){ $(id).classList.add('hidden') }
+    let photosState = [];
     // --- Photos state ------------------------------------------------------------
 let photosState = [];
 
@@ -272,6 +275,54 @@ if (lb) lb.onclick = backToHub;   // or just remove this line entirely
       hide('photosPanel');
       show('hub');
     });
+// Upload button -> file picker
+$('btnUploadPhoto').addEventListener('click', () => $('fileInput').click());
+
+// Handle file selection
+$('fileInput').addEventListener('change', async (e) => {
+  const file = e.target.files?.[0];
+  e.target.value = '';
+  if (!file) return;
+
+  try {
+    const up = await authed('/extranet/property/photos/upload-url', {
+      method:'POST',
+      headers:{ 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        filename: file.name,
+        contentType: file.type || 'application/octet-stream',
+        size: file.size
+      })
+    });
+    const data = await up.json();
+    const uploadUrl = data.uploadUrl || data.signedUrl || data.url;
+    const key       = data.key;
+    const publicUrl = data.publicUrl || data.public_url || data.url || (uploadUrl ? uploadUrl.split('?')[0] : null);
+    if (!uploadUrl || !key) throw new Error('Bad upload-url response');
+
+    const put = await fetch(uploadUrl, {
+      method:'PUT',
+      headers:{ 'Content-Type': file.type || 'application/octet-stream' },
+      body: file
+    });
+    if (!put.ok) throw new Error('Upload failed');
+
+    const create = await authed('/extranet/property/photos', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ key, url: publicUrl, alt: null, isCover: false })
+    });
+    if (!create.ok) throw new Error('Create failed');
+    const created = await create.json();
+
+    photosState.push(created);
+    renderPhotos();
+    toast('Uploaded.', true);
+  } catch (err) {
+    console.error(err);
+    toast(err.message || 'Upload failed');
+  }
+});
 
 
     // --- Load session + profile ----------------------------------------------
