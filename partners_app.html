@@ -285,53 +285,68 @@ $('fileInput').addEventListener('change', async (e) => {
   if (!file) return;
 
   try {
-    const up = await authed('/extranet/property/photos/upload-url', {
-      method:'POST',
-      headers:{ 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-      fileName: file.name,                      // <-- camel N
-      contentType: file.type || 'image/jpeg',   // safe fallback
+  // 1) Ask API for a presigned URL
+  const up = await authed('/extranet/property/photos/upload-url', {
+    method:'POST',
+    headers:{ 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      fileName: file.name,
+      contentType: file.type || 'image/jpeg',
       size: file.size
     })
-    });
-    const data = await up.json();
-    if (!up.ok) { throw new Error(data?.error || `upload-url ${up.status}`); }
+  });
 
-// tolerate multiple shapes
-const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
-const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
+  const data = await up.json().catch(()=> ({}));
+  console.log('[upload-url] status:', up.status, data);
 
-// build a public URL if the API didn’t return one
-const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
+  const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
+  const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
+  const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
 
-if (!uploadUrl || !key) {
-  console.warn('upload-url payload:', data);
-  throw new Error('Bad upload-url response');
-}
-
-
-    const put = await fetch(uploadUrl, {
-      method:'PUT',
-      headers:{ 'Content-Type': file.type || 'application/octet-stream' },
-      body: file
-    });
-    if (!put.ok) throw new Error('Upload failed');
-
-    const create = await authed('/extranet/property/photos', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ key, url: publicUrl, alt: null, isCover: false })
-    });
-    if (!create.ok) throw new Error('Create failed');
-    const created = await create.json();
-
-    photosState.push(created);
-    renderPhotos();
-    toast('Uploaded.', true);
-  } catch (err) {
-    console.error(err);
-    toast(err.message || 'Upload failed');
+  if (!uploadUrl || !key) {
+    throw new Error('Bad upload-url response (missing uploadUrl/key)');
   }
+
+  // 2) Upload directly to storage (this is where CORS can block)
+  const put = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': file.type || 'image/jpeg' },
+    body: file,
+    // mode: 'cors'  // default is cors; leaving explicit here for clarity
+  }).catch((e) => {
+    console.error('[PUT to presigned URL] network error:', e);
+    throw new Error('Failed to fetch (likely CORS on bucket)');
+  });
+
+  if (!put.ok) {
+    let text = '';
+    try { text = await put.text(); } catch {}
+    console.error('[PUT to presigned URL] HTTP', put.status, text);
+    throw new Error(`Storage upload failed: ${put.status}`);
+  }
+
+  // 3) Tell our API to create the DB row
+  const create = await authed('/extranet/property/photos', {
+    method:'POST',
+    headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({ key, url: publicUrl, alt: null, isCover: false })
+  });
+
+  if (!create.ok) {
+    let msg = '';
+    try { msg = (await create.json()).error || ''; } catch {}
+    console.error('[create photo] HTTP', create.status, msg);
+    throw new Error(msg || `Create failed: ${create.status}`);
+  }
+
+  const created = await create.json();
+  photosState.push(created);
+  renderPhotos();
+  toast('Uploaded.', true);
+} catch (err) {
+  console.error(err);
+  toast(err.message || 'Upload failed');
+}
 });
 
 
