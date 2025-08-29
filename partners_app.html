@@ -136,10 +136,21 @@
         </div>
       </div> <!-- end of #hub -->
 
-      <!-- Photos Panel -->
+<!-- Photos Panel -->
 <div id="photosPanel" class="card section hidden">
   <h2>Your Photos</h2>
 
+  <!-- Action bar -->
+  <div id="photosActions" style="display:flex; gap:8px; align-items:center; margin:6px 0 10px">
+    <button id="btnUploadPhoto" class="btn" type="button">Upload photo</button>
+    <input id="fileInput" type="file" accept="image/*" style="display:none" />
+  </div>
+
+  <div id="photosGrid" class="photos"></div>
+
+  <div style="display:flex; gap:8px; margin-top:14px">
+    <button id="photosBackBtn" class="btn secondary" type="button">Back to menu</button>
+  </div>
 </div>
 
       <!-- COMPANY PROFILE (inline “subpage”) -->
@@ -234,10 +245,16 @@
 
     // --- UI state -------------------------------------------------------------
     $('btnLogout').onclick = async () => {
-      try { await authed('/extranet/logout', { method:'POST' }); } catch {}
-      localStorage.removeItem(SESSION_KEY);
-      location.replace(LOGIN_PAGE);
-    };
+  try {
+    const t = localStorage.getItem(SESSION_KEY) || '';
+    await fetch(`${API_BASE}/extranet/logout`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${t}`, 'x-partner-token': t }
+    });
+  } catch {}
+  try { localStorage.removeItem(SESSION_KEY); } catch {}
+  location.replace(LOGIN_PAGE);
+};
 
     const openProfile = () => { hide('hub'); show('profile'); };
     const backToHub   = () => { hide('profile'); hide('photosPanel'); show('hub'); };
@@ -278,6 +295,7 @@ $('fileInput').addEventListener('change', async (e) => {
       })
     });
     const data = await up.json();
+    if (!up.ok) { throw new Error(data?.error || `upload-url ${up.status}`); }
 
 // tolerate multiple shapes
 const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
