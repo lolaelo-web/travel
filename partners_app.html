@@ -110,7 +110,7 @@
 
         <div class="grid">
           <a id="tileProfile" class="tile" href="#profile">
-            <h3>Company Profile <span class="badge" id="profileBadge">Set up</span></h3>
+            <h3>Company Profile</h3>
             <p>Manage your company details, contact info and description.</p>
           </a>
 
@@ -283,11 +283,9 @@
           $('pp_desc').value         = p.description || '';
           $('profileStatus').textContent = 'Complete';
           $('profileStatus').className = 'ok';
-          $('profileBadge').textContent = 'Edit';
         } else {
           $('profileStatus').textContent = 'Missing info';
           $('profileStatus').className = 'todo';
-          $('profileBadge').textContent = 'Set up';
         }
       } catch (e) {
         console.error(e);
@@ -324,7 +322,6 @@
             const newName = $('pp_name').value.trim() || 'Partner';
             $('profileStatus').textContent = 'Complete';
             $('profileStatus').className = 'ok';
-            $('profileBadge').textContent = 'Edit';
             $('brandTitle').textContent = newName;
             $('welcomeH1').textContent  = `Welcome, ${newName}`;
 
