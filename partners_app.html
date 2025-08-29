@@ -289,10 +289,10 @@ $('fileInput').addEventListener('change', async (e) => {
       method:'POST',
       headers:{ 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        filename: file.name,
-        contentType: file.type || 'application/octet-stream',
-        size: file.size
-      })
+      fileName: file.name,                      // <-- camel N
+      contentType: file.type || 'image/jpeg',   // safe fallback
+      size: file.size
+    })
     });
     const data = await up.json();
     if (!up.ok) { throw new Error(data?.error || `upload-url ${up.status}`); }
