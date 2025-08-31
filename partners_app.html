@@ -495,7 +495,7 @@ function renderPhotos(){
           if (alt === null) return; // user cancelled
           // If your API only supports PUT, change method to 'PUT'
           const resp = await authed(`/extranet/property/photos/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ alt })
           });
@@ -509,7 +509,7 @@ function renderPhotos(){
         if (act === 'cover') {
           // If your API only supports PUT, change method to 'PUT'
           const resp = await authed(`/extranet/property/photos/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ isCover: true })
           });
