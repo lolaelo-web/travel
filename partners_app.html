@@ -320,12 +320,17 @@ $('fileInput').addEventListener('change', async (e) => {
     throw new Error(`Storage upload failed: ${put.status}`);
   }
 
-  // 3) Tell our API to create the DB row
-  const create = await authed('/extranet/property/photos', {
-    method:'POST',
-    headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
-  });
+// 3) Tell our API to create the DB row (expects key + url)
+const create = await authed('/extranet/property/photos', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    key,
+    url: publicUrl,
+    alt: null,
+    isCover: false
+  })
+});
 
   if (!create.ok) {
     let msg = '';
