@@ -474,7 +474,7 @@ function renderPhotos(){
       grid.appendChild(div);
     });
 
-  // wire actions
+    // wire actions (fixed: no undefined `file`, correct payloads)
   grid.querySelectorAll('button[data-id]').forEach(btn => {
     btn.onclick = async () => {
       const id  = Number(btn.dataset.id);
@@ -487,28 +487,38 @@ function renderPhotos(){
           photosState = photosState.filter(x => x.id !== id);
           renderPhotos();
           toast('Deleted.', true);
+          return;
         }
+
         if (act === 'edit') {
           const current = photosState.find(x => x.id === id);
-          const alt = prompt('Alt text / caption', current?.alt || '') ?? null;
+          const alt = prompt('Alt text / caption', current?.alt || '');
+          if (alt === null) return; // user cancelled
+          // Prefer PATCH; if your API only supports PUT, change method to 'PUT'
           const resp = await authed(`/extranet/property/photos/${id}`, {
-            method:'PUT', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
+            method:'PATCH',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify({ alt })
           });
           if (!resp.ok) throw new Error('Save failed');
           if (current) current.alt = alt;
           renderPhotos();
           toast('Saved.', true);
+          return;
         }
+
         if (act === 'cover') {
+          // Prefer PATCH; if your API only supports PUT, change method to 'PATCH'
           const resp = await authed(`/extranet/property/photos/${id}`, {
-            method:'PUT', headers:{'Content-Type':'application/json'},
-            body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
+            method:'PATCH',
+            headers:{ 'Content-Type':'application/json' },
+            body: JSON.stringify({ isCover: true })
           });
           if (!resp.ok) throw new Error('Save failed');
           photosState = photosState.map(x => ({ ...x, isCover: x.id === id }));
           renderPhotos();
           toast('Cover set.', true);
+          return;
         }
       } catch (err) {
         console.error(err);
@@ -516,8 +526,6 @@ function renderPhotos(){
       }
     };
   });
-}
-
     // If a BFCache restore happens, force fresh load
     window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
   </script>
