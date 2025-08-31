@@ -230,8 +230,7 @@
         ...options,
         headers: {
           ...(options.headers || {}),
-          'Authorization': `Bearer ${token}`,
-          'x-partner-token': token
+          'Authorization': `Bearer ${token}`
         }
       });
       if (r.status === 401 || r.status === 403) {
@@ -474,7 +473,7 @@ function renderPhotos(){
       grid.appendChild(div);
     });
 
-    // wire actions (fixed: no undefined `file`, correct payloads)
+      // wire actions (clean)
   grid.querySelectorAll('button[data-id]').forEach(btn => {
     btn.onclick = async () => {
       const id  = Number(btn.dataset.id);
@@ -482,7 +481,7 @@ function renderPhotos(){
       try {
         if (act === 'del') {
           if (!confirm('Delete this photo?')) return;
-          const resp = await authed(`/extranet/property/photos/${id}`, { method:'DELETE' });
+          const resp = await authed(`/extranet/property/photos/${id}`, { method: 'DELETE' });
           if (!resp.ok) throw new Error('Delete failed');
           photosState = photosState.filter(x => x.id !== id);
           renderPhotos();
@@ -492,12 +491,12 @@ function renderPhotos(){
 
         if (act === 'edit') {
           const current = photosState.find(x => x.id === id);
-          const alt = prompt('Alt text / caption', current?.alt || '');
+          const alt = prompt('Alt text / caption', (current && current.alt) ? current.alt : '');
           if (alt === null) return; // user cancelled
-          // Prefer PATCH; if your API only supports PUT, change method to 'PUT'
+          // If your API only supports PUT, change method to 'PUT'
           const resp = await authed(`/extranet/property/photos/${id}`, {
-            method:'PATCH',
-            headers:{ 'Content-Type':'application/json' },
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ alt })
           });
           if (!resp.ok) throw new Error('Save failed');
@@ -508,10 +507,10 @@ function renderPhotos(){
         }
 
         if (act === 'cover') {
-          // Prefer PATCH; if your API only supports PUT, change method to 'PATCH'
+          // If your API only supports PUT, change method to 'PUT'
           const resp = await authed(`/extranet/property/photos/${id}`, {
-            method:'PATCH',
-            headers:{ 'Content-Type':'application/json' },
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ isCover: true })
           });
           if (!resp.ok) throw new Error('Save failed');
@@ -526,6 +525,7 @@ function renderPhotos(){
       }
     };
   });
+
     // If a BFCache restore happens, force fresh load
     window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
   </script>
