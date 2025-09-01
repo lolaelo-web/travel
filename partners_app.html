@@ -248,7 +248,7 @@
     const t = localStorage.getItem(SESSION_KEY) || '';
     await fetch(`${API_BASE}/extranet/logout`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${t}`, 'x-partner-token': t }
+      headers: { Authorization: `Bearer ${t}` }
     });
   } catch {}
   try { localStorage.removeItem(SESSION_KEY); } catch {}
@@ -393,41 +393,43 @@ const create = await authed('/extranet/property/photos', {
 
     // --- Save profile ---------------------------------------------------------
     $('btnSave').onclick = async () => {
-      const payload = {
-        name: $('pp_name').value.trim(),
-        contactEmail: $('pp_contactEmail').value.trim() || null,
-        phone: $('pp_phone').value.trim() || null,
-        country: $('pp_country').value.trim() || null,
-        addressLine: $('pp_address').value.trim() || null,
-        city: $('pp_city').value.trim() || null,
-        description: $('pp_desc').value.trim() || null,
-      };
-      if (!payload.name) return toast('Company name is required.');
+  const payload = {
+    name: $('pp_name').value.trim(),
+    contactEmail: $('pp_contactEmail').value.trim() || null,
+    phone: $('pp_phone').value.trim() || null,
+    country: $('pp_country').value.trim() || null,
+    addressLine: $('pp_address').value.trim() || null,
+    city: $('pp_city').value.trim() || null,
+    description: $('pp_desc').value.trim() || null,
+  };
+  if (!payload.name) return toast('Company name is required.');
 
-      try{
-        const res = await authed('/extranet/property', {
-          method:'PUT',
-          headers:{ 'Content-Type':'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (!res.ok) {
-          const d = await res.json().catch(()=>({})); 
-          throw new Error(d.message || 'Save failed');
-        }
-        toast('Saved.', true);
-            // Update UI immediately with the new name
-            const newName = $('pp_name').value.trim() || 'Partner';
-            $('profileStatus').textContent = 'Complete';
-            $('profileStatus').className = 'ok';
-            $('brandTitle').textContent = newName;
-            $('welcomeH1').textContent  = `Welcome, ${newName}`;
+  $('btnSave').disabled = true;
+  try {
+    const res = await authed('/extranet/property', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const d = await res.json().catch(()=>null);
+      throw new Error((d && (d.message || d.error)) || `Save failed (${res.status})`);
+    }
+    const saved = await res.json().catch(()=>null);
 
-      }catch(e){
-        console.error(e); toast(e.message || 'Network error.');
-      }
-    };
-
-    // --- Photos loader --------------------------------------------------------
+    const newName = (saved && saved.name) ? saved.name : (payload.name || 'Partner');
+    $('profileStatus').textContent = 'Complete';
+    $('profileStatus').className   = 'ok';
+    $('brandTitle').textContent    = newName;
+    $('welcomeH1').textContent     = `Welcome, ${newName}`;
+    toast('Saved.', true);
+  } catch (e) {
+    console.error(e);
+    toast(e.message || 'Network error.');
+  } finally {
+    $('btnSave').disabled = false;
+  }
+};
     // --- Photos loader + renderer ------------------------------------------------
 async function loadPhotos(){
   const grid = $('photosGrid');
