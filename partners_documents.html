@@ -7,15 +7,18 @@
 
   <style>
   :root {
-    /* Brand + theme tokens */
     --brand-orange: #f97316;
     --bg: #0f0f10; --fg: #ffffff; --muted: #9ca3af; --card: #111213; --border: #262626;
+    /* blue used across the app for outline buttons */
+    --brand-blue: #2563eb;         /* border */
+    --brand-blue-text: #60a5fa;    /* text */
+    --brand-blue-ring: #1d4ed8;    /* inner ring */
   }
   @media (prefers-color-scheme: light) {
     :root { --bg:#ffffff; --fg:#0f0f10; --muted:#6b7280; --card:#ffffff; --border:#e5e7eb; }
   }
 
-  /* Hint browsers to render native controls in dark mode here */
+  /* Dark-native controls */
   body { color-scheme: dark; }
   @media (prefers-color-scheme: light) { body { color-scheme: light; } }
 
@@ -25,6 +28,7 @@
   .card.docs { border-color: var(--brand-orange); box-shadow: 0 0 0 1px var(--brand-orange) inset; }
   .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
   .row.between { justify-content: space-between; align-items: center; }
+  .row.bottom { justify-content: flex-start; }
   .spacer { height: 16px; }
   .muted { color: var(--muted); font-size:12px; }
 
@@ -32,8 +36,18 @@
   .btn { cursor:pointer; border-radius:10px; padding:8px 12px; border:1px solid var(--border); background:#181818; color:#fff; }
   .btn:disabled { opacity:.6; cursor:not-allowed; }
   .btn-primary { background: var(--brand-orange); border-color: var(--brand-orange); color: #111; }
-  .btn-outline { background: transparent; color: var(--brand-orange); border-color: var(--brand-orange); }
   .btn-danger { background:#b91c1c; border-color:#7f1d1d; color:#fff; }
+
+  /* Outline button style to match the rest (blue outline) */
+  .btn-secondary-outline {
+    background: transparent;
+    color: var(--brand-blue-text);
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 1px var(--brand-blue) inset;
+  }
+  .btn-secondary-outline:hover {
+    background: rgba(37, 99, 235, 0.08);
+  }
 
   /* Inputs */
   .input,
@@ -43,7 +57,7 @@
     padding:8px 10px;
     background-color: var(--card);   /* dark background */
     color: inherit;
-    background-clip: padding-box;    /* avoid white halo */
+    background-clip: padding-box;
   }
   .input:focus,
   .select:focus { outline: none; border-color: var(--brand-orange); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-orange) 20%, transparent); }
@@ -64,9 +78,9 @@
   .table td { padding:10px 12px; border-bottom: 1px solid var(--brand-orange); vertical-align: top; }
   .nowrap { white-space:nowrap; }
 
-  /* Links in table: brand orange */
+  /* Links in table: brand orange, no underline */
   .table a,
-  .table a:visited { color: var(--brand-orange); text-decoration: underline; }
+  .table a:visited { color: var(--brand-orange); text-decoration: none; }
   .table a:hover,
   .table a:focus { color: color-mix(in oklab, var(--brand-orange) 75%, white); text-decoration: none; }
 
@@ -85,7 +99,6 @@
   <div class="page">
     <div class="card docs">
       <div class="row between">
-        <button id="backBtn" class="btn btn-outline">&larr; Back</button>
         <h1 style="margin:0;">Documents</h1>
         <span></span>
       </div>
@@ -125,6 +138,12 @@
         </thead>
         <tbody></tbody>
       </table>
+
+      <!-- Bottom back button -->
+      <div class="spacer"></div>
+      <div class="row bottom">
+        <button id="backBtn" class="btn btn-secondary-outline">Back to menu</button>
+      </div>
     </div>
   </div>
 
@@ -301,7 +320,7 @@ async function upload() {
 
 document.getElementById('uploadBtn').addEventListener('click', upload);
 
-// Back to hub (explicit route, avoids login page via history)
+// Bottom back button (consistent blue outline)
 document.getElementById('backBtn').addEventListener('click', () => {
   window.location.href = '/partners_app.html';
 });
