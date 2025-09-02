@@ -67,10 +67,13 @@
 <body>
   <div class="page">
     <div class="card">
-      <h1 style="margin:0 0 8px;">Documents</h1>
-      <div class="muted">Upload W-9, insurance, vendor agreements, etc.</div>
-
-      <div class="spacer"></div>
+      <div class="row between">
+  <button id="backBtn" class="btn btn-outline">&larr; Back</button>
+  <h1 style="margin:0;">Documents</h1>
+  <span></span> <!-- keeps the row balanced -->
+</div>
+<div class="muted">Upload W-9, insurance, vendor agreements, etc.</div>
+<div class="spacer"></div>
 
       <!-- Upload row -->
       <div class="row">
@@ -282,6 +285,11 @@ async function upload() {
 }
 
 document.getElementById('uploadBtn').addEventListener('click', upload);
+
+document.getElementById('backBtn').addEventListener('click', () => {
+  window.location.href = '/partners_app.html';
+});
+
 listDocs();
 </script>
 </body>
