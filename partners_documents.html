@@ -5,19 +5,24 @@
   <title>Documents</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- If your global CSS already defines .page/.card/.btn/.table, you can remove the block below -->
   <style>
   :root {
-    /* Use your site token if you have one; this falls back if not */
+    /* Brand + theme tokens */
     --brand-orange: #f97316;
     --bg: #0f0f10; --fg: #ffffff; --muted: #9ca3af; --card: #111213; --border: #262626;
   }
   @media (prefers-color-scheme: light) {
     :root { --bg:#ffffff; --fg:#0f0f10; --muted:#6b7280; --card:#ffffff; --border:#e5e7eb; }
   }
+
+  /* Hint browsers to render native controls in dark mode here */
+  body { color-scheme: dark; }
+  @media (prefers-color-scheme: light) { body { color-scheme: light; } }
+
   body { margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--fg); }
   .page { max-width: 960px; margin: 32px auto; padding: 0 16px; }
   .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+  .card.docs { border-color: var(--brand-orange); box-shadow: 0 0 0 1px var(--brand-orange) inset; }
   .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
   .row.between { justify-content: space-between; align-items: center; }
   .spacer { height: 16px; }
@@ -28,24 +33,30 @@
   .btn:disabled { opacity:.6; cursor:not-allowed; }
   .btn-primary { background: var(--brand-orange); border-color: var(--brand-orange); color: #111; }
   .btn-outline { background: transparent; color: var(--brand-orange); border-color: var(--brand-orange); }
+  .btn-danger { background:#b91c1c; border-color:#7f1d1d; color:#fff; }
 
   /* Inputs */
-  .input { border:1px solid var(--border); border-radius:10px; padding:8px 10px; background:transparent; color:inherit; }
-  .input:focus { outline: none; border-color: var(--brand-orange); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-orange) 20%, transparent); }
+  .input,
+  .select {
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:8px 10px;
+    background-color: var(--card);   /* dark background */
+    color: inherit;
+    background-clip: padding-box;    /* avoid white halo */
+  }
+  .input:focus,
+  .select:focus { outline: none; border-color: var(--brand-orange); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-orange) 20%, transparent); }
 
-  /* Styled select to match app */
+  /* Styled select caret */
   .select {
     appearance:none; -webkit-appearance:none; -moz-appearance:none;
-    border:1px solid var(--border); border-radius:10px; padding:8px 36px 8px 10px;
-    background: transparent;
-    color: inherit;
-    position: relative;
+    padding-right: 36px;
     background-image:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
   }
-  .select:focus { outline:none; border-color: var(--brand-orange); box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-orange) 20%, transparent); }
 
   /* Table — orange separators */
   .table { width:100%; border-collapse:collapse; }
@@ -53,27 +64,33 @@
   .table td { padding:10px 12px; border-bottom: 1px solid var(--brand-orange); vertical-align: top; }
   .nowrap { white-space:nowrap; }
 
+  /* Links in table: brand orange */
+  .table a,
+  .table a:visited { color: var(--brand-orange); text-decoration: underline; }
+  .table a:hover,
+  .table a:focus { color: color-mix(in oklab, var(--brand-orange) 75%, white); text-decoration: none; }
+
   /* Status badges */
   .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border); }
   .badge.SUBMITTED { background: #1f2937; }
-  .badge.APPROVED { background: #065f46; }
+  .badge.APPROVED  { background: #065f46; }
   .badge.REJECTED  { background: #7f1d1d; }
 
   textarea.notes { width:100%; min-height:40px; resize:vertical; }
   .actions { display:flex; gap:8px; flex-wrap:wrap; }
-</style>
+  </style>
 </head>
 
 <body>
   <div class="page">
-    <div class="card">
+    <div class="card docs">
       <div class="row between">
-  <button id="backBtn" class="btn btn-outline">&larr; Back</button>
-  <h1 style="margin:0;">Documents</h1>
-  <span></span> <!-- keeps the row balanced -->
-</div>
-<div class="muted">Upload W-9, insurance, vendor agreements, etc.</div>
-<div class="spacer"></div>
+        <button id="backBtn" class="btn btn-outline">&larr; Back</button>
+        <h1 style="margin:0;">Documents</h1>
+        <span></span>
+      </div>
+      <div class="muted">Upload W-9, insurance, vendor agreements, etc.</div>
+      <div class="spacer"></div>
 
       <!-- Upload row -->
       <div class="row">
@@ -108,16 +125,14 @@
         </thead>
         <tbody></tbody>
       </table>
-
     </div>
   </div>
 
 <script>
 const BASE = 'https://lolaelo-api.onrender.com';
 
-// Pull the same token the partners app uses
+// Token from partners hub
 function token() {
-  // adjust key if your app stores under a different name
   return localStorage.getItem('lolaelo_session') || '';
 }
 function headers(json = true) {
@@ -286,6 +301,7 @@ async function upload() {
 
 document.getElementById('uploadBtn').addEventListener('click', upload);
 
+// Back to hub (explicit route, avoids login page via history)
 document.getElementById('backBtn').addEventListener('click', () => {
   window.location.href = '/partners_app.html';
 });
