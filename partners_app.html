@@ -79,6 +79,14 @@
     .photos .ph{ background:#0e1830; border:1px solid var(--line); border-radius:10px; padding:8px; }
     .photos img{ width:100%; height:100px; object-fit:cover; border-radius:6px; display:block; }
     .photos .meta{ font-size:11px; color:#a9bbde; margin-top:6px; word-break:break-all }
+
+    /* NEW: keep action buttons inside the card and wrap neatly */
+    .photos .photo-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;         /* prevents overflow outside rounded border */
+      margin-top:8px;
+    }
   </style>
 </head>
 <body>
@@ -261,7 +269,7 @@
     $('tileProfile').addEventListener('click', (e) => { e.preventDefault(); openProfile(); });
     $('btnBack').onclick = backToHub;
    
-    // Photos â€œsubpageâ€
+    // Photos “subpage”
      $('tilePhotos').addEventListener('click', async (e) => {
       e.preventDefault();
       hide('hub');
@@ -274,268 +282,264 @@
       hide('photosPanel');
       show('hub');
     });
-// Upload button -> file picker
-$('btnUploadPhoto').addEventListener('click', () => $('fileInput').click());
 
-// Handle file selection
-$('fileInput').addEventListener('change', async (e) => {
-  const file = e.target.files?.[0];
-  e.target.value = '';
-  if (!file) return;
+    // Upload button -> file picker
+    $('btnUploadPhoto').addEventListener('click', () => $('fileInput').click());
 
-  try {
-  // 1) Ask API for a presigned URL
-  const up = await authed('/extranet/property/photos/upload-url', {
-    method:'POST',
-    headers:{ 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
-  });
+    // Handle file selection
+    $('fileInput').addEventListener('change', async (e) => {
+      const file = e.target.files?.[0];
+      e.target.value = '';
+      if (!file) return;
 
-  const data = await up.json().catch(()=> ({}));
-  console.log('[upload-url] status:', up.status, data);
+      try {
+      // 1) Ask API for a presigned URL
+      const up = await authed('/extranet/property/photos/upload-url', {
+        method:'POST',
+        headers:{ 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
+      });
 
-  const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
-  const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
-  const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
+      const data = await up.json().catch(()=> ({}));
+      console.log('[upload-url] status:', up.status, data);
 
-  if (!uploadUrl || !key) {
-    throw new Error('Bad upload-url response (missing uploadUrl/key)');
-  }
+      const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
+      const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
+      const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
 
-  // 2) Upload directly to storage (this is where CORS can block)
-  const put = await fetch(uploadUrl, {
-    method: 'PUT',
-    headers: { 'Content-Type': file.type || 'image/jpeg' },
-    body: file,
-    // mode: 'cors'  // default is cors; leaving explicit here for clarity
-  }).catch((e) => {
-    console.error('[PUT to presigned URL] network error:', e);
-    throw new Error('Failed to fetch (likely CORS on bucket)');
-  });
+      if (!uploadUrl || !key) {
+        throw new Error('Bad upload-url response (missing uploadUrl/key)');
+      }
 
-  if (!put.ok) {
-    let text = '';
-    try { text = await put.text(); } catch {}
-    console.error('[PUT to presigned URL] HTTP', put.status, text);
-    throw new Error(`Storage upload failed: ${put.status}`);
-  }
+      // 2) Upload directly to storage (this is where CORS can block)
+      const put = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers: { 'Content-Type': file.type || 'image/jpeg' },
+        body: file,
+      }).catch((e) => {
+        console.error('[PUT to presigned URL] network error:', e);
+        throw new Error('Failed to fetch (likely CORS on bucket)');
+      });
 
-// 3) Tell our API to create the DB row (expects key + url)
-const create = await authed('/extranet/property/photos', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    key,
-    url: publicUrl,
-    alt: null,
-    isCover: false
-  })
-});
+      if (!put.ok) {
+        let text = '';
+        try { text = await put.text(); } catch {}
+        console.error('[PUT to presigned URL] HTTP', put.status, text);
+        throw new Error(`Storage upload failed: ${put.status}`);
+      }
 
-  if (!create.ok) {
-    let msg = '';
-    try { msg = (await create.json()).error || ''; } catch {}
-    console.error('[create photo] HTTP', create.status, msg);
-    throw new Error(msg || `Create failed: ${create.status}`);
-  }
+      // 3) Tell our API to create the DB row (expects key + url)
+      const create = await authed('/extranet/property/photos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          key,
+          url: publicUrl,
+          alt: null,
+          isCover: false
+        })
+      });
 
-  const created = await create.json();
-  photosState.push(created);
-  renderPhotos();
-  toast('Uploaded.', true);
-} catch (err) {
-  console.error(err);
-  toast(err.message || 'Upload failed');
-}
-});
+      if (!create.ok) {
+        let msg = '';
+        try { msg = (await create.json()).error || ''; } catch {}
+        console.error('[create photo] HTTP', create.status, msg);
+        throw new Error(msg || `Create failed: ${create.status}`);
+      }
 
-
-// --- Load session + profile --------------------------------------------------
-(async function init(){
-  try {
-    // 1) session (email + fallback name)
-    const me = await authed('/extranet/session');
-    const s  = await me.json().catch(()=>({}));
-    $('partnerEmail').textContent = s.email || '';
-    let company = s.name || 'Partner';
-
-    // 2) property (prefer saved profile name)
-    const r = await authed('/extranet/property');
-    if (r.ok) {
-      const p = await r.json();
-      $('pp_name').value         = p.name || company || '';
-      $('pp_contactEmail').value = p.contactEmail || s.email || '';
-      $('pp_phone').value        = p.phone || '';
-      $('pp_country').value      = p.country || '';
-      $('pp_address').value      = p.addressLine || '';
-      $('pp_city').value         = p.city || '';
-      $('pp_desc').value         = p.description || '';
-
-      $('profileStatus').textContent = 'Complete';
-      $('profileStatus').className   = 'ok';
-
-      // prefer profile name if present
-      if (p.name) company = p.name;
-    } else {
-      $('profileStatus').textContent = 'Missing info';
-      $('profileStatus').className   = 'todo';
+      const created = await create.json();
+      photosState.push(created);
+      renderPhotos();
+      toast('Uploaded.', true);
+    } catch (err) {
+      console.error(err);
+      toast(err.message || 'Upload failed');
     }
+    });
 
-    // 3) apply final company name to brand + welcome
-    $('brandTitle').textContent = company;
-    $('welcomeH1').textContent  = `Welcome, ${company}`;
-  } catch (e) {
-    console.error(e);
-    toast('Could not load your session. Please sign in again.');
-    setTimeout(()=>location.replace(LOGIN_PAGE), 1200);
-  }
-})();
+    // --- Load session + profile --------------------------------------------------
+    (async function init(){
+      try {
+        // 1) session (email + fallback name)
+        const me = await authed('/extranet/session');
+        const s  = await me.json().catch(()=>({}));
+        $('partnerEmail').textContent = s.email || '';
+        let company = s.name || 'Partner';
+
+        // 2) property (prefer saved profile name)
+        const r = await authed('/extranet/property');
+        if (r.ok) {
+          const p = await r.json();
+          $('pp_name').value         = p.name || company || '';
+          $('pp_contactEmail').value = p.contactEmail || s.email || '';
+          $('pp_phone').value        = p.phone || '';
+          $('pp_country').value      = p.country || '';
+          $('pp_address').value      = p.addressLine || '';
+          $('pp_city').value         = p.city || '';
+          $('pp_desc').value         = p.description || '';
+
+          $('profileStatus').textContent = 'Complete';
+          $('profileStatus').className   = 'ok';
+
+          // prefer profile name if present
+          if (p.name) company = p.name;
+        } else {
+          $('profileStatus').textContent = 'Missing info';
+          $('profileStatus').className   = 'todo';
+        }
+
+        // 3) apply final company name to brand + welcome
+        $('brandTitle').textContent = company;
+        $('welcomeH1').textContent  = `Welcome, ${company}`;
+      } catch (e) {
+        console.error(e);
+        toast('Could not load your session. Please sign in again.');
+        setTimeout(()=>location.replace(LOGIN_PAGE), 1200);
+      }
+    })();
 
     // --- Save profile ---------------------------------------------------------
     $('btnSave').onclick = async () => {
-  const payload = {
-    name: $('pp_name').value.trim(),
-    contactEmail: $('pp_contactEmail').value.trim() || null,
-    phone: $('pp_phone').value.trim() || null,
-    country: $('pp_country').value.trim() || null,
-    addressLine: $('pp_address').value.trim() || null,
-    city: $('pp_city').value.trim() || null,
-    description: $('pp_desc').value.trim() || null,
-  };
-  if (!payload.name) return toast('Company name is required.');
+      const payload = {
+        name: $('pp_name').value.trim(),
+        contactEmail: $('pp_contactEmail').value.trim() || null,
+        phone: $('pp_phone').value.trim() || null,
+        country: $('pp_country').value.trim() || null,
+        addressLine: $('pp_address').value.trim() || null,
+        city: $('pp_city').value.trim() || null,
+        description: $('pp_desc').value.trim() || null,
+      };
+      if (!payload.name) return toast('Company name is required.');
 
-  $('btnSave').disabled = true;
-  try {
-    const res = await authed('/extranet/property', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) {
-      const d = await res.json().catch(()=>null);
-      throw new Error((d && (d.message || d.error)) || `Save failed (${res.status})`);
-    }
-    const saved = await res.json().catch(()=>null);
-
-    const newName = (saved && saved.name) ? saved.name : (payload.name || 'Partner');
-    $('profileStatus').textContent = 'Complete';
-    $('profileStatus').className   = 'ok';
-    $('brandTitle').textContent    = newName;
-    $('welcomeH1').textContent     = `Welcome, ${newName}`;
-    toast('Saved.', true);
-  } catch (e) {
-    console.error(e);
-    toast(e.message || 'Network error.');
-  } finally {
-    $('btnSave').disabled = false;
-  }
-};
-    // --- Photos loader + renderer ------------------------------------------------
-async function loadPhotos(){
-  const grid = $('photosGrid');
-  grid.innerHTML = '<div class="muted">Loadingâ€¦</div>';
-  try {
-    const r = await authed('/extranet/property/photos');
-    const arr = await r.json().catch(()=>[]);
-    photosState = Array.isArray(arr) ? arr : [];
-    renderPhotos();
-  } catch (e) {
-    console.error(e);
-    grid.innerHTML = '<div class="muted">Failed to load photos.</div>';
-  }
-}
-
-function renderPhotos(){
-  const grid = $('photosGrid');
-  if (!photosState.length) { grid.innerHTML = '<div class="muted">No photos yet.</div>'; return; }
-  grid.innerHTML = '';
-
-  photosState
-    .sort((a,b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id)
-    .forEach(p => {
-      const div  = document.createElement('div');
-      div.className = 'ph';
-
-      const img  = document.createElement('img');
-      img.src = p.url || '';
-      img.alt = p.alt || '';
-
-      const meta = document.createElement('div');
-      meta.className = 'meta';
-      meta.textContent = p.alt || p.caption || p.key || '';
-
-      const actions = document.createElement('div');
-      actions.style.marginTop = '8px';
-      actions.style.display = 'flex';
-      actions.style.gap = '6px';
-      actions.innerHTML = `
-        <button class="btn secondary" data-act="cover" data-id="${p.id}" ${p.isCover ? 'disabled' : ''}>${p.isCover ? 'Cover' : 'Set cover'}</button>
-        <button class="btn secondary" data-act="edit"  data-id="${p.id}">Edit</button>
-        <button class="btn ghost"     data-act="del"   data-id="${p.id}">Delete</button>
-      `;
-
-      div.appendChild(img);
-      div.appendChild(meta);
-      div.appendChild(actions);
-      grid.appendChild(div);
-    });
-
-      // wire actions (clean)
-  grid.querySelectorAll('button[data-id]').forEach(btn => {
-    btn.onclick = async () => {
-      const id  = Number(btn.dataset.id);
-      const act = btn.dataset.act;
+      $('btnSave').disabled = true;
       try {
-        if (act === 'del') {
-          if (!confirm('Delete this photo?')) return;
-          const resp = await authed(`/extranet/property/photos/${id}`, { method: 'DELETE' });
-          if (!resp.ok) throw new Error('Delete failed');
-          photosState = photosState.filter(x => x.id !== id);
-          renderPhotos();
-          toast('Deleted.', true);
-          return;
+        const res = await authed('/extranet/property', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const d = await res.json().catch(()=>null);
+          throw new Error((d && (d.message || d.error)) || `Save failed (${res.status})`);
         }
+        const saved = await res.json().catch(()=>null);
 
-        if (act === 'edit') {
-          const current = photosState.find(x => x.id === id);
-          const alt = prompt('Alt text / caption', (current && current.alt) ? current.alt : '');
-          if (alt === null) return; // user cancelled
-          // If your API only supports PUT, change method to 'PUT'
-          const resp = await authed(`/extranet/property/photos/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ alt })
-          });
-          if (!resp.ok) throw new Error('Save failed');
-          if (current) current.alt = alt;
-          renderPhotos();
-          toast('Saved.', true);
-          return;
-        }
-
-        if (act === 'cover') {
-          // If your API only supports PUT, change method to 'PUT'
-          const resp = await authed(`/extranet/property/photos/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ isCover: true })
-          });
-          if (!resp.ok) throw new Error('Save failed');
-          photosState = photosState.map(x => ({ ...x, isCover: x.id === id }));
-          renderPhotos();
-          toast('Cover set.', true);
-          return;
-        }
-      } catch (err) {
-        console.error(err);
-        toast(err.message || 'Action failed');
+        const newName = (saved && saved.name) ? saved.name : (payload.name || 'Partner');
+        $('profileStatus').textContent = 'Complete';
+        $('profileStatus').className   = 'ok';
+        $('brandTitle').textContent    = newName;
+        $('welcomeH1').textContent     = `Welcome, ${newName}`;
+        toast('Saved.', true);
+      } catch (e) {
+        console.error(e);
+        toast(e.message || 'Network error.');
+      } finally {
+        $('btnSave').disabled = false;
       }
     };
-  });
-}
+
+    // --- Photos loader + renderer ---------------------------------------------
+    async function loadPhotos(){
+      const grid = $('photosGrid');
+      grid.innerHTML = '<div class="muted">Loadingâ€¦</div>';
+      try {
+        const r = await authed('/extranet/property/photos');
+        const arr = await r.json().catch(()=>[]);
+        photosState = Array.isArray(arr) ? arr : [];
+        renderPhotos();
+      } catch (e) {
+        console.error(e);
+        grid.innerHTML = '<div class="muted">Failed to load photos.</div>';
+      }
+    }
+
+    function renderPhotos(){
+      const grid = $('photosGrid');
+      if (!photosState.length) { grid.innerHTML = '<div class="muted">No photos yet.</div>'; return; }
+      grid.innerHTML = '';
+
+      photosState
+        .sort((a,b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.id - b.id)
+        .forEach(p => {
+          const card  = document.createElement('div');
+          card.className = 'ph';
+
+          const img  = document.createElement('img');
+          img.src = p.url || '';
+          img.alt = p.alt || '';
+
+          const meta = document.createElement('div');
+          meta.className = 'meta';
+          meta.textContent = p.alt || p.caption || p.key || '';
+
+          const actions = document.createElement('div');
+          actions.className = 'photo-actions';  // << wrap safely inside card
+          actions.innerHTML = `
+            <button class="btn secondary" data-act="cover" data-id="${p.id}" ${p.isCover ? 'disabled' : ''}>${p.isCover ? 'Cover' : 'Set cover'}</button>
+            <button class="btn secondary" data-act="edit"  data-id="${p.id}">Edit</button>
+            <button class="btn ghost"     data-act="del"   data-id="${p.id}">Delete</button>
+          `;
+
+          card.appendChild(img);
+          card.appendChild(meta);
+          card.appendChild(actions);
+          grid.appendChild(card);
+        });
+
+      // wire actions (clean)
+      grid.querySelectorAll('button[data-id]').forEach(btn => {
+        btn.onclick = async () => {
+          const id  = Number(btn.dataset.id);
+          const act = btn.dataset.act;
+          try {
+            if (act === 'del') {
+              if (!confirm('Delete this photo?')) return;
+              const resp = await authed(`/extranet/property/photos/${id}`, { method: 'DELETE' });
+              if (!resp.ok) throw new Error('Delete failed');
+              photosState = photosState.filter(x => x.id !== id);
+              renderPhotos();
+              toast('Deleted.', true);
+              return;
+            }
+
+            if (act === 'edit') {
+              const current = photosState.find(x => x.id === id);
+              const alt = prompt('Alt text / caption', (current && current.alt) ? current.alt : '');
+              if (alt === null) return; // user cancelled
+              const resp = await authed(`/extranet/property/photos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alt })
+              });
+              if (!resp.ok) throw new Error('Save failed');
+              if (current) current.alt = alt;
+              renderPhotos();
+              toast('Saved.', true);
+              return;
+            }
+
+            if (act === 'cover') {
+              const resp = await authed(`/extranet/property/photos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ isCover: true })
+              });
+              if (!resp.ok) throw new Error('Save failed');
+              photosState = photosState.map(x => ({ ...x, isCover: x.id === id }));
+              renderPhotos();
+              toast('Cover set.', true);
+              return;
+            }
+          } catch (err) {
+            console.error(err);
+            toast(err.message || 'Action failed');
+          }
+        };
+      });
+    }
+
     // If a BFCache restore happens, force fresh load
     window.addEventListener('pageshow', (e) => { if (e.persisted) location.reload(); });
   </script>
 </body>
 </html>
-
