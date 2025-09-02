@@ -5,85 +5,81 @@
   <title>Documents</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Match partners_app look/feel -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-:root{
-  --brand-orange:#f97316;
-  --brand-blue:#2563eb;          /* outline */
-  --brand-blue-ring:#1d4ed8;     /* hover fill */
-  --bg:#0f0f10; --fg:#fff; --muted:#9ca3af; --card:#111213; --border:#262626;
-}
-@media (prefers-color-scheme: light){
-  :root{ --bg:#fff; --fg:#0f0f10; --muted:#6b7280; --card:#fff; --border:#e5e7eb; }
-}
-body{ color-scheme:dark; }
-@media (prefers-color-scheme: light){ body{ color-scheme:light; } }
+  :root{
+    /* tokens lifted from partners_app */
+    --bg:#0b1320;
+    --card:#111a2b;
+    --fg:#e8eefc;
+    --muted:#9bb0d3;
+    --line:rgba(255,255,255,.08);
 
-body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--fg); }
-.page{ max-width:960px; margin:32px auto; padding:0 16px; }
-.card{ background:var(--card); border:1px solid var(--border); border-radius:12px; padding:16px; }
-.row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-.row.between{ justify-content:space-between; align-items:center; }
-.row.bottom{ justify-content:flex-start; }
-.spacer{ height:16px; }
-.muted{ color:var(--muted); font-size:12px; }
+    /* accents */
+    --brand-orange:#ff6a3d;  /* primary CTA */
+    --brand-blue:#2e7bff;    /* outline */
+  }
+  *{ box-sizing:border-box }
+  body{
+    margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif; color:var(--fg);
+    background: radial-gradient(1000px 600px at 20% -10%, #1a2b4a 0%, #0b1320 60%, #0b1320 100%);
+    min-height:100vh;
+  }
 
-/* Buttons */
-.btn{ cursor:pointer; border-radius:10px; padding:8px 12px; border:1px solid var(--border); background:#181818; color:#fff; }
-.btn:disabled{ opacity:.6; cursor:not-allowed; }
-.btn-primary{ background:var(--brand-orange); border-color:var(--brand-orange); color:#111; }
-.btn-danger{ background:#b91c1c; border-color:#7f1d1d; color:#fff; }
-/* Blue outline pill like the rest of the app */
-.btn-secondary-outline{
-  background:transparent;
-  color:#fff;                       /* white label like screenshot */
-  border-color:var(--brand-blue);
-  box-shadow:0 0 0 1px var(--brand-blue) inset;
-  border-radius:9999px;             /* pill */
-}
-.btn-secondary-outline:hover{
-  background:rgba(37,99,235,0.10);
-}
+  .page{ max-width:980px; margin:32px auto; padding:0 16px; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; box-shadow:0 8px 40px rgba(0,0,0,.45); }
+  .row{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .row.between{ justify-content:space-between; align-items:center; }
+  .row.bottom{ justify-content:flex-start; }
+  .spacer{ height:16px; }
+  .muted{ color:var(--muted); font-size:12px; }
 
-/* Inputs */
-.input,.select{
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:8px 10px;
-  background-color:var(--card);     /* dark bg for selects */
-  color:inherit;
-  background-clip:padding-box;
-}
-.input:focus,.select:focus{
-  outline:none; border-color:var(--brand-orange);
-  box-shadow:0 0 0 3px color-mix(in oklab, var(--brand-orange) 20%, transparent);
-}
-/* Styled select caret */
-.select{
-  appearance:none; -webkit-appearance:none; -moz-appearance:none;
-  padding-right:36px;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23f97316' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat:no-repeat; background-position:right 10px center;
-}
+  /* Buttons – match hub */
+  .btn{ cursor:pointer; border-radius:999px; padding:9px 14px; font-weight:700; border:1px solid var(--brand-orange); background:var(--brand-orange); color:#fff; }
+  .btn:disabled{ opacity:.6; cursor:not-allowed; }
+  .btn-primary{ border-color:var(--brand-orange); background:var(--brand-orange); color:#111; }
+  .btn-danger{ background:transparent; border-color:#b91c1c; color:#ffcfcf; }
+  .btn-secondary-outline{
+    background:transparent; color:#d7e5ff;
+    border-color:var(--brand-blue);
+  }
+  .btn-secondary-outline:hover{ box-shadow:0 0 0 3px rgba(46,123,255,.20) inset; }
 
-/* Table — revert to gray lines for consistency */
-.table{ width:100%; border-collapse:collapse; }
-.table thead th{ border-bottom:2px solid var(--border); padding:10px 12px; text-align:left; }
-.table td{ padding:10px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
-.nowrap{ white-space:nowrap; }
+  /* Inputs / select */
+  .input,.select{
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+    background:#0e1830; color:var(--fg);
+  }
+  .input:focus,.select:focus{
+    outline:none; border-color:var(--brand-blue); box-shadow:0 0 0 3px rgba(46,123,255,.20);
+  }
+  .select{
+    appearance:none; -webkit-appearance:none; -moz-appearance:none;
+    padding-right:36px;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23ff6a3d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center;
+  }
 
-/* File links: same color, no underline */
-.table a, .table a:visited{ color:var(--brand-orange); text-decoration:none; }
-.table a:hover, .table a:focus{ color:color-mix(in oklab, var(--brand-orange) 75%, white); text-decoration:none; }
+  /* Table – same gray separators as hub */
+  .table{ width:100%; border-collapse:collapse; }
+  .table thead th{ border-bottom:2px solid var(--line); padding:10px 12px; text-align:left; }
+  .table td{ padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; }
+  .nowrap{ white-space:nowrap; }
 
-/* Status badges */
-.badge{ display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border); }
-.badge.SUBMITTED{ background:#1f2937; }
-.badge.APPROVED{ background:#065f46; }
-.badge.REJECTED{ background:#7f1d1d; }
+  /* File links: orange, no underline */
+  .table a, .table a:visited{ color:var(--brand-orange); text-decoration:none; }
+  .table a:hover, .table a:focus{ color:#ff8a68; text-decoration:none; }
 
-textarea.notes{ width:100%; min-height:40px; resize:vertical; }
-.actions{ display:flex; gap:8px; flex-wrap:wrap; }
-</style>
+  /* Status badges (kept) */
+  .badge{ display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--line); }
+  .badge.SUBMITTED{ background:#1f2937; }
+  .badge.APPROVED{ background:#065f46; }
+  .badge.REJECTED{ background:#7f1d1d; }
+
+  textarea.notes{ width:100%; min-height:40px; resize:vertical; }
+  .actions{ display:flex; gap:8px; flex-wrap:wrap; }
+  </style>
 </head>
 
 <body>
@@ -142,129 +138,71 @@ textarea.notes{ width:100%; min-height:40px; resize:vertical; }
 const BASE = 'https://lolaelo-api.onrender.com';
 
 // Token from partners hub
-function token() {
-  return localStorage.getItem('lolaelo_session') || '';
-}
+function token() { return localStorage.getItem('lolaelo_session') || ''; }
 function headers(json = true) {
   const t = token();
   const h = { 'Authorization': 'Bearer ' + t, 'x-partner-token': t };
   if (json) h['Content-Type'] = 'application/json';
   return h;
 }
-function fmtDate(iso) {
-  if (!iso) return '';
-  const d = new Date(iso);
-  return d.toLocaleString();
-}
-function badge(status) {
+function fmtDate(iso){ if(!iso) return ''; return new Date(iso).toLocaleString(); }
+function badge(status){
   const s = (status || '').toUpperCase();
   const span = document.createElement('span');
-  span.className = 'badge ' + s;
-  span.textContent = s || '-';
-  return span;
+  span.className = 'badge ' + s; span.textContent = s || '-'; return span;
 }
 
-async function listDocs() {
+async function listDocs(){
   const tbody = document.querySelector('#tbl tbody');
   tbody.innerHTML = '<tr><td colspan="6" class="muted">Loading…</td></tr>';
-
   const r = await fetch(BASE + '/extranet/property/documents', { headers: headers(false) });
-  if (!r.ok) {
-    tbody.innerHTML = `<tr><td colspan="6">Failed to load (${r.status}). Check your session.</td></tr>`;
-    return;
-  }
-  const raw = await r.json();
-  const rows = Array.isArray(raw.value) ? raw.value : raw;
+  if (!r.ok){ tbody.innerHTML = `<tr><td colspan="6">Failed to load (${r.status}). Check your session.</td></tr>`; return; }
+  const raw = await r.json(); const rows = Array.isArray(raw.value) ? raw.value : raw;
 
   tbody.innerHTML = '';
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="muted">No documents yet.</td></tr>';
-    return;
-  }
+  if (!rows.length){ tbody.innerHTML = '<tr><td colspan="6" class="muted">No documents yet.</td></tr>'; return; }
 
-  for (const row of rows) {
+  for (const row of rows){
     const tr = document.createElement('tr');
 
-    // Type
-    const tdType = document.createElement('td');
-    tdType.textContent = row.type;
-    tr.appendChild(tdType);
+    const tdType = document.createElement('td'); tdType.textContent = row.type; tr.appendChild(tdType);
 
-    // File
     const tdFile = document.createElement('td');
-    const a = document.createElement('a');
-    a.href = row.url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    a.textContent = row.fileName || row.key;
-    tdFile.appendChild(a);
-    tr.appendChild(tdFile);
+    const a = document.createElement('a'); a.href=row.url; a.target='_blank'; a.rel='noopener'; a.textContent=row.fileName||row.key;
+    tdFile.appendChild(a); tr.appendChild(tdFile);
 
-    // Status
-    const tdStatus = document.createElement('td');
-    tdStatus.appendChild(badge(row.status));
-    tr.appendChild(tdStatus);
+    const tdStatus = document.createElement('td'); tdStatus.appendChild(badge(row.status)); tr.appendChild(tdStatus);
 
-    // Uploaded
-    const tdUp = document.createElement('td');
-    tdUp.className = 'nowrap';
-    tdUp.textContent = fmtDate(row.uploadedAt);
-    tr.appendChild(tdUp);
+    const tdUp = document.createElement('td'); tdUp.className='nowrap'; tdUp.textContent = fmtDate(row.uploadedAt); tr.appendChild(tdUp);
 
-    // Comments (notes)
     const tdNotes = document.createElement('td');
-    const ta = document.createElement('textarea');
-    ta.className = 'notes input';
-    ta.value = row.notes || '';
-    ta.placeholder = 'Add a comment…';
-    tdNotes.appendChild(ta);
-    tr.appendChild(tdNotes);
+    const ta = document.createElement('textarea'); ta.className='notes input'; ta.value=row.notes||''; ta.placeholder='Add a comment…';
+    tdNotes.appendChild(ta); tr.appendChild(tdNotes);
 
-    // Actions: Save comment, Delete
-    const tdActions = document.createElement('td');
-    tdActions.className = 'actions';
+    const tdActions = document.createElement('td'); tdActions.className='actions';
 
     const saveBtn = document.createElement('button');
-    saveBtn.className = 'btn';
-    saveBtn.textContent = 'Save';
+    saveBtn.className='btn btn-secondary-outline'; saveBtn.textContent='Save';
     saveBtn.onclick = async () => {
       saveBtn.disabled = true;
-      try {
-        const body = { notes: ta.value };
+      try{
         const rr = await fetch(BASE + '/extranet/property/documents/' + row.id, {
-          method: 'PUT',
-          headers: headers(),
-          body: JSON.stringify(body),
+          method:'PUT', headers: headers(), body: JSON.stringify({ notes: ta.value })
         });
-        if (!rr.ok) {
-          const err = await rr.text();
-          alert('Save failed: ' + rr.status + '\n' + err);
-        }
-      } finally {
-        saveBtn.disabled = false;
-      }
+        if(!rr.ok){ const err = await rr.text(); alert('Save failed: ' + rr.status + '\n' + err); }
+      } finally { saveBtn.disabled = false; }
     };
 
     const delBtn = document.createElement('button');
-    delBtn.className = 'btn btn-danger';
-    delBtn.textContent = 'Delete';
+    delBtn.className='btn btn-danger'; delBtn.textContent='Delete';
     delBtn.onclick = async () => {
       if (!confirm('Delete this document?')) return;
       delBtn.disabled = true;
-      try {
-        const rr = await fetch(BASE + '/extranet/property/documents/' + row.id, {
-          method: 'DELETE',
-          headers: headers(false),
-        });
-        if (!rr.ok && rr.status !== 204) {
-          const err = await rr.text();
-          alert('Delete failed: ' + rr.status + '\n' + err);
-        } else {
-          await listDocs();
-        }
-      } finally {
-        delBtn.disabled = false;
-      }
+      try{
+        const rr = await fetch(BASE + '/extranet/property/documents/' + row.id, { method:'DELETE', headers: headers(false) });
+        if(!rr.ok && rr.status !== 204){ const err = await rr.text(); alert('Delete failed: ' + rr.status + '\n' + err); }
+        else { await listDocs(); }
+      } finally { delBtn.disabled = false; }
     };
 
     tdActions.appendChild(saveBtn);
@@ -275,46 +213,32 @@ async function listDocs() {
   }
 }
 
-async function upload() {
+async function upload(){
   const f = document.getElementById('file').files[0];
-  if (!f) return alert('Pick a file first.');
+  if(!f) return alert('Pick a file first.');
   const type = document.getElementById('docType').value;
   const contentType = f.type || 'application/octet-stream';
 
-  // 1) presign
   const r1 = await fetch(BASE + '/extranet/property/documents/upload-url', {
-    method: 'POST',
-    headers: headers(),
-    body: JSON.stringify({ fileName: f.name, contentType, size: f.size }),
+    method:'POST', headers: headers(), body: JSON.stringify({ fileName: f.name, contentType, size: f.size })
   });
-  if (!r1.ok) return alert('upload-url failed: ' + r1.status);
+  if(!r1.ok) return alert('upload-url failed: ' + r1.status);
   const up = await r1.json();
 
-  // 2) PUT to S3
-  const r2 = await fetch(up.putUrl, { method: 'PUT', headers: { 'Content-Type': contentType }, body: f });
-  if (!r2.ok) return alert('S3 PUT failed: ' + r2.status);
+  const r2 = await fetch(up.putUrl, { method:'PUT', headers:{ 'Content-Type': contentType }, body:f });
+  if(!r2.ok) return alert('S3 PUT failed: ' + r2.status);
 
-  // 3) create row
   const r3 = await fetch(BASE + '/extranet/property/documents', {
-    method: 'POST',
-    headers: headers(),
-    body: JSON.stringify({ type, key: up.key, url: up.publicUrl, fileName: f.name, contentType }),
+    method:'POST', headers: headers(),
+    body: JSON.stringify({ type, key: up.key, url: up.publicUrl, fileName: f.name, contentType })
   });
-  if (!r3.ok) {
-    const err = await r3.text();
-    return alert('Create failed: ' + r3.status + '\n' + err);
-  }
+  if(!r3.ok){ const err = await r3.text(); return alert('Create failed: ' + r3.status + '\n' + err); }
 
-  await listDocs();
-  alert('Uploaded.');
+  await listDocs(); alert('Uploaded.');
 }
 
 document.getElementById('uploadBtn').addEventListener('click', upload);
-
-// Bottom back button (consistent blue outline)
-document.getElementById('backBtn').addEventListener('click', () => {
-  window.location.href = '/partners_app.html';
-});
+document.getElementById('backBtn').addEventListener('click', () => { window.location.href = '/partners_app.html'; });
 
 listDocs();
 </script>
