@@ -1,93 +1,259 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>Documents</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- If your global CSS already defines .page/.card/.btn/.table, you can remove the block below -->
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto;max-width:900px;margin:32px auto;padding:0 16px}
-    table{width:100%;border-collapse:collapse;margin-top:16px}
-    th,td{padding:8px 10px;border-bottom:1px solid #eee}
-    .row{display:flex;gap:8px;align-items:center;margin-top:16px}
-    button{padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#111;color:#fff}
-    input[type=file]{border:1px solid #ddd;border-radius:8px;padding:8px}
-    .muted{color:#666;font-size:12px}
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin:0; }
+    .page { max-width: 960px; margin: 32px auto; padding: 0 16px; }
+    .card { background: var(--card-bg, #111); color: #fff; border: 1px solid #222; border-radius: 12px; padding: 16px; box-shadow: 0 1px 2px rgb(0 0 0 / 0.1); }
+    @media (prefers-color-scheme: light) {
+      .card { background:#fff; color:#111; border-color:#eee; }
+    }
+    .row { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    .spacer { height: 16px; }
+    .btn { cursor:pointer; border-radius:10px; border:1px solid #2a2a2a; padding:8px 12px; background:#181818; color:#fff; }
+    .btn:disabled { opacity:.6; cursor:not-allowed; }
+    .btn-primary { background:#2563eb; border-color:#1e40af; }
+    .btn-danger { background:#b91c1c; border-color:#7f1d1d; }
+    .select, .input { border:1px solid #2a2a2a; border-radius:10px; padding:8px 10px; background:transparent; color:inherit; }
+    .muted { opacity:.75; font-size:12px; }
+    .table { width:100%; border-collapse:collapse; }
+    .table th, .table td { padding:10px 12px; border-bottom:1px solid #222; vertical-align:top; }
+    @media (prefers-color-scheme: light) {
+      .table th, .table td { border-bottom:1px solid #eee; }
+    }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid #2a2a2a; }
+    .badge.SUBMITTED { background:#1f2937; }
+    .badge.APPROVED { background:#065f46; }
+    .badge.REJECTED { background:#7f1d1d; }
+    .nowrap { white-space:nowrap; }
+    textarea.notes { width:100%; min-height:40px; resize:vertical; }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; }
   </style>
 </head>
-<body>
-  <h1>Documents</h1>
-  <div class="row">
-    <input id="file" type="file" />
-    <select id="docType">
-      <option>GOVT_ID</option>
-      <option selected>BUSINESS_REG</option>
-      <option>TAX_ID</option>
-      <option>BANK_PROOF</option>
-      <option>PROOF_OF_ADDRESS</option>
-      <option>INSURANCE_LIABILITY</option>
-      <option>PROPERTY_OWNERSHIP</option>
-      <option>LOCAL_LICENSE</option>
-    </select>
-    <button id="uploadBtn">Upload</button>
-  </div>
-  <div class="muted">Uses your existing session/token from the partners app.</div>
 
-  <table id="tbl">
-    <thead><tr><th>Type</th><th>File</th><th>Status</th><th>Uploaded</th></tr></thead>
-    <tbody></tbody>
-  </table>
+<body>
+  <div class="page">
+    <div class="card">
+      <h1 style="margin:0 0 8px;">Documents</h1>
+      <div class="muted">Upload W-9, insurance, vendor agreements, etc.</div>
+
+      <div class="spacer"></div>
+
+      <!-- Upload row -->
+      <div class="row">
+        <input id="file" type="file" class="input" />
+        <select id="docType" class="select">
+          <option>GOVT_ID</option>
+          <option selected>BUSINESS_REG</option>
+          <option>TAX_ID</option>
+          <option>BANK_PROOF</option>
+          <option>PROOF_OF_ADDRESS</option>
+          <option>INSURANCE_LIABILITY</option>
+          <option>PROPERTY_OWNERSHIP</option>
+          <option>LOCAL_LICENSE</option>
+        </select>
+        <button id="uploadBtn" class="btn btn-primary">Upload</button>
+        <span class="muted">Your current session is used for auth.</span>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- Table -->
+      <table class="table" id="tbl">
+        <thead>
+          <tr>
+            <th class="nowrap">Type</th>
+            <th>File</th>
+            <th class="nowrap">Status</th>
+            <th class="nowrap">Uploaded</th>
+            <th>Comments</th>
+            <th class="nowrap">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+    </div>
+  </div>
 
 <script>
 const BASE = 'https://lolaelo-api.onrender.com';
+
+// Pull the same token the partners app uses
 function token() {
-  // reuse the same storage you used earlier
+  // adjust key if your app stores under a different name
   return localStorage.getItem('lolaelo_session') || '';
 }
-function H() {
+function headers(json = true) {
   const t = token();
-  return { 'Authorization': 'Bearer ' + t, 'x-partner-token': t, 'Content-Type': 'application/json' };
+  const h = { 'Authorization': 'Bearer ' + t, 'x-partner-token': t };
+  if (json) h['Content-Type'] = 'application/json';
+  return h;
 }
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleString();
+}
+function badge(status) {
+  const s = (status || '').toUpperCase();
+  const span = document.createElement('span');
+  span.className = 'badge ' + s;
+  span.textContent = s || '-';
+  return span;
+}
+
 async function listDocs() {
-  const r = await fetch(BASE + '/extranet/property/documents', { headers: H() });
-  if (!r.ok) { alert('List failed: ' + r.status); return; }
-  const rows = await r.json();
   const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML = '<tr><td colspan="6" class="muted">Loading…</td></tr>';
+
+  const r = await fetch(BASE + '/extranet/property/documents', { headers: headers(false) });
+  if (!r.ok) {
+    tbody.innerHTML = `<tr><td colspan="6">Failed to load (${r.status}). Check your session.</td></tr>`;
+    return;
+  }
+  const raw = await r.json();
+  const rows = Array.isArray(raw.value) ? raw.value : raw;
+
   tbody.innerHTML = '';
-  (Array.isArray(rows.value) ? rows.value : rows).forEach(row => {
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="muted">No documents yet.</td></tr>';
+    return;
+  }
+
+  for (const row of rows) {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${row.type}</td>
-      <td><a href="${row.url}" target="_blank">${row.fileName || row.key}</a></td>
-      <td>${row.status}</td>
-      <td>${new Date(row.uploadedAt).toLocaleString()}</td>`;
+
+    // Type
+    const tdType = document.createElement('td');
+    tdType.textContent = row.type;
+    tr.appendChild(tdType);
+
+    // File
+    const tdFile = document.createElement('td');
+    const a = document.createElement('a');
+    a.href = row.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = row.fileName || row.key;
+    tdFile.appendChild(a);
+    tr.appendChild(tdFile);
+
+    // Status
+    const tdStatus = document.createElement('td');
+    tdStatus.appendChild(badge(row.status));
+    tr.appendChild(tdStatus);
+
+    // Uploaded
+    const tdUp = document.createElement('td');
+    tdUp.className = 'nowrap';
+    tdUp.textContent = fmtDate(row.uploadedAt);
+    tr.appendChild(tdUp);
+
+    // Comments (notes)
+    const tdNotes = document.createElement('td');
+    const ta = document.createElement('textarea');
+    ta.className = 'notes input';
+    ta.value = row.notes || '';
+    ta.placeholder = 'Add a comment…';
+    tdNotes.appendChild(ta);
+    tr.appendChild(tdNotes);
+
+    // Actions: Save comment, Delete
+    const tdActions = document.createElement('td');
+    tdActions.className = 'actions';
+
+    const saveBtn = document.createElement('button');
+    saveBtn.className = 'btn';
+    saveBtn.textContent = 'Save';
+    saveBtn.onclick = async () => {
+      saveBtn.disabled = true;
+      try {
+        const body = { notes: ta.value };
+        const rr = await fetch(BASE + '/extranet/property/documents/' + row.id, {
+          method: 'PUT',
+          headers: headers(),
+          body: JSON.stringify(body),
+        });
+        if (!rr.ok) {
+          const err = await rr.text();
+          alert('Save failed: ' + rr.status + '\n' + err);
+        }
+      } finally {
+        saveBtn.disabled = false;
+      }
+    };
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'btn btn-danger';
+    delBtn.textContent = 'Delete';
+    delBtn.onclick = async () => {
+      if (!confirm('Delete this document?')) return;
+      delBtn.disabled = true;
+      try {
+        const rr = await fetch(BASE + '/extranet/property/documents/' + row.id, {
+          method: 'DELETE',
+          headers: headers(false),
+        });
+        if (!rr.ok && rr.status !== 204) {
+          const err = await rr.text();
+          alert('Delete failed: ' + rr.status + '\n' + err);
+        } else {
+          await listDocs();
+        }
+      } finally {
+        delBtn.disabled = false;
+      }
+    };
+
+    tdActions.appendChild(saveBtn);
+    tdActions.appendChild(delBtn);
+    tr.appendChild(tdActions);
+
     tbody.appendChild(tr);
-  });
+  }
 }
+
 async function upload() {
   const f = document.getElementById('file').files[0];
-  if (!f) return alert('Pick a file first');
+  if (!f) return alert('Pick a file first.');
   const type = document.getElementById('docType').value;
+  const contentType = f.type || 'application/octet-stream';
+
   // 1) presign
-  const upReq = { fileName: f.name, contentType: f.type || 'application/octet-stream', size: f.size };
   const r1 = await fetch(BASE + '/extranet/property/documents/upload-url', {
-    method: 'POST', headers: H(), body: JSON.stringify(upReq)
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify({ fileName: f.name, contentType, size: f.size }),
   });
   if (!r1.ok) return alert('upload-url failed: ' + r1.status);
   const up = await r1.json();
-  // 2) PUT
-  const r2 = await fetch(up.putUrl, { method: 'PUT', headers: { 'Content-Type': f.type || 'application/octet-stream' }, body: f });
-  if (!r2.ok) return alert('S3 put failed: ' + r2.status);
+
+  // 2) PUT to S3
+  const r2 = await fetch(up.putUrl, { method: 'PUT', headers: { 'Content-Type': contentType }, body: f });
+  if (!r2.ok) return alert('S3 PUT failed: ' + r2.status);
+
   // 3) create row
-  const createBody = { type, key: up.key, url: up.publicUrl, fileName: f.name, contentType: f.type || 'application/octet-stream' };
   const r3 = await fetch(BASE + '/extranet/property/documents', {
-    method: 'POST', headers: H(), body: JSON.stringify(createBody)
+    method: 'POST',
+    headers: headers(),
+    body: JSON.stringify({ type, key: up.key, url: up.publicUrl, fileName: f.name, contentType }),
   });
   if (!r3.ok) {
     const err = await r3.text();
-    return alert('create failed: ' + r3.status + '\n' + err);
+    return alert('Create failed: ' + r3.status + '\n' + err);
   }
+
   await listDocs();
-  alert('Uploaded');
+  alert('Uploaded.');
 }
+
 document.getElementById('uploadBtn').addEventListener('click', upload);
 listDocs();
 </script>
