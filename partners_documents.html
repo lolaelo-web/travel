@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Documents</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto;max-width:900px;margin:32px auto;padding:0 16px}
+    table{width:100%;border-collapse:collapse;margin-top:16px}
+    th,td{padding:8px 10px;border-bottom:1px solid #eee}
+    .row{display:flex;gap:8px;align-items:center;margin-top:16px}
+    button{padding:8px 12px;border:1px solid #ddd;border-radius:8px;background:#111;color:#fff}
+    input[type=file]{border:1px solid #ddd;border-radius:8px;padding:8px}
+    .muted{color:#666;font-size:12px}
+  </style>
+</head>
+<body>
+  <h1>Documents</h1>
+  <div class="row">
+    <input id="file" type="file" />
+    <select id="docType">
+      <option>GOVT_ID</option>
+      <option selected>BUSINESS_REG</option>
+      <option>TAX_ID</option>
+      <option>BANK_PROOF</option>
+      <option>PROOF_OF_ADDRESS</option>
+      <option>INSURANCE_LIABILITY</option>
+      <option>PROPERTY_OWNERSHIP</option>
+      <option>LOCAL_LICENSE</option>
+    </select>
+    <button id="uploadBtn">Upload</button>
+  </div>
+  <div class="muted">Uses your existing session/token from the partners app.</div>
+
+  <table id="tbl">
+    <thead><tr><th>Type</th><th>File</th><th>Status</th><th>Uploaded</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+<script>
+const BASE = 'https://lolaelo-api.onrender.com';
+function token() {
+  // reuse the same storage you used earlier
+  return localStorage.getItem('lolaelo_session') || '';
+}
+function H() {
+  const t = token();
+  return { 'Authorization': 'Bearer ' + t, 'x-partner-token': t, 'Content-Type': 'application/json' };
+}
+async function listDocs() {
+  const r = await fetch(BASE + '/extranet/property/documents', { headers: H() });
+  if (!r.ok) { alert('List failed: ' + r.status); return; }
+  const rows = await r.json();
+  const tbody = document.querySelector('#tbl tbody');
+  tbody.innerHTML = '';
+  (Array.isArray(rows.value) ? rows.value : rows).forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${row.type}</td>
+      <td><a href="${row.url}" target="_blank">${row.fileName || row.key}</a></td>
+      <td>${row.status}</td>
+      <td>${new Date(row.uploadedAt).toLocaleString()}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+async function upload() {
+  const f = document.getElementById('file').files[0];
+  if (!f) return alert('Pick a file first');
+  const type = document.getElementById('docType').value;
+  // 1) presign
+  const upReq = { fileName: f.name, contentType: f.type || 'application/octet-stream', size: f.size };
+  const r1 = await fetch(BASE + '/extranet/property/documents/upload-url', {
+    method: 'POST', headers: H(), body: JSON.stringify(upReq)
+  });
+  if (!r1.ok) return alert('upload-url failed: ' + r1.status);
+  const up = await r1.json();
+  // 2) PUT
+  const r2 = await fetch(up.putUrl, { method: 'PUT', headers: { 'Content-Type': f.type || 'application/octet-stream' }, body: f });
+  if (!r2.ok) return alert('S3 put failed: ' + r2.status);
+  // 3) create row
+  const createBody = { type, key: up.key, url: up.publicUrl, fileName: f.name, contentType: f.type || 'application/octet-stream' };
+  const r3 = await fetch(BASE + '/extranet/property/documents', {
+    method: 'POST', headers: H(), body: JSON.stringify(createBody)
+  });
+  if (!r3.ok) {
+    const err = await r3.text();
+    return alert('create failed: ' + r3.status + '\n' + err);
+  }
+  await listDocs();
+  alert('Uploaded');
+}
+document.getElementById('uploadBtn').addEventListener('click', upload);
+listDocs();
+</script>
+</body>
+</html>
