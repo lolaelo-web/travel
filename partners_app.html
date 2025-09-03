@@ -131,6 +131,11 @@
             <h3>Documents</h3>
             <p>Upload W-9, insurance, or vendor agreements.</p>
           </a>
+                    <!-- NEW: Rooms & Availability -->
+          <a class="tile" href="#" id="tileRooms">
+            <h3>Rooms & Availability</h3>
+            <p>Edit room types, inventory & prices.</p>
+          </a>
 
           <a class="tile" href="#" onclick="alert('Payment history is coming soon.'); return false;">
             <h3>Payment History <span class="badge">Soon</span></h3>
@@ -276,7 +281,16 @@
       show('photosPanel');
       await loadPhotos();
     });
-    
+
+    // NEW: Rooms & Availability — forward session token to rooms UI
+    document.getElementById('tileRooms').addEventListener('click', (e) => {
+      e.preventDefault();
+      const t = localStorage.getItem(SESSION_KEY) || '';
+      const base = 'https://lolaelo-api.onrender.com/partners_rooms.html';
+      const url  = t ? `${base}?token=${encodeURIComponent(t)}` : base;
+      location.href = url;
+    });
+
     $('photosBackBtn').addEventListener('click', (e) => {
       e.preventDefault();
       hide('photosPanel');
