@@ -1,87 +1,264 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Partner Login</title>
-  <style>
-    body { font-family: system-ui, Arial, sans-serif; max-width: 560px; margin: 40px auto; padding: 0 16px; }
-    h1 { margin-bottom: 8px; }
-    form { border: 1px solid #ddd; border-radius: 8px; padding: 16px; margin-top: 16px; }
-    label { display:block; font-weight:600; margin: 8px 0 4px; }
-    input { width: 100%; padding: 10px; font-size: 16px; box-sizing: border-box; }
-    button { margin-top: 12px; padding: 10px 14px; font-size: 16px; cursor: pointer; }
-    .muted { color:#666; font-size:14px; }
-    .hidden { display:none; }
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Rooms & Availability — Draft</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css" />
+<style>
+  :root{ --bg:#f7f7f8; --card:#fff; --line:#eaeaea; --ink:#111; --muted:#666; --brand:#ff6633; }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto}
+  .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+  .top{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+  input[type=text],input[type=number],input[type=date],select,button,textarea{
+    font:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff
+  }
+  button{cursor:pointer;background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600}
+  .grid{display:grid;grid-template-columns:280px 1fr;gap:16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+  .rooms{max-height:70vh;overflow:auto}
+  .room-item{padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  .room-item.active{outline:2px solid var(--brand)}
+  .cal-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  .calendar{overflow:auto;border-top:1px solid var(--line)}
+  table{border-collapse:collapse;width:100%}
+  th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:center}
+  th{position:sticky;top:0;background:#fff}
+  .cell{display:flex;flex-direction:column;gap:4px}
+  .muted{color:var(--muted);font-size:12px}
+  .pill{background:#f3f3f5;border:1px solid var(--line);border-radius:999px;padding:6px 10px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .hint{color:var(--muted);font-size:12px}
+  .ok{color:#09814a;font-weight:600}
+  .err{color:#b00020;font-weight:600}
+  @media (max-width:980px){ .grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-  <h1>Partner Login</h1>
-  <p class="muted">Enter your email to receive a one-time code. (In dev, the code is returned in the JSON.)</p>
+<div class="wrap">
+  <div class="top card">
+    <div class="row" style="width:100%;justify-content:space-between">
+      <div class="row" style="flex:1 1 auto">
+        <label class="pill">Base URL&nbsp;<input id="baseUrl" type="text" value="https://lolaelo-api.onrender.com" style="min-width:360px"></label>
+        <label class="pill">Bearer Token&nbsp;<input id="token" type="text" placeholder="Paste token from /login/verify-code" style="min-width:360px"></label>
+        <button id="btnLoad">Load</button>
+      </div>
+      <div class="hint">This is a draft admin page. Use OTP login to get a token.</div>
+    </div>
+    <div id="status" class="muted" style="margin-top:8px"></div>
+  </div>
 
-  <form id="requestForm">
-    <label for="email">Email</label>
-    <input id="email" type="email" required placeholder="you@company.com" />
-    <button type="submit">Send code</button>
-    <div id="requestMsg" class="muted"></div>
-  </form>
+  <div class="grid">
+    <!-- Left: Room Types -->
+    <div class="card">
+      <div class="row" style="justify-content:space-between;margin-bottom:8px">
+        <strong>Room Types</strong>
+        <div class="row">
+          <input id="rtName" type="text" placeholder="Name (e.g., Deluxe Queen)">
+          <input id="rtDesc" type="text" placeholder="Description">
+          <input id="rtGuests" type="number" min="1" value="2" style="width:90px">
+          <input id="rtBase" type="number" min="0" step="0.01" value="129.00" style="width:120px">
+          <button id="btnAddRoom">Add</button>
+        </div>
+      </div>
+      <div id="rooms" class="rooms"></div>
+    </div>
 
-  <form id="verifyForm" class="hidden">
-    <label for="code">Code</label>
-    <input id="code" inputmode="numeric" pattern="[0-9]*" required placeholder="6-digit code" />
-    <button type="submit">Verify & Sign in</button>
-    <div id="verifyMsg" class="muted"></div>
-  </form>
+    <!-- Right: Calendar + Bulk editors -->
+    <div class="card">
+      <div class="cal-toolbar">
+        <strong id="rtTitle">Select a room type →</strong>
+        <span class="muted" id="rtMeta"></span>
+      </div>
 
-  <script>
-    const API = "https://lolaelo-api.onrender.com"; // ✅ your API base
+      <div class="cal-toolbar">
+        <span class="pill">Start&nbsp;<input id="rngStart" type="text" class="date"></span>
+        <span class="pill">End&nbsp;<input id="rngEnd" type="text" class="date"></span>
 
-    const requestForm = document.getElementById("requestForm");
-    const verifyForm  = document.getElementById("verifyForm");
-    const emailEl     = document.getElementById("email");
-    const codeEl      = document.getElementById("code");
-    const requestMsg  = document.getElementById("requestMsg");
-    const verifyMsg   = document.getElementById("verifyMsg");
+        <span class="pill">Rooms Open&nbsp;<input id="roomsOpen" type="number" min="0" value="5" style="width:90px"></span>
+        <span class="pill">Min Stay&nbsp;<input id="minStay" type="number" min="1" value="1" style="width:90px"></span>
+        <label class="pill"><input id="isClosed" type="checkbox"> Closed</label>
+        <button id="btnInv">Upsert Inventory</button>
 
-    requestForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      requestMsg.textContent = "Sending...";
-      try {
-        const r = await fetch(`${API}/login/request-code`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: emailEl.value.trim() })
-        });
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error || "Request failed");
-        // Dev behavior: API returns the code in JSON so you can test without email
-        requestMsg.textContent = `Code sent. (Dev hint: ${data.code})`;
-        verifyForm.classList.remove("hidden");
-        codeEl.focus();
-      } catch (err) {
-        requestMsg.textContent = `Error: ${err.message}`;
-      }
-    });
+        <span class="pill">Price&nbsp;<input id="price" type="number" min="0" step="0.01" value="149.00" style="width:120px"></span>
+        <button id="btnPrice">Upsert Prices</button>
+      </div>
 
-    verifyForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      verifyMsg.textContent = "Verifying...";
-      try {
-        const r = await fetch(`${API}/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: emailEl.value.trim(), code: codeEl.value.trim() })
-        });
-        const data = await r.json();
-        if (!r.ok) throw new Error(data.error || "Verify failed");
-        localStorage.setItem("partnerToken", data.token); // store session
-        verifyMsg.textContent = "Signed in! Token saved to localStorage.";
-        // redirect to your partner photos UI if/when you have it:
-        // location.href = "/partners_app.html";
-      } catch (err) {
-        verifyMsg.textContent = `Error: ${err.message}`;
-      }
-    });
-  </script>
+      <div class="calendar" id="calendar"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+<script>
+const $ = (id)=>document.getElementById(id);
+const statusEl = $("status");
+const state = { baseUrl:"", token:"", partnerId:null, rooms:[], activeRoom:null, range:{start:null,end:null} };
+
+flatpickr(".date", { altInput:true, altFormat:"M j, Y", dateFormat:"Y-m-d" });
+
+function setStatus(msg, ok=true){ statusEl.textContent = msg; statusEl.className = ok? "ok" : "err"; }
+function hdrs(){ return { "Authorization":"Bearer " + state.token, "Content-Type":"application/json" }; }
+
+async function getJSON(path){
+  const r = await fetch(state.baseUrl + path, { headers: hdrs() });
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function postJSON(path, body){
+  const r = await fetch(state.baseUrl + path, { method:"POST", headers: hdrs(), body: JSON.stringify(body) });
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function putJSON(path, body){
+  const r = await fetch(state.baseUrl + path, { method:"PUT", headers: hdrs(), body: JSON.stringify(body) });
+  if(!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+function fmtISO(d){ return d.toISOString().slice(0,10); }
+function datesBetween(start,end){
+  const out=[]; const s=new Date(start+"T00:00:00Z"); const e=new Date(end+"T00:00:00Z");
+  for(let d=new Date(s); d<=e; d=new Date(d.getTime()+86400000)){ out.push(fmtISO(d)); }
+  return out;
+}
+
+function renderRooms(){
+  const wrap = $("rooms"); wrap.innerHTML = "";
+  state.rooms.forEach(rt=>{
+    const div = document.createElement("div");
+    div.className = "room-item" + (state.activeRoom && state.activeRoom.id===rt.id ? " active":"");
+    div.innerHTML = `<div>
+      <div><strong>${rt.name}</strong></div>
+      <div class="muted">Guests: ${rt.maxGuests} · Base: $${rt.basePrice}</div>
+    </div>
+    <div class="row">
+      <button data-act="select">Select</button>
+      <button data-act="edit">Edit</button>
+      <button data-act="del" style="background:#333;border-color:#333">Delete</button>
+    </div>`;
+    div.querySelector('[data-act="select"]').onclick = ()=> { state.activeRoom = rt; renderRooms(); renderCalendar(); };
+    div.querySelector('[data-act="edit"]').onclick = async ()=>{
+      const name = prompt("New name", rt.name) ?? rt.name;
+      const price = prompt("Base price", rt.basePrice) ?? rt.basePrice;
+      await putJSON(`/extranet/property/rooms/${rt.id}`, { name, basePrice: price });
+      await loadRooms();
+      setStatus("Room updated");
+    };
+    div.querySelector('[data-act="del"]').onclick = async ()=>{
+      if(!confirm("Delete room type?")) return;
+      const r = await fetch(state.baseUrl + `/extranet/property/rooms/${rt.id}`, { method:"DELETE", headers: hdrs() });
+      if(!r.ok) return setStatus("Delete failed", false);
+      if(state.activeRoom?.id===rt.id) state.activeRoom=null;
+      await loadRooms();
+      setStatus("Room deleted");
+    };
+    wrap.appendChild(div);
+  });
+}
+
+async function loadRooms(){
+  const json = await getJSON(`/extranet/property/rooms`);
+  state.rooms = json;
+  renderRooms();
+  if(!state.activeRoom && state.rooms.length) { state.activeRoom = state.rooms[0]; }
+  renderCalendar();
+}
+
+async function loadSession(){
+  const s = await getJSON(`/extranet/session`);
+  state.partnerId = s.partnerId ?? null;
+  setStatus(`Session OK · partnerId=${state.partnerId}`);
+}
+
+function rangeOrDefault(){
+  let start = $("rngStart").value || fmtISO(new Date());
+  let end = $("rngEnd").value   || fmtISO(new Date(Date.now()+6*86400000));
+  return { start, end };
+}
+
+async function renderCalendar(){
+  const cal = $("calendar"); const title=$("rtTitle"); const meta=$("rtMeta");
+  if(!state.activeRoom){ cal.innerHTML = `<div class="muted">Select a room type.</div>`; title.textContent="Select a room type →"; meta.textContent=""; return; }
+  title.textContent = state.activeRoom.name;
+  meta.textContent = `Guests ${state.activeRoom.maxGuests} · Base $${state.activeRoom.basePrice}`;
+
+  const {start,end} = rangeOrDefault();
+  $("rngStart").value = start; $("rngEnd").value = end;
+
+  const [inv, prices] = await Promise.all([
+    getJSON(`/extranet/property/rooms/${state.activeRoom.id}/inventory?start=${start}&end=${end}`),
+    getJSON(`/extranet/property/rooms/${state.activeRoom.id}/prices?start=${start}&end=${end}`)
+  ]);
+
+  const days = datesBetween(start,end);
+  const invMap = new Map(inv.map(r=>[r.date.slice(0,10), r]));
+  const prMap  = new Map(prices.map(r=>[r.date.slice(0,10), r]));
+
+  let html = `<table><thead><tr><th style="text-align:left">Date</th><th>Rooms Open</th><th>Closed?</th><th>Min Stay</th><th>Price</th></tr></thead><tbody>`;
+  for(const d of days){
+    const i = invMap.get(d); const p = prMap.get(d);
+    html += `<tr>
+      <td style="text-align:left">${d}</td>
+      <td class="cell">${i ? i.roomsOpen : "<span class='muted'>—</span>"}</td>
+      <td class="cell">${i ? (i.isClosed ? "Yes":"No") : "<span class='muted'>—</span>"}</td>
+      <td class="cell">${i && i.minStay ? i.minStay : "<span class='muted'>—</span>"}</td>
+      <td class="cell">${p ? "$"+p.price : "<span class='muted'>—</span>"}</td>
+    </tr>`;
+  }
+  html += `</tbody></table>`;
+  cal.innerHTML = html;
+}
+
+$("btnLoad").onclick = async ()=>{
+  try{
+    state.baseUrl = $("baseUrl").value.trim().replace(/\/+$/,'');
+    state.token   = $("token").value.trim();
+    if(!state.baseUrl || !state.token) return setStatus("Enter base URL and token", false);
+    await loadSession();
+    await loadRooms();
+  }catch(err){ console.error(err); setStatus("Load failed: " + (err.message||err), false); }
+};
+
+$("btnAddRoom").onclick = async ()=>{
+  try{
+    const body = {
+      name: $("rtName").value.trim(),
+      description: $("rtDesc").value.trim() || null,
+      maxGuests: Number($("rtGuests").value||2),
+      basePrice: String($("rtBase").value||"0.00")
+    };
+    await postJSON(`/extranet/property/rooms`, body);
+    $("rtName").value = ""; $("rtDesc").value=""; $("rtGuests").value=2; $("rtBase").value="129.00";
+    await loadRooms(); setStatus("Room created");
+  }catch(err){ console.error(err); setStatus("Create failed: " + (err.message||err), false); }
+};
+
+$("btnInv").onclick = async ()=>{
+  if(!state.activeRoom) return setStatus("Select a room type", false);
+  try{
+    const {start,end} = rangeOrDefault();
+    const body = {
+      start, end,
+      roomsOpen: Number($("roomsOpen").value||0),
+      isClosed: $("isClosed").checked,
+      minStay: $("minStay").value ? Number($("minStay").value) : null
+    };
+    await postJSON(`/extranet/property/rooms/${state.activeRoom.id}/inventory/bulk`, body);
+    setStatus("Inventory upserted"); await renderCalendar();
+  }catch(err){ console.error(err); setStatus("Inventory failed: " + (err.message||err), false); }
+};
+
+$("btnPrice").onclick = async ()=>{
+  if(!state.activeRoom) return setStatus("Select a room type", false);
+  try{
+    const {start,end} = rangeOrDefault();
+    const body = { start, end, price: String($("price").value||"0.00"), ratePlanId: null };
+    await postJSON(`/extranet/property/rooms/${state.activeRoom.id}/prices/bulk`, body);
+    setStatus("Prices upserted"); await renderCalendar();
+  }catch(err){ console.error(err); setStatus("Prices failed: " + (err.message||err), false); }
+};
+</script>
 </body>
 </html>
