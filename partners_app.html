@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lolaelo Extranet â€” Partner Hub</title>
+  <title>Lolaelo Extranet - Partner Hub</title>
 
   <!-- Prevent caching so Back can't revive stale pages -->
   <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0" />
@@ -47,7 +47,7 @@
     }
     .tile:hover{ transform:translateY(-2px); border-color:#2e7bff; background:#0f1b36 }
     .tile h3{ margin:0 0 6px; font-size:16px }
-    .tile p{ margin:0; color:var(--muted); font-size:13px; line-height:1.35 }
+    .tile p{ margin:0; color:var(--muted); font-size:13px; line-height:1.35 } /* FIXED */
     .badge{ display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#193258; color:#bcd3ff; margin-left:6px; border:1px solid rgba(255,255,255,.08) }
     .status{ font-size:12px; color:#a9bbde; }
     .status .ok{ color:#67e28f; font-weight:600 }
@@ -57,9 +57,9 @@
     .section h2{ margin:0 0 10px; font-size:18px }
     label{ display:block; font-size:13px; color:#cfe0ff; margin:12px 0 6px }
     input, textarea{
-        width:100%; padding:12px; border-radius:10px; border:1px solid var(--line);
-        background:#0e1830; color:var(--fg); outline:none;
-      }
+      width:100%; padding:12px; border-radius:10px; border:1px solid var(--line);
+      background:#0e1830; color:var(--fg); outline:none; /* FIXED */
+    }
     input::placeholder, textarea::placeholder{ color:#9bb0d3; opacity:1; }
 
     textarea{ min-height:110px; resize:vertical }
@@ -80,14 +80,17 @@
     .photos img{ width:100%; height:100px; object-fit:cover; border-radius:6px; display:block; }
     .photos .meta{ font-size:11px; color:#a9bbde; margin-top:6px; word-break:break-all }
 
-    /* NEW: keep action buttons inside the card and wrap neatly */
+    /* keep action buttons inside the card and wrap neatly */
     .photos .photo-actions{
       display:flex;
       gap:6px;
-      flex-wrap:wrap;         /* prevents overflow outside rounded border */
+      flex-wrap:wrap;
       margin-top:8px;
     }
   </style>
+
+  <!-- travel shared helpers -->
+  <script src="js/shared.js"></script>
 </head>
 <body>
   <div class="top-toast"><div id="toast" class="toast hidden"></div></div>
@@ -109,10 +112,10 @@
         <div class="hero">
           <div>
             <h1 id="welcomeH1">Welcome</h1>
-            <p id="partnerEmail" class="muted">â€”</p>
+            <p id="partnerEmail" class="muted">-</p>
           </div>
           <div class="status">
-            Profile: <span id="profileStatus" class="todo">Checkingâ€¦</span>
+            Profile: <span id="profileStatus" class="todo">Checking…</span>
           </div>
         </div>
 
@@ -124,14 +127,15 @@
 
           <a class="tile" href="#" id="tilePhotos">
             <h3>My Photos</h3>
-            <p>Browse the photos youâ€™ve uploaded.</p>
+            <p>Browse the photos you’ve uploaded.</p>
           </a>
 
           <a class="tile" href="/partners_documents.html">
             <h3>Documents</h3>
             <p>Upload W-9, insurance, or vendor agreements.</p>
           </a>
-                    <!-- NEW: Rooms & Availability -->
+
+          <!-- Rooms & Availability -->
           <a class="tile" href="#" id="tileRooms">
             <h3>Rooms & Availability</h3>
             <p>Edit room types, inventory & prices.</p>
@@ -144,29 +148,29 @@
 
           <a class="tile" href="mailto:support@lolaelo.com">
             <h3>Support</h3>
-            <p>Questions? Email our team â€” weâ€™re happy to help.</p>
+            <p>Questions? Email our team - we're happy to help.</p>
           </a>
         </div>
       </div> <!-- end of #hub -->
 
-<!-- Photos Panel -->
-<div id="photosPanel" class="card section hidden">
-  <h2>Your Photos</h2>
+      <!-- Photos Panel -->
+      <div id="photosPanel" class="card section hidden">
+        <h2>Your Photos</h2>
 
-  <!-- Action bar -->
-  <div id="photosActions" style="display:flex; gap:8px; align-items:center; margin:6px 0 10px">
-    <button id="btnUploadPhoto" class="btn" type="button">Upload photo</button>
-    <input id="fileInput" type="file" accept="image/*" style="display:none" />
-  </div>
+        <!-- Action bar -->
+        <div id="photosActions" style="display:flex; gap:8px; align-items:center; margin:6px 0 10px">
+          <button id="btnUploadPhoto" class="btn" type="button">Upload photo</button>
+          <input id="fileInput" type="file" accept="image/*" style="display:none" />
+        </div>
 
-  <div id="photosGrid" class="photos"></div>
+        <div id="photosGrid" class="photos"></div>
 
-  <div style="display:flex; gap:8px; margin-top:14px">
-    <button id="photosBackBtn" class="btn secondary" type="button">Back to menu</button>
-  </div>
-</div>
+        <div style="display:flex; gap:8px; margin-top:14px">
+          <button id="photosBackBtn" class="btn secondary" type="button">Back to menu</button>
+        </div>
+      </div>
 
-      <!-- COMPANY PROFILE (inline â€œsubpageâ€) -->
+      <!-- COMPANY PROFILE -->
       <div id="profile" class="card section hidden" aria-label="Company Profile">
         <h2>Company Profile</h2>
         <div class="row">
@@ -234,21 +238,30 @@
     function hide(id){ $(id).classList.add('hidden') }
     let photosState = [];
 
-    // --- Auth & fetch helpers -------------------------------------------------
-    const token = localStorage.getItem(SESSION_KEY);
-    if (!token) location.replace(LOGIN_PAGE);
+    // --- Auth guard -----------------------------------------------------------
+    (function guard(){
+      const t = (window.TravelAuth && typeof TravelAuth.getToken === 'function')
+        ? TravelAuth.getToken()
+        : localStorage.getItem(SESSION_KEY);
 
-    async function authed(path, options={}){
+      if (!t) location.replace(LOGIN_PAGE);
+    })();
+
+    // --- Authed fetch ---------------------------------------------------------
+    async function authed(path, options = {}){
+      const t = (window.TravelAuth && typeof TravelAuth.getToken === 'function')
+        ? TravelAuth.getToken()
+        : localStorage.getItem(SESSION_KEY);
+
       const r = await fetch(`${API_BASE}${path}`, {
         ...options,
         headers: {
           ...(options.headers || {}),
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${t || ''}`
         }
       });
       if (r.status === 401 || r.status === 403) {
-        // one-way sign-out
-        localStorage.removeItem(SESSION_KEY);
+        try { localStorage.removeItem(SESSION_KEY); } catch {}
         location.replace(LOGIN_PAGE);
         throw new Error("unauthorized");
       }
@@ -257,38 +270,44 @@
 
     // --- UI state -------------------------------------------------------------
     $('btnLogout').onclick = async () => {
-  try {
-    const t = localStorage.getItem(SESSION_KEY) || '';
-    await fetch(`${API_BASE}/extranet/logout`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${t}` }
-    });
-  } catch {}
-  try { localStorage.removeItem(SESSION_KEY); } catch {}
-  location.replace(LOGIN_PAGE);
-};
+      try {
+        const t = (window.TravelAuth && typeof TravelAuth.getToken === 'function')
+          ? TravelAuth.getToken()
+          : localStorage.getItem(SESSION_KEY) || '';
+        await fetch(`${API_BASE}/extranet/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${t}` }
+        });
+      } catch {}
+      try { localStorage.removeItem(SESSION_KEY); } catch {}
+      location.replace(LOGIN_PAGE);
+    };
 
     const openProfile = () => { hide('hub'); show('profile'); };
     const backToHub   = () => { hide('profile'); hide('photosPanel'); show('hub'); };
 
     $('tileProfile').addEventListener('click', (e) => { e.preventDefault(); openProfile(); });
     $('btnBack').onclick = backToHub;
-   
-    // Photos “subpage”
-     $('tilePhotos').addEventListener('click', async (e) => {
+
+    // Photos subpage
+    $('tilePhotos').addEventListener('click', async (e) => {
       e.preventDefault();
       hide('hub');
       show('photosPanel');
       await loadPhotos();
     });
 
-    // NEW: Rooms & Availability — forward session token to rooms UI
+    // Rooms & Availability handoff via shared helper
     document.getElementById('tileRooms').addEventListener('click', (e) => {
       e.preventDefault();
-      const t = localStorage.getItem(SESSION_KEY) || '';
-      const base = 'https://lolaelo-api.onrender.com/partners_rooms.html';
-      const url  = t ? `${base}?token=${encodeURIComponent(t)}` : base;
-      location.href = url;
+      if (window.TravelAuth && typeof TravelAuth.openRooms === 'function') {
+        TravelAuth.openRooms();
+      } else {
+        const t = localStorage.getItem(SESSION_KEY) || '';
+        const base = 'https://lolaelo-api.onrender.com/partners_rooms.html';
+        const url  = t ? `${base}#token=${encodeURIComponent(t)}` : base;
+        location.href = url;
+      }
     });
 
     $('photosBackBtn').addEventListener('click', (e) => {
@@ -307,71 +326,71 @@
       if (!file) return;
 
       try {
-      // 1) Ask API for a presigned URL
-      const up = await authed('/extranet/property/photos/upload-url', {
-        method:'POST',
-        headers:{ 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
-      });
+        // 1) Ask API for a presigned URL
+        const up = await authed('/extranet/property/photos/upload-url', {
+          method:'POST',
+          headers:{ 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fileName: file.name, contentType: (file.type || 'application/octet-stream'), size: file.size })
+        });
 
-      const data = await up.json().catch(()=> ({}));
-      console.log('[upload-url] status:', up.status, data);
+        const data = await up.json().catch(()=> ({}));
+        console.log('[upload-url] status:', up.status, data);
 
-      const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
-      const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
-      const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
+        const uploadUrl = data.uploadUrl || data.signedUrl || data.putUrl || data.url;
+        const key       = data.key ?? data.s3Key ?? data.path ?? data.objectKey;
+        const publicUrl = data.publicUrl || data.public_url || (uploadUrl ? uploadUrl.split('?')[0] : null);
 
-      if (!uploadUrl || !key) {
-        throw new Error('Bad upload-url response (missing uploadUrl/key)');
+        if (!uploadUrl || !key) {
+          throw new Error('Bad upload-url response (missing uploadUrl/key)');
+        }
+
+        // 2) Upload directly to storage
+        const put = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type || 'image/jpeg' },
+          body: file,
+        }).catch((e) => {
+          console.error('[PUT to presigned URL] network error:', e);
+          throw new Error('Failed to fetch (likely CORS on bucket)');
+        });
+
+        if (!put.ok) {
+          let text = '';
+          try { text = await put.text(); } catch {}
+          console.error('[PUT to presigned URL] HTTP', put.status, text);
+          throw new Error(`Storage upload failed: ${put.status}`);
+        }
+
+        // 3) Tell our API to create the DB row (expects key + url)
+        const create = await authed('/extranet/property/photos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            key,
+            url: publicUrl,
+            alt: null,
+            isCover: false
+          })
+        });
+
+        if (!create.ok) {
+          let msg = '';
+          try { msg = (await create.json()).error || ''; } catch {}
+          console.error('[create photo] HTTP', create.status, msg);
+          throw new Error(msg || `Create failed: ${create.status}`);
+        }
+
+        const created = await create.json();
+        photosState.push(created);
+        renderPhotos();
+        toast('Uploaded.', true);
+      } catch (err) {
+        console.error(err);
+        toast(err.message || 'Upload failed');
       }
-
-      // 2) Upload directly to storage (this is where CORS can block)
-      const put = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers: { 'Content-Type': file.type || 'image/jpeg' },
-        body: file,
-      }).catch((e) => {
-        console.error('[PUT to presigned URL] network error:', e);
-        throw new Error('Failed to fetch (likely CORS on bucket)');
-      });
-
-      if (!put.ok) {
-        let text = '';
-        try { text = await put.text(); } catch {}
-        console.error('[PUT to presigned URL] HTTP', put.status, text);
-        throw new Error(`Storage upload failed: ${put.status}`);
-      }
-
-      // 3) Tell our API to create the DB row (expects key + url)
-      const create = await authed('/extranet/property/photos', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          key,
-          url: publicUrl,
-          alt: null,
-          isCover: false
-        })
-      });
-
-      if (!create.ok) {
-        let msg = '';
-        try { msg = (await create.json()).error || ''; } catch {}
-        console.error('[create photo] HTTP', create.status, msg);
-        throw new Error(msg || `Create failed: ${create.status}`);
-      }
-
-      const created = await create.json();
-      photosState.push(created);
-      renderPhotos();
-      toast('Uploaded.', true);
-    } catch (err) {
-      console.error(err);
-      toast(err.message || 'Upload failed');
-    }
     });
 
-    // --- Load session + profile --------------------------------------------------
+    // --- Load session + profile ----------------------------------------------
     (async function init(){
       try {
         // 1) session (email + fallback name)
@@ -395,7 +414,6 @@
           $('profileStatus').textContent = 'Complete';
           $('profileStatus').className   = 'ok';
 
-          // prefer profile name if present
           if (p.name) company = p.name;
         } else {
           $('profileStatus').textContent = 'Missing info';
@@ -452,10 +470,10 @@
       }
     };
 
-    // --- Photos loader + renderer ---------------------------------------------
+    // --- Photos loader + renderer --------------------------------------------
     async function loadPhotos(){
       const grid = $('photosGrid');
-      grid.innerHTML = '<div class="muted">Loadingâ€¦</div>';
+      grid.innerHTML = '<div class="muted">Loading…</div>';
       try {
         const r = await authed('/extranet/property/photos');
         const arr = await r.json().catch(()=>[]);
@@ -487,7 +505,7 @@
           meta.textContent = p.alt || p.caption || p.key || '';
 
           const actions = document.createElement('div');
-          actions.className = 'photo-actions';  // << wrap safely inside card
+          actions.className = 'photo-actions';
           actions.innerHTML = `
             <button class="btn secondary" data-act="cover" data-id="${p.id}" ${p.isCover ? 'disabled' : ''}>${p.isCover ? 'Cover' : 'Set cover'}</button>
             <button class="btn secondary" data-act="edit"  data-id="${p.id}">Edit</button>
@@ -500,7 +518,6 @@
           grid.appendChild(card);
         });
 
-      // wire actions (clean)
       grid.querySelectorAll('button[data-id]').forEach(btn => {
         btn.onclick = async () => {
           const id  = Number(btn.dataset.id);
@@ -519,7 +536,7 @@
             if (act === 'edit') {
               const current = photosState.find(x => x.id === id);
               const alt = prompt('Alt text / caption', (current && current.alt) ? current.alt : '');
-              if (alt === null) return; // user cancelled
+              if (alt === null) return;
               const resp = await authed(`/extranet/property/photos/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
