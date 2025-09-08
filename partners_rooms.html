@@ -138,17 +138,18 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>Rooms & Availability — Extranet</h1>
-    <div class="note">Auth accepts <code class="k">x-partner-token</code> or <code class="k">Authorization: Bearer …</code> from OTP flow.</div>
-    <div class="spacer"></div>
-    <div class="actions">
-      <span id="status" class="note">Ready.</span>
-      <span id="dirty-count" class="note">No changes</span>
-      <button id="save" disabled>Save changes</button>
-      <button id="back" class="secondary" onclick="location.href='/partners_documents.html'">Back to menu</button>
-    </div>
-  </header>
+ <header>
+  <h1>Rooms & Availability — Extranet</h1>
+  <div class="note">Auth accepts <code class="k">x-partner-token</code> or <code class="k">Authorization: Bearer ...</code> from OTP flow.</div>
+  <div class="spacer"></div>
+  <div class="header-actions">
+    <span id="status" class="note">Ready.</span>
+    <span id="dirty-count" class="note">No changes</span>
+    <button id="save" disabled>Save changes</button>
+    <button id="back" class="secondary" onclick="location.href='/partners_documents.html'">Back to menu</button>
+  </div>
+</header>
+
 
   <div class="wrap">
     <!-- LEFT: Room Types -->
