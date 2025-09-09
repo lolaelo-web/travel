@@ -14,57 +14,47 @@
       --text:#e7ecf3;
       --muted:#98a3b3;
       --brand:#4f8cff;
-      --accent:#ffb86b;        /* soft orange accent */
+      --accent:#ffb86b;
       --ok:#2ecc71;
       --warn:#f39c12;
       --err:#e74c3c;
       --border:#222a3a;
       --chip:#1e2536;
+      --header-h:56px;
     }
-
     *{ box-sizing:border-box; }
 
-    /* Single-page scroll lives only in the calendar pane */
     body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
+      margin:0; background:var(--bg); color:var(--text);
       font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
-      overflow:hidden; /* prevent page-level scrollbars */
+      overflow:hidden;
     }
 
     header{
       display:flex; gap:12px; align-items:center;
-      padding:14px 18px;
+      padding:14px 18px; height:var(--header-h);
       border-bottom:1px solid var(--border);
-      background:var(--panel);
-      position:sticky; top:0; z-index:5;
+      background:var(--panel); position:sticky; top:0; z-index:5;
     }
     header h1{ font-size:16px; margin:0; letter-spacing:.2px; }
     .spacer{ flex:1; }
-    .actions{ display:flex; gap:8px; align-items:center; }
-    .actions .note{ white-space:nowrap; }
+    .header-actions{ display:flex; gap:8px; align-items:center; }
+    .header-actions .note{ white-space:nowrap; }
 
     .wrap{
-      display:grid;
-      grid-template-columns:300px 1fr;
-      height:calc(100vh - 56px);
-      overflow:hidden;
+      display:grid; grid-template-columns:300px 1fr;
+      height:calc(100vh - var(--header-h)); overflow:hidden;
     }
     .left{
       border-right:1px solid var(--border);
-      background:var(--panel);
-      display:flex; flex-direction:column;
-      min-width:0;
+      background:var(--panel); display:flex; flex-direction:column; min-width:0;
     }
     .right{
-      background:var(--panel-2);
-      display:flex; flex-direction:column;
-      min-width:0;
+      background:var(--panel-2); display:flex; flex-direction:column; min-width:0;
     }
 
     .toolbar{ display:flex; gap:8px; padding:10px; border-bottom:1px solid var(--border); background:var(--panel); }
-    .toolbar input, .toolbar select{ background:var(--chip); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:8px; }
+    .toolbar input,.toolbar select{ background:var(--chip); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:8px; }
     .toolbar button{ background:var(--brand); border:0; color:#fff; padding:8px 12px; border-radius:8px; cursor:pointer; }
     .toolbar button.secondary{ background:transparent; border:1px solid var(--border); color:var(--text); }
 
@@ -72,8 +62,7 @@
     .room{
       padding:10px; border:1px solid var(--border); border-radius:10px;
       background:var(--panel-2); margin-bottom:8px;
-      display:flex; justify-content:space-between; align-items:center;
-      cursor:pointer;
+      display:flex; justify-content:space-between; align-items:center; cursor:pointer;
     }
     .room.active{ outline:2px solid var(--accent); }
     .room .name{ font-weight:600; }
@@ -89,45 +78,59 @@
     .controls .group label{ color:var(--muted); font-size:12px; }
     .controls .flag{ display:flex; gap:6px; align-items:center; color:var(--muted); font-size:12px; }
 
-    .calendar{ flex:1; overflow:auto; padding:12px; }   /* single scroll lives here */
-    .cal-grid{ display:grid; grid-auto-flow:column; grid-auto-columns:128px; gap:10px; }
+    .calendar{ flex:1; overflow:auto; padding:12px; }
+    .cal-grid{ display:grid; grid-auto-flow:column; grid-auto-columns:140px; gap:10px; }
     .day{
       background:var(--panel); border:1px solid var(--border); border-radius:10px;
       padding:8px; min-height:120px; display:flex; flex-direction:column; gap:6px;
     }
     .day .date{ font-weight:600; font-size:12px; color:var(--muted); }
+
     .chip{
       background:var(--chip); border:1px solid var(--border);
       padding:6px 8px; border-radius:10px; font-size:12px;
-      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      display:grid; grid-template-columns: 1fr minmax(64px, 90px);
+      align-items:center; gap:8px; min-width:0;
     }
-    .chip .tag{ color:var(--accent); font-size:11px; }
+    .chip .tag{ color:var(--muted); font-size:11px; }
 
     .chip input{
-      width:84px;
-      text-align:right;
-      background:transparent;
-      border:0;
-      color:var(--text);
-      padding:4px 6px;                  /* allows 150.00 to fit comfortably */
-      font-variant-numeric: tabular-nums;
-      outline:none;
+      width:100%; text-align:right; background:transparent; border:0; color:var(--text);
+      padding:4px 0; outline:none; font-variant-numeric:tabular-nums;
+      overflow:hidden; text-overflow:clip; white-space:nowrap; min-width:0;
     }
+    .chip input[data-kind="open"]{    padding-right: 2.5ch; }
+    .chip input[data-kind="price"]{   padding-right: 0;    }
+    .chip input[data-kind="minstay"]{ padding-right: 3.5ch; }
     .chip input.error{ outline:1px solid var(--err); }
 
-    /* Hide number spinners (with standard + vendor-specific properties) */
-    input[type=number]{
-      appearance:textfield;              /* standard */
-      -moz-appearance:textfield;         /* Firefox */
+    /* "$" prefix next to the price input (UI only) */
+    .chip .money{
+      display:flex;                 /* $ + input side by side */
+      justify-content:flex-end;
+      align-items:center;
+      gap:6px;
     }
-    input[type=number]::-webkit-outer-spin-button,
-    input[type=number]::-webkit-inner-spin-button{
-      -webkit-appearance:none; margin:0; /* Chrome/Safari */
+    .chip .money .prefix{
+      color:var(--muted);
+      font-weight:600;
+      user-select:none;
+    }
+    /* keep input behaving nicely inside the flex row */
+    .chip .money input{
+      flex:1 1 auto;
+      width:auto;                   /* override the 100% from .chip input */
+      min-width:0;
     }
 
-    /* Buttons */
+    input[type=number]{ appearance:textfield; -moz-appearance:textfield; }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
     button{ background:var(--brand); color:#fff; border:0; border-radius:8px; padding:8px 12px; cursor:pointer; }
     button.secondary{ background:transparent; border:1px solid var(--border); color:var(--text); }
+    .btn-accent{ background:var(--accent); color:#0b0d12; }
+    .btn-accent:hover{ filter:brightness(1.05); }
 
     .note{ color:var(--muted); font-size:12px; padding:0 10px; }
     .error{ color:var(--err); }
@@ -135,35 +138,83 @@
     .warn{ color:var(--warn); }
     code.k{ background:var(--chip); padding:2px 6px; border-radius:6px; }
     .disabled{ opacity:.6; pointer-events:none; }
+
+    /* Save button = orange */
+    #save{ background:var(--accent); color:#0b0d12; }
+    #save:disabled{ opacity:.6; cursor:not-allowed; }
+
+    /* Smaller action buttons on room tiles (~30% down) */
+    .room .actions button{ padding:6px 8px; font-size:12px; border-radius:8px; }
+    #add-room{ padding:8px 10px; font-weight:600; }
+
+    /* Normalize form control fonts (incl. date) */
+    input, select, button { font-family: inherit; font-size: 14px; }
+    input[type="date"]{ font-family: inherit; font-size: 14px; }
+    input[type="date"]::-webkit-datetime-edit { font-family: inherit; }
+
+    /* ========== Month Navigator (Sprint 1 / Step 1) ========== */
+    .month-nav{
+      display:flex; align-items:center; gap:8px; padding:10px;
+      border-bottom:1px solid var(--border); background:var(--panel);
+    }
+    .month-nav .nav-btn{
+      border:1px solid var(--border);
+      background:var(--chip);
+      padding:.25rem .5rem; border-radius:.5rem; line-height:1.2; cursor:pointer;
+      color:var(--text);
+    }
+    .month-nav .nav-btn:hover{ filter:brightness(1.05); }
+    .month-nav .month-label{
+      font-weight:600; letter-spacing:.2px; min-width:8rem; text-align:center; user-select:none; cursor:default;
+      color:var(--text);
+    }
+    .month-select{ display:none; }
   </style>
 </head>
 <body>
- <header>
-  <h1>Rooms & Availability — Extranet</h1>
-  <div class="note">Auth accepts <code class="k">x-partner-token</code> or <code class="k">Authorization: Bearer ...</code> from OTP flow.</div>
-  <div class="spacer"></div>
-  <div class="header-actions">
-    <span id="status" class="note">Ready.</span>
-    <span id="dirty-count" class="note">No changes</span>
-    <button id="save" disabled>Save changes</button>
-    <button id="back" class="secondary" onclick="location.href='/partners_documents.html'">Back to menu</button>
-  </div>
-</header>
-
+  <header>
+    <h1>Rooms & Availability — Extranet</h1>
+    <div class="spacer"></div>
+    <div class="header-actions">
+      <span id="status" class="note">Ready.</span>
+      <span id="dirty-count" class="note">No changes</span>
+      <button id="save" disabled>Save changes</button>
+      <button id="back" class="secondary" onclick="location.href='/partners_app.html'">Back to menu</button>
+    </div>
+  </header>
 
   <div class="wrap">
     <!-- LEFT: Room Types -->
     <aside class="left">
       <div class="toolbar">
-        <input id="rt-name" placeholder="Room name (e.g., Deluxe Queen)" />
-        <input id="rt-price" placeholder="Base USD (e.g., 129.00)" />
-        <button id="rt-add">Add</button>
+        <button id="add-room" class="btn-accent">+ Add room type</button>
       </div>
       <div class="list" id="rooms-list"></div>
     </aside>
 
     <!-- RIGHT: Calendar + Bulk editors -->
     <section class="right">
+      <!-- Month Navigator (Step 1: static label, no JS yet) -->
+      <div id="month-nav" class="month-nav" role="group" aria-label="Month navigator">
+        <button id="month-prev" class="nav-btn" type="button" aria-label="Previous month">◀</button>
+        <span id="month-label" class="month-label" title="Month">Sep 2025</span>
+        <select id="month-select" class="month-select" aria-label="Select month">
+          <option value="2025-01">Jan 2025</option>
+          <option value="2025-02">Feb 2025</option>
+          <option value="2025-03">Mar 2025</option>
+          <option value="2025-04">Apr 2025</option>
+          <option value="2025-05">May 2025</option>
+          <option value="2025-06">Jun 2025</option>
+          <option value="2025-07">Jul 2025</option>
+          <option value="2025-08">Aug 2025</option>
+          <option value="2025-09" selected>Sep 2025</option>
+          <option value="2025-10">Oct 2025</option>
+          <option value="2025-11">Nov 2025</option>
+          <option value="2025-12">Dec 2025</option>
+        </select>
+        <button id="month-next" class="nav-btn" type="button" aria-label="Next month">▶</button>
+      </div>
+
       <div class="controls">
         <div class="group">
           <label>Range</label>
@@ -192,15 +243,89 @@
 
 <script>
 (() => {
-  // --- Auth token loading (hash → localStorage → session key) + 401 redirect ---
+    /* =================== Sprint 1: Month Navigator — Step 2 =================== */
+  // Config: 0 = Sunday, 1 = Monday. Adjust if your calendar convention differs.
+  const WEEK_START = 1;
+  let visibleWeeks = 3; // can tune to 2 if perf dips
+  // First day of the current month
+  let currentMonth = (() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1); })();
+
+  function startOfWeek(dt, weekStart = WEEK_START){
+    const d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    const day = d.getDay(); // 0..6 (Sun..Sat)
+    const diff = (day - weekStart + 7) % 7;
+    d.setDate(d.getDate() - diff);
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  function addWeeks(dt, n){
+    const d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    d.setDate(d.getDate() + n * 7);
+    return d;
+  }
+  function monthLabel(dt){
+    return dt.toLocaleString(undefined, { month: "short", year: "numeric" });
+  }
+  function computeWindowFromMonth(){
+    // Start at week boundary that contains the 1st of currentMonth
+    const start = startOfWeek(currentMonth);
+    const end = new Date(addWeeks(start, visibleWeeks).getTime() - 86400000); // inclusive
+    const startISO = iso(start), endISO = iso(end);
+    console.debug("[month-nav] window", {
+      label: monthLabel(currentMonth),
+      startISO, endISO, visibleWeeks, weekStart: WEEK_START
+    });
+    return { startISO, endISO };
+  }
+  function setMonthLabel(){
+    const lbl = document.getElementById("month-label");
+    if (lbl) lbl.textContent = monthLabel(currentMonth);
+    // keep the hidden <select> in sync for later steps
+    const sel = document.getElementById("month-select");
+    if (sel){
+      const y = currentMonth.getFullYear();
+      const m = String(currentMonth.getMonth()+1).padStart(2,"0");
+      const v = `${y}-${m}`;
+      if (sel.value !== v && [...sel.options].some(o => o.value === v)) sel.value = v;
+    }
+  }
+
+    // Step 3: drive the visible window into the Range inputs (and optionally re-render)
+  function applyMonthWindowToRange({ rerender = false } = {}){
+    const { startISO, endISO } = computeWindowFromMonth();
+    const t = todayISO();
+
+    // Respect your existing validation (no past starts) by clamping start≥today
+    let s = startISO < t ? t : startISO;
+
+    // Guarantee ~visibleWeeks window if clamping collapses it
+    const minDays = (visibleWeeks * 7) - 1;
+    let e = endISO;
+    if (e <= s) {
+      const sDate = new Date(s + "T00:00:00Z");
+      const eDate = new Date(sDate.getTime() + (minDays * 86400000));
+      e = iso(eDate);
+    }
+
+    const rs = document.getElementById("range-start");
+    const re = document.getElementById("range-end");
+    if (rs && re) {
+      rs.value = s;
+      re.value = e;
+    }
+    currentRangeStart = s;
+    currentRangeEnd   = e;
+
+    if (rerender) { void renderCalendar(); }
+  }
+
   (function ensureToken() {
     const hashToken = new URLSearchParams(location.hash.slice(1)).get('token');
     if (hashToken) localStorage.setItem('partnerToken', hashToken);
   })();
   const token =
     localStorage.getItem("partnerToken") ||
-    localStorage.getItem("lolaelo_session") || // UUID session fallback
-    "";
+    localStorage.getItem("lolaelo_session") || "";
   const baseHeaders = { "Content-Type": "application/json" };
   const authHeaders = token
     ? { ...baseHeaders, "Authorization": "Bearer " + token, "x-partner-token": token }
@@ -221,16 +346,15 @@
   const status = el("status");
   const roomsList = el("rooms-list");
   const calGrid = el("cal-grid");
+  const monthPrevBtn = el("month-prev");
+  const monthNextBtn = el("month-next");
 
-  // Selected roomTypeId
   let currentRoomTypeId = null;
   let currentRangeStart = null, currentRangeEnd = null;
   let busy = false;
 
-  // Track per-day edits (dirty)
   const dirty = new Map(); // date -> { price?:string, roomsOpen?:number, minStay?:number }
 
-  // --- Utilities ---
   const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
   const toNumber = (v) => {
     if (v === null || v === undefined || v === "") return NaN;
@@ -247,9 +371,9 @@
 
   function daysBetween(startISO, endISO) {
     const s = new Date(startISO + "T00:00:00Z");
-    const e = new Date(endISO + "T00:00:00Z");
+    const theEnd = new Date(endISO + "T00:00:00Z");
     const arr = [];
-    for (let d = new Date(s); d <= e; d = new Date(d.getTime() + 86400000)) {
+    for (let d = new Date(s); d <= theEnd; d = new Date(d.getTime() + 86400000)) {
       arr.push(iso(d));
     }
     return arr;
@@ -296,6 +420,7 @@
     const res = await authFetch("/extranet/property/rooms");
     if (!res.ok) { setStatus("Failed to load rooms ("+res.status+")", "error"); return; }
     const data = await res.json();
+    data.sort((a,b) => String(a.name).localeCompare(String(b.name), undefined, { sensitivity: 'base' }));
     if (!Array.isArray(data)) return;
 
     data.forEach(rt => {
@@ -309,9 +434,8 @@
           <div class="meta">Base ${base || "-"} · Max ${maxGuests}</div>
         </div>
         <div class="actions">
-          <button class="secondary" data-act="edit" data-id="${rt.id}">Edit</button>
+          <button class="btn-accent" data-act="edit" data-id="${rt.id}">Rename</button>
           <button class="secondary" data-act="del"  data-id="${rt.id}">Delete</button>
-          <button data-act="open" data-id="${rt.id}">Open</button>
         </div>`;
 
       div.addEventListener("click", async (e) => {
@@ -323,7 +447,7 @@
           currentRoomTypeId = id;
           if (dirty.clear) dirty.clear();
           await renderCalendar();
-          await loadRooms(); // refresh highlight
+          await loadRooms();
           return;
         }
 
@@ -357,22 +481,33 @@
     });
   }
 
-  // --- Add Room Type ---
-  el("rt-add").addEventListener("click", async () => {
-    const name = el("rt-name").value.trim();
-    const priceRaw = el("rt-price").value.trim();
-    const basePrice = toNumber(priceRaw);
-    if (!name || !Number.isFinite(basePrice)) { setStatus("Name and valid Base Price required", "error"); return; }
+  // --- Add Room Type (prompt-based) ---
+  el("add-room").addEventListener("click", async () => {
+    const name = (prompt("Room type name (e.g., Deluxe Queen):") || "").trim();
+    if (!name) { setStatus("Name is required.", "warn"); return; }
+
+    let p = prompt("Base price in USD (e.g., 129.00):") || "";
+    p = p.replace(/[^0-9.]/g, "");
+    const basePrice = Number(p);
+    if (!Number.isFinite(basePrice) || basePrice < 0) {
+      setStatus("Enter a valid non-negative price.", "error"); return;
+    }
+
     disableWhileBusy(true);
     const res = await authFetch("/extranet/property/rooms", {
       method: "POST",
-      body: JSON.stringify({ name, basePrice: basePrice.toFixed(2), maxGuests: 2, description: "" })
+      body: JSON.stringify({
+        name,
+        basePrice: basePrice.toFixed(2),
+        maxGuests: 2,
+        description: ""
+      })
     });
     disableWhileBusy(false);
+
     if (!res.ok) { setStatus("Create failed ("+res.status+")", "error"); return; }
     const created = await res.json();
     currentRoomTypeId = created.id;
-    el("rt-name").value = ""; el("rt-price").value = "";
     setStatus("Room created", "ok");
     await loadRooms();
     await renderCalendar();
@@ -407,7 +542,6 @@
     prepareRangeDefaults();
     if (!validateRangeOrWarn()) return;
 
-    // Fetch inventory + prices
     const invUrl = `/extranet/property/rooms/${currentRoomTypeId}/inventory?start=${currentRangeStart}&end=${currentRangeEnd}`;
     const prcUrl = `/extranet/property/rooms/${currentRoomTypeId}/prices?start=${currentRangeStart}&end=${currentRangeEnd}`;
     disableWhileBusy(true);
@@ -420,7 +554,6 @@
     const invRows = await invRes.json();
     const prcRows = await prcRes.json();
 
-    // Index by date
     const invByDate = new Map(invRows.map(r => [String(r.date).slice(0,10), r]));
     const prcByDate = new Map(prcRows.map(r => [String(r.date).slice(0,10), r]));
 
@@ -441,8 +574,12 @@
         </div>
         <div class="chip" title="Price (USD)">
           <span class="tag">Price</span>
-          <input type="text" value="${prc ? Number(prc.price).toFixed(2) : ""}" data-date="${d}" data-kind="price">
+          <div class="money">
+            <span class="prefix">$</span>
+            <input type="text" value="${prc ? Number(prc.price).toFixed(2) : ""}" data-date="${d}" data-kind="price">
+          </div>
         </div>
+
         <div class="chip" title="Min Stay">
           <span class="tag">MinStay</span>
           <input type="number" min="1" value="${invMinStay}" data-date="${d}" data-kind="minstay">
@@ -450,7 +587,6 @@
       `;
       calGrid.appendChild(card);
 
-      // listeners to mark dirty + basic inline validation
       ['open','price','minstay'].forEach(kind => {
         const input = card.querySelector(`input[data-kind="${kind}"]`);
         input.addEventListener('input', () => {
@@ -476,7 +612,19 @@
     if (!status.className.includes("ok")) setStatus("Calendar ready.", "");
   }
 
-  // --- Bulk Apply: Inventory (items[]) ---
+    // --- Month nav listeners (Step 2: only logs & label update) ---
+    function shiftMonth(delta){
+    const y = currentMonth.getFullYear();
+    const m = currentMonth.getMonth();
+    currentMonth = new Date(y, m + delta, 1);
+    setMonthLabel();
+    computeWindowFromMonth();                 // keep the debug log
+    applyMonthWindowToRange({ rerender: true }); // now actually update range + calendar
+  }
+  if (monthPrevBtn) monthPrevBtn.addEventListener("click", () => shiftMonth(-1));
+  if (monthNextBtn) monthNextBtn.addEventListener("click", () => shiftMonth(+1));
+
+  // --- Bulk Apply: Inventory ---
   el("apply-inv").addEventListener("click", async () => {
     if (!currentRoomTypeId) return setStatus("Select a room type.", "error");
     if (!validateRangeOrWarn()) return;
@@ -508,7 +656,7 @@
     await renderCalendar();
   });
 
-  // --- Bulk Apply: Prices (items[]) ---
+  // --- Bulk Apply: Prices ---
   el("apply-price").addEventListener("click", async () => {
     if (!currentRoomTypeId) return setStatus("Select a room type.", "error");
     if (!validateRangeOrWarn()) return;
@@ -532,7 +680,7 @@
     await renderCalendar();
   });
 
-  // --- Save button: persist only dirty days (partial edits allowed) ---
+  // --- Save (partial edits only) ---
   el("save").addEventListener("click", async () => {
     if (dirty.size === 0) return;
 
@@ -580,13 +728,18 @@
     }
   });
 
-  // --- Init ---
-  (async function init() {
+    (async function init() {
     prepareRangeDefaults();
     await loadRooms();
-    const firstOpen = document.querySelector(".room [data-act='open']");
-    if (firstOpen) firstOpen.click();
+    const firstOpen = document.querySelector(".room");
+  if (firstOpen) firstOpen.click();
+
+  // Initialize month header + 3-week window, then render with that window
+  setMonthLabel();
+  computeWindowFromMonth();                 // debug log
+  applyMonthWindowToRange({ rerender: true });
   })();
+
 })();
 </script>
 </body>
