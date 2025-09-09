@@ -658,5 +658,50 @@
 
 })();
 </script>
+
+<!-- FP: MN-SYNC-WEEKS — runtime override to ensure continuous 3-week stepping -->
+<script>
+(() => {
+  const ONE_DAY = 86400000;
+  const iso = (d) => d.toISOString().slice(0,10);
+  const todayISO = () => iso(new Date());
+  const setLabelFrom = (startISO) => {
+    const lbl = document.getElementById('month-label');
+    if (!lbl) return;
+    const d = new Date(startISO + 'T00:00:00Z');
+    lbl.textContent = d.toLocaleString(undefined, { month:'short', year:'numeric' });
+  };
+  const applyWindowFrom = (startISO, weeks = 3, doRender = true) => {
+    const sDate = new Date(startISO + 'T00:00:00Z');
+    const eDate = new Date(sDate.getTime() + (weeks * 7 - 1) * ONE_DAY);
+    const rs = document.getElementById('range-start');
+    const re = document.getElementById('range-end');
+    const s = startISO < todayISO() ? todayISO() : startISO;
+    const e = iso(eDate);
+    if (rs && re) { rs.value = s; re.value = e; }
+    // keep globals in sync if they exist
+    if ('currentRangeStart' in window) window.currentRangeStart = s;
+    if ('currentRangeEnd'   in window) window.currentRangeEnd   = e;
+    if ('currentMonth'      in window) window.currentMonth      = new Date(s + 'T00:00:00Z'); // keep header sane
+    setLabelFrom(s);
+    if (doRender && typeof window.renderCalendar === 'function') window.renderCalendar();
+  };
+  const stepFromDisplayed = (deltaWeeks) => {
+    const rs = (document.getElementById('range-start')?.value) || window.currentRangeStart || todayISO();
+    const base = new Date(rs + 'T00:00:00Z');
+    base.setDate(base.getDate() + deltaWeeks * 7);
+    applyWindowFrom(iso(base), 3, true);
+  };
+
+  // attach without redeclaring your existing consts; use direct element refs
+  document.getElementById('month-prev')?.addEventListener('click', () => stepFromDisplayed(-3));
+  document.getElementById('month-next')?.addEventListener('click', () => stepFromDisplayed(+3));
+
+  // first load: normalize the window and label based on whatever is showing now
+  const first = (document.getElementById('range-start')?.value) || todayISO();
+  applyWindowFrom(first, 3, false);
+})();
+</script>
+
 </body>
 </html>
