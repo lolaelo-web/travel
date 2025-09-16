@@ -1,4 +1,5 @@
-<a class="tile" href="/partners_photos.html" id="tilePhotos">
-            <h3>My Photos</h3>
-            <p>Browse the photos you’ve uploaded.</p>
-          </a>
+<!doctype html><meta charset="utf-8">
+<script>
+  var t = localStorage.getItem('partnerToken') || localStorage.getItem('lolaelo_session') || '';
+  location.replace('https://lolaelo-api.onrender.com/partners_photos.html?cb=' + Date.now() + (t ? '#token=' + encodeURIComponent(t) : ''));
+</script>
