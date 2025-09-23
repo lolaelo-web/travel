@@ -142,49 +142,81 @@
       </nav>
 
       <!-- Hotel search box -->
-      <form class="search-wrap" onsubmit="event.preventDefault(); alert('Feature not live yet: we’re testing to ensure reliability');">
-        <div class="search-row">
-          <label class="field" aria-label="Destination">
-            <span>📍</span>
-            <input type="text" placeholder="Where to stay?" />
-          </label>
+      <!-- Hotel search box -->
+<form id="hp-search-form" class="search-wrap">
+  <div class="search-row">
+    <label class="field" aria-label="Destination">
+      <span>📍</span>
+      <input id="hp-q" type="text" placeholder="Where to stay?" />
+    </label>
 
-          <label class="field" aria-label="Start date">
-            <span>📅</span>
-            <input class="date start" type="text" placeholder="Start Date" />
-          </label>
+    <label class="field" aria-label="Start date">
+      <span>📅</span>
+      <input id="hp-start" class="date start" type="text" placeholder="Start Date" />
+    </label>
 
-          <label class="field" aria-label="End date">
-            <span>📅</span>
-            <input class="date end" type="text" placeholder="End Date" />
-          </label>
+    <label class="field" aria-label="End date">
+      <span>📅</span>
+      <input id="hp-end" class="date end" type="text" placeholder="End Date" />
+    </label>
 
-          <label class="field" aria-label="Guests">
-            <span>👤</span>
-            <select>
-              <option>1 guest</option>
-              <option selected>2 guests</option>
-              <option>3 guests</option>
-              <option>4 guests</option>
-              <option>5+ guests</option>
-            </select>
-          </label>
+    <label class="field" aria-label="Guests">
+      <span>👤</span>
+      <select id="hp-guests">
+        <option value="1">1 guest</option>
+        <option value="2" selected>2 guests</option>
+        <option value="3">3 guests</option>
+        <option value="4">4 guests</option>
+        <option value="5">5+ guests</option>
+      </select>
+    </label>
 
-          <label class="field" aria-label="Rooms">
-            <span>🛏️</span>
-            <select>
-              <option selected>1 room</option>
-              <option>2 rooms</option>
-              <option>3 rooms</option>
-              <option>4+ rooms</option>
-            </select>
-          </label>
-        </div>
+    <label class="field" aria-label="Rooms">
+      <span>🛏️</span>
+      <select id="hp-rooms">
+        <option value="1" selected>1 room</option>
+        <option value="2">2 rooms</option>
+        <option value="3">3 rooms</option>
+        <option value="4">4+ rooms</option>
+      </select>
+    </label>
+  </div>
 
-        <div class="search-actions">
-          <button class="search-btn" type="submit">Search</button>
-        </div>
-      </form>
+  <div class="search-actions">
+    <button class="search-btn" type="submit">Search</button>
+  </div>
+</form>
+
+<script>
+  // Build URL and redirect to Render-hosted catalog with params
+  (function () {
+    const form   = document.getElementById('hp-search-form');
+    const q      = document.getElementById('hp-q');
+    const startI = document.getElementById('hp-start'); // flatpickr keeps ISO in the original input
+    const endI   = document.getElementById('hp-end');
+    const guests = document.getElementById('hp-guests');
+    const rooms  = document.getElementById('hp-rooms');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const params = new URLSearchParams();
+      const qVal = (q.value || '').trim();
+      if (qVal) params.set('q', qVal);
+
+      const s = (startI.value || '').trim();
+      const eDate = (endI.value || '').trim();
+      if (s) params.set('start', s);
+      if (eDate) params.set('end', eDate);
+
+      params.set('guests', guests.value || '2');
+      params.set('rooms', rooms.value || '1');
+
+      const target = 'https://lolaelo-api.onrender.com/catalog.html?' + params.toString();
+      location.href = target;
+    });
+  })();
+</script>
 
       <ul class="value-list" aria-label="How Lolaelo works">
         <li><strong>Year 1:</strong> <em>Zero platform margin</em> — partners keep everything, customers pay less.</li>
