@@ -281,8 +281,9 @@
       font-size: 14px;
       line-height: 1.5;
       color: #4b5563;
+      white-space: pre-line;  /* preserve line breaks in the template string */
     }
-    
+ 
     .modal-footer {
       flex: 0 0 25%;
       border-top: 1px solid #e5e7eb;
@@ -619,13 +620,33 @@
         headerImage: "/assets/dest-boracay.jpg",
         subtitle: "White sand, turquoise water, and island energy.",
         body: `
-Boracay hits you the moment your feet touch the sand. The island keeps showing up in global “best beaches” lists for a reason — Condé Nast Traveler has repeatedly ranked Boracay among the top islands in the world, and White Beach is often cited as one of the most beautiful beaches anywhere.
+Boracay hits you the moment your feet touch the sand. The island keeps showing up in global “best beaches” lists for a reason – it has that mix of easy access, soft sand, and clear water that actually matches the photos you see online.
 
-The sand here is insanely fine — almost like powder — and the water stays warm and shallow long enough that you can walk straight out and never feel rushed. It’s one of the easiest islands to travel to as well. Flights into Caticlan (MPH) get you closest, while Kalibo (KLO) is the cheaper but longer route. Either way, Boracay is built for convenience.
+What makes Boracay special to me is how effortless it is. The sand is ridiculously fine – almost like powder – and the water stays warm and shallow far out into the shoreline. It is also one of the easiest islands to reach. Caticlan (MPH) is the fastest and most convenient route. Kalibo (KLO) is usually cheaper, but you trade it for a longer land transfer. Either way, getting here is simple.
 
-During typhoon season, the island shifts — stronger rain, bigger wind, and more dramatic waves. It doesn’t take away from the experience; if anything, it humbles you and reminds you how powerful nature is. As long as you follow local advisories, it stays safe and memorable.
+Boracay changes during typhoon season – bigger waves, stronger wind, and that dramatic, cinematic kind of rain. It makes you appreciate how powerful nature is. As long as you follow local advisories and respect the ocean, the island stays safe and still worth the trip.
 
-I like Boracay because it works for everyone: couples, families, groups, the “do nothing all day” crowd, and the late-night crowd. It’s easy, lively, and full of food, music, and energy.
+It is one of the few destinations in the Philippines that works for everyone: couples, families, groups of friends, solo travelers, and even the “do nothing all day” crowd. Boracay adjusts to your energy.
+
+Activities I recommend:
+• Island hopping: Puka Beach, Crocodile Island, Crystal Cove
+• Paraw sunset sailing: simple boat, big payoff
+• Snorkeling / freediving: calmer coves around Tambisaan and Balinghai
+• Kite surfing or just watching in Bulabog (stronger winds around November to March)
+• Beachfront food crawl along White Beach
+• Massage on the beach after a long day outside
+
+Major events and seasons:
+• Love Boracay (formerly Laboracay) around April 30 - May 1
+• Dragon Boat Festival usually around late April to May
+• Dry season sweet spot from November to May
+• Holy Week, Christmas and New Year: busier, but great if you like a livelier crowd
+
+Quick snapshot:
+• Best for: couples, groups, families
+• Vibe: lively, social, easy, walkable
+• Trip length: 3 - 5 days
+• Known for: sunsets, island-hopping, nightlife, very fine sand
         `,
         staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=boracay"
       },
@@ -635,11 +656,28 @@ I like Boracay because it works for everyone: couples, families, groups, the “
         headerImage: "/assets/dest-el-nido.jpg",
         subtitle: "Limestone cliffs, slow days on the water, and my first love.",
         body: `
-El Nido is my first love. It’s the place where someone once told me I was “meant to be Filipino,” and for the first time in my life, those words actually carried weight. Sitting on a bangka in the middle of those limestone cliffs, I understood why.
+El Nido is my first love. It is the place where someone once told me I was “meant to be Filipino,” and for the first time in my life, those words actually carried weight. Sitting on a bangka in the middle of those limestone cliffs, I understood why.
 
-Everything here moves at a slower pace — quiet mornings, flat water, sunlight breaking over Bacuit Bay. You pick an island-hopping route, get on the boat, and the whole day just unfolds around you. Lagoons, sandbars, cliff lines, grilled lunch on the beach — you don’t force anything here.
+Everything here moves at a slower pace – quiet mornings, flat water, sunlight breaking over Bacuit Bay. You pick an island-hopping route, get on the boat, and the whole day just unfolds around you. Lagoons, sandbars, cliff lines, grilled lunch on the beach – you do not force anything here.
 
-El Nido feels romantic, calm, and reflective. Less nightlife, more “talk about life on a boat and nap later” energy. It’s perfect for couples, small groups, and anyone who wants nature to be the main event.
+El Nido feels romantic, calm, and reflective. Less nightlife, more “talk about life on a boat and nap later” energy. It is a good fit if you want nature and quiet time to be the main event.
+
+Activities I recommend:
+• Island-hopping routes (Tour A and C are the usual favorites)
+• Kayaking inside the lagoons when the water is calm
+• Sunrise or sunset viewpoints over Bacuit Bay
+• Simple beachfront dinners at night
+• Side trip to Nacpan Beach if you have extra time
+
+Major events and seasons:
+• Dry season from roughly November to May for more reliable boat days
+• Holidays like Christmas, New Year, and Holy Week bring more visitors but it still feels small-town compared to big city crowds
+
+Quick snapshot:
+• Best for: couples, small groups, honeymooners
+• Vibe: slow, scenic, reflective
+• Trip length: at least 3 - 4 days
+• Known for: limestone cliffs, lagoons, clear water, quiet nights
         `,
         staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=el%20nido"
       },
@@ -647,13 +685,30 @@ El Nido feels romantic, calm, and reflective. Less nightlife, more “talk about
       "coron": {
         name: "Coron",
         headerImage: "/assets/dest-coron.jpg",
-        subtitle: "Clear lakes, deep water, and the ‘Dream Team’ of island views.",
+        subtitle: "Clear lakes, deep water, and the “Dream Team” of island views.",
         body: `
-Coron reminds me of the 1992 Dream Team — the best of the best all in one place. Lakes, lagoons, cliffs, wrecks, viewpoints… every day feels like another highlight reel. You don’t come here for one thing; you come because everything is stacked.
+Coron reminds me of the 1992 Dream Team – the best of the best all in one place. Lakes, lagoons, cliffs, wrecks, viewpoints… every day feels like another highlight reel. You do not come here for one thing; you come because everything is stacked.
 
-The water is absurdly clear. Kayangan Lake, Twin Lagoon, the shallow wrecks — it all looks like HD mode in real life. This is the spot for divers, snorkelers, and anyone who loves dramatic scenery and clean, high-impact visuals.
+The water is absurdly clear. Kayangan Lake, Twin Lagoon, the shallow wrecks – it all looks like HD mode in real life. Coron is the spot for divers, snorkelers, and anyone who loves dramatic scenery and clean, high-impact visuals.
 
-Coron doesn’t try to be fancy. It’s simple, outdoorsy, and unforgettable.
+The island itself does not try to be fancy. It is simple, outdoorsy, and quiet once you are off the water. Each day feels like one big main event.
+
+Activities I recommend:
+• Kayangan Lake and Twin Lagoon (touristy but absolutely worth it)
+• Snorkeling over the shallow shipwrecks if you do not dive
+• Diving the deeper wrecks if you are certified
+• Sunset from Mt. Tapyas
+• Maquinit Hot Spring after a full day on the boat
+
+Major events and seasons:
+• Dry season from November to May for calmer seas and clearer days
+• Philippine holidays (Christmas, New Year, Holy Week) bring more people but it still feels lighter than Boracay
+
+Quick snapshot:
+• Best for: divers, adventure-leaning travelers, “photo people”
+• Vibe: scenic, slightly rugged, one big highlight per day
+• Trip length: 3 - 5 days
+• Known for: lakes, lagoons, wreck dives, clear water
         `,
         staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=coron"
       },
@@ -663,15 +718,33 @@ Coron doesn’t try to be fancy. It’s simple, outdoorsy, and unforgettable.
         headerImage: "/assets/dest-siargao.jpg",
         subtitle: "Surf breaks, palm roads, and the love that got away.",
         body: `
-Siargao is the love that got away. It’s the island that shows up in your head on random days — the scooter rides, the 4 PM light hitting the palms, the quiet spots that felt way more emotional than they should have.
+Siargao is the love that got away. It is the island that shows up in your head on random days – the scooter rides, the 4 PM light hitting the palms, the quiet spots that felt way more emotional than they should have.
 
-You feel the surf culture even if you don’t surf: barefoot people carrying boards, slow cafés, small restaurants where everyone looks like they’ve accidentally stayed longer than planned. When Siargao was named the world’s best island by Condé Nast Traveler readers, it made sense — the place hits people in a very real, very personal way.
+You feel the surf culture even if you do not surf. Barefoot people carrying boards, slow cafés, small restaurants where everyone looks like they have accidentally stayed longer than planned. When Siargao started showing up as one of the top islands in the world in travel lists, it made sense – the place hits people in a very real way.
 
-It’s raw, emotional, scenic, and easy to fall for without even trying.
+What I like about Siargao is how emotional the small moments can feel. Eating simple food after a long day, driving through coconut roads, getting caught in a random rain shower – it all sticks with you.
+
+Activities I recommend:
+• Cloud 9 boardwalk and a surf lesson if you are up for it
+• Island hopping to Guyam, Daku, and Naked Island
+• Sugba Lagoon for paddleboarding or just floating around
+• Motorbike rides through the Coconut Road and around the island
+• Finding your own favorite café or bar and going back every day
+
+Major events and seasons:
+• Stronger surf conditions generally from August to November
+• You will still see surfers and waves year-round
+• Christmas, New Year, and long weekends bring more people but the island keeps a laid-back feel
+
+Quick snapshot:
+• Best for: surfers, remote workers, people who like “feelings” as much as views
+• Vibe: raw, emotional, laid-back
+• Trip length: 4 - 7 days (easy to extend)
+• Known for: surf breaks, coconut roads, island-hopping, sunsets
         `,
         staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=siargao"
       }
-    };   // <-- this was missing
+    };
 
     let currentStaysUrl = null;
 
