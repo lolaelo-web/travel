@@ -87,6 +87,23 @@
       text-decoration: underline;
     }
 
+    .nav-link-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-back-arrow {
+      font-size: 16px;
+      line-height: 1;
+      transform: translateY(1px);
+    }
+
+    .nav-link-back:hover .nav-back-arrow {
+      transform: translate(-2px, 1px);  /* subtle slide left on hover */
+      transition: transform 0.15s ease-out;
+    }
+
     /* Hero */
 
     .hero {
@@ -379,8 +396,10 @@
         </a>
       </div>
       <nav class="nav-right" aria-label="Primary">
-        <!-- On this page Destinations is current; can later style as active if you want -->
-        <a class="nav-link" href="/destinations.html">Destinations</a>
+        <a class="nav-link nav-link-back" href="/index.html" aria-label="Back to main page">
+          <span class="nav-back-arrow">←</span>
+          <span>Back to main</span>
+        </a>
       </nav>
     </header>
 
