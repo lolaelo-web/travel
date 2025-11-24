@@ -252,34 +252,36 @@
     }
 
     /* Tooltip */
-
+    
     .benefit::after {
       content: attr(data-tooltip);
       position: absolute;
       left: 50%;
       bottom: -4px;
       transform: translate(-50%, 115%);
-      padding: 8px 10px;
-      max-width: 260px;
+      padding: 10px 14px;
+      width: 260px;        /* wider tooltip */
+      max-width: 320px;    /* allows slight flexibility */
       background: #111827;
       color: #f9fafb;
-      font-size: 12px;
-      line-height: 1.4;
+      font-size: 13px;
+      line-height: 1.5;
       border-radius: 8px;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
       pointer-events: none;
       z-index: 10;
-      white-space: normal;
+      white-space: normal;  /* ensures normal wrapping */
+      text-align: center;   /* cleaner horizontal feel */
     }
-
+    
     .benefit:hover::after,
     .benefit:focus-within::after {
       opacity: 1;
       visibility: visible;
     }
-
+    
     /* Footer */
 
     footer {
