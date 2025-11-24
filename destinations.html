@@ -82,11 +82,7 @@
       color: var(--brand);
       padding: 4px 0;
       font-weight: 500;
-      text-decoration: none;   /* remove underline globally */
-    }
-    
-    .nav-link:hover {
-      text-decoration: underline;
+      text-decoration: none; /* remove underline */
     }
     
     /* Back link wrapper */
@@ -94,28 +90,36 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      text-decoration: none;   /* remove underline from entire link */
+      text-decoration: none; /* no underline on entire element */
     }
     
-    /* Re-enable underline on text only (second span) */
-    .nav-link-back span:last-child {
-      text-decoration: underline;
-    }
-    
-    /* Arrow stays clean, no underline ever */
-    .nav-link-back .nav-back-arrow {
-      text-decoration: none !important;
+    /* Arrow stays clean forever — no underline, no hover line */
+    .nav-back-arrow {
       font-size: 16px;
       line-height: 1;
       transform: translateY(1px);
+      text-decoration: none !important;
     }
     
-    /* Hover effect: subtle arrow slide */
+    /* Text — no underline in normal state */
+    .nav-link-back span:last-child {
+      text-decoration: none;
+    }
+    
+    /* Hover state:
+       underline text ONLY
+       arrow stays clean
+    */
+    .nav-link-back:hover span:last-child {
+      text-decoration: underline;
+    }
+    
+    /* Hover arrow animation (no underline) */
     .nav-link-back:hover .nav-back-arrow {
       transform: translate(-2px, 1px);
       transition: transform 0.15s ease-out;
     }
-
+    
     /* Hero */
 
     .hero {
@@ -306,7 +310,7 @@
 
     .modal-body p {
       margin: 0 0 10px;
-      font-size: 14px;
+      font-size: 12.5px;
       line-height: 1.5;
       color: #4b5563;
       font-weight: 400;   /* <— ensures normal, not bold */
