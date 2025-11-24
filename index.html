@@ -13,9 +13,10 @@
   <style>
     :root {
       --bg: #ffffff;
-      --fg: #111111;
+      --fg: #111827;
       --muted: #6b7280;
-      --accent: #ff6a3d;
+      --brand: #064e3b;   /* teal headline/nav */
+      --accent: #ff6a3d;  /* orange CTA */
       --border: #e5e7eb;
       --radius-card: 18px;
       --radius-pill: 999px;
@@ -46,8 +47,6 @@
       color: inherit;
       text-decoration: none;
     }
-
-    /* Shell */
 
     .page {
       width: 100%;
@@ -88,8 +87,9 @@
     }
 
     .nav-link {
-      color: #111827;
+      color: var(--brand);
       padding: 4px 0;
+      font-weight: 500;
     }
 
     .nav-link:hover {
@@ -104,10 +104,11 @@
     }
 
     .hero-title {
-      font-size: clamp(30px, 4vw, 40px);
+      font-size: clamp(32px, 4.4vw, 44px);
       line-height: 1.2;
       margin: 0 0 6px;
       font-weight: 600;
+      color: var(--brand);
     }
 
     .hero-tagline {
@@ -116,14 +117,21 @@
       color: var(--muted);
     }
 
-    /* Search bar */
+    /* Search card */
+
+    .search-card-wrap {
+      margin-top: 26px;
+      display: flex;
+      justify-content: center;
+    }
 
     .search-card {
-      margin-top: 28px;
+      width: 100%;
+      max-width: 820px;
       background: #ffffff;
       border-radius: var(--radius-card);
       border: 1px solid var(--border);
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
       padding: 14px 16px;
       display: flex;
       flex-direction: column;
@@ -187,7 +195,7 @@
     .search-btn {
       border-radius: var(--radius-pill);
       border: none;
-      padding: 0 22px;
+      padding: 0 24px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -196,8 +204,8 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 40px;
-      box-shadow: 0 10px 24px rgba(248, 113, 73, 0.4);
+      min-height: 42px;
+      box-shadow: 0 14px 30px rgba(248, 113, 73, 0.5);
       white-space: nowrap;
     }
 
@@ -205,19 +213,21 @@
       filter: brightness(0.97);
     }
 
-    /* Benefits row */
+    /* Benefits */
 
     .benefits {
-      margin-top: 32px;
+      margin-top: 40px;
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 20px;
+      gap: 24px;
+      justify-items: center;
+      text-align: center;
     }
 
     .benefit {
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: center;
       gap: 10px;
       position: relative;
       padding: 4px 4px 6px;
@@ -225,29 +235,30 @@
     }
 
     .benefit-icon {
-      width: 36px;
-      height: 36px;
+      width: 44px;
+      height: 44px;
       border-radius: 999px;
       background: #e5f2ff;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 22px;
     }
 
     .benefit-title {
       font-size: 14px;
       font-weight: 600;
+      color: var(--brand);
     }
 
-    /* Tooltip with sub-description (only on hover/focus) */
+    /* Tooltip */
 
     .benefit::after {
       content: attr(data-tooltip);
       position: absolute;
-      left: 0;
+      left: 50%;
       bottom: -4px;
-      transform: translateY(110%);
+      transform: translate(-50%, 115%);
       padding: 8px 10px;
       max-width: 260px;
       background: #111827;
@@ -292,16 +303,12 @@
         padding: 12px 16px 32px;
       }
 
-      .nav-right {
-        font-size: 13px;
-      }
-
       .hero {
         padding-top: 20px;
       }
 
       .search-card {
-        margin-top: 22px;
+        padding: 12px 12px;
       }
 
       .search-row {
@@ -318,6 +325,7 @@
 
       .benefits {
         grid-template-columns: 1fr;
+        gap: 18px;
       }
 
       .benefit::after {
@@ -332,8 +340,8 @@
     <header class="nav">
       <div class="nav-left">
         <a href="#top" aria-label="Lolaelo home">
-          <!-- Swap this src for your horizontal logo asset when ready -->
-          <img src="/logo.png" alt="Lolaelo" class="logo-img" />
+          <!-- Save the new horizontal logo as this path on your server -->
+          <img src="/assets/lolaelo-logo-horizontal.png" alt="Lolaelo" class="logo-img" />
         </a>
       </div>
       <nav class="nav-right" aria-label="Primary">
@@ -347,7 +355,7 @@
         <h1 class="hero-title" id="welcome-title">Fair travel, built on trust.</h1>
         <p class="hero-tagline" id="welcome-body"></p>
 
-        <!-- Optional: CMS-driven copy -->
+        <!-- Optional CMS-driven copy -->
         <script>
           fetch("https://lolaelo-api.onrender.com/content/homepage-welcome")
             .then(r => r.json())
@@ -361,63 +369,65 @@
         </script>
 
         <!-- Search card -->
-        <form id="hp-search-form" class="search-card" aria-label="Search stays">
-          <div class="search-row">
-            <!-- Destination -->
-            <div class="search-field">
-              <div class="search-label">Destination</div>
-              <div class="search-input-shell">
-                <span class="icon">📍</span>
-                <input
-                  id="hp-q"
-                  type="text"
-                  placeholder="Select destination"
-                  autocomplete="off"
-                />
+        <div class="search-card-wrap">
+          <form id="hp-search-form" class="search-card" aria-label="Search stays">
+            <div class="search-row">
+              <!-- Destination -->
+              <div class="search-field">
+                <div class="search-label">Destination</div>
+                <div class="search-input-shell">
+                  <span class="icon">📍</span>
+                  <input
+                    id="hp-q"
+                    type="text"
+                    placeholder="Select destination"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+
+              <!-- Date range -->
+              <div class="search-field">
+                <div class="search-label">Dates</div>
+                <div class="search-input-shell">
+                  <span class="icon">📅</span>
+                  <input
+                    id="hp-dates"
+                    class="date-range"
+                    type="text"
+                    placeholder="Check-in – Check-out"
+                    autocomplete="off"
+                    readonly
+                  />
+                </div>
+              </div>
+
+              <!-- Guests -->
+              <div class="search-field">
+                <div class="search-label">Guests</div>
+                <div class="search-input-shell">
+                  <span class="icon">👤</span>
+                  <select id="hp-guests">
+                    <option value="1">1 guest</option>
+                    <option value="2" selected>2 guests</option>
+                    <option value="3">3 guests</option>
+                    <option value="4">4 guests</option>
+                    <option value="5">5+ guests</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Search button -->
+              <div class="search-button-wrap">
+                <button class="search-btn" type="submit">
+                  Search
+                </button>
               </div>
             </div>
+          </form>
+        </div>
 
-            <!-- Date range -->
-            <div class="search-field">
-              <div class="search-label">Dates</div>
-              <div class="search-input-shell">
-                <span class="icon">📅</span>
-                <input
-                  id="hp-dates"
-                  class="date-range"
-                  type="text"
-                  placeholder="Check-in – Check-out"
-                  autocomplete="off"
-                  readonly
-                />
-              </div>
-            </div>
-
-            <!-- Guests -->
-            <div class="search-field">
-              <div class="search-label">Guests</div>
-              <div class="search-input-shell">
-                <span class="icon">👤</span>
-                <select id="hp-guests">
-                  <option value="1">1 guest</option>
-                  <option value="2" selected>2 guests</option>
-                  <option value="3">3 guests</option>
-                  <option value="4">4 guests</option>
-                  <option value="5">5+ guests</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Search button -->
-            <div class="search-button-wrap">
-              <button class="search-btn" type="submit">
-                Search
-              </button>
-            </div>
-          </div>
-        </form>
-
-        <!-- Benefits (tooltips on hover) -->
+        <!-- Benefits (centered, tooltips on hover) -->
         <section class="benefits" id="destinations" aria-label="Why book with Lolaelo">
           <div
             class="benefit"
@@ -459,7 +469,7 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Date range picker (single input, start/end encoded via "to")
+    // Date range picker
     flatpickr(".date-range", {
       mode: "range",
       altInput: true,
@@ -489,8 +499,7 @@
         }
 
         params.set("guests", guestsSelect.value || "2");
-        // Keep rooms in URL for compatibility, default to 1
-        params.set("rooms", "1");
+        params.set("rooms", "1"); // default for compatibility
 
         const target = "https://lolaelo-api.onrender.com/catalog.html?" + params.toString();
         location.href = target;
