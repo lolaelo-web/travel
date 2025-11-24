@@ -123,13 +123,14 @@
       overflow: hidden;
       min-height: 180px;
       cursor: pointer;
-
+    
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       background-color: #e5f2ff; /* fallback if image not present */
-
-      filter: grayscale(40%) brightness(0.9);
+    
+      /* stronger fade so hover feels clearly different */
+      filter: grayscale(65%) brightness(0.8);
       transition:
         filter 0.2s ease-out,
         transform 0.2s ease-out,
@@ -143,10 +144,10 @@
       inset: 0;
       background: linear-gradient(
         to top,
-        rgba(0, 0, 0, 0.35),
-        rgba(0, 0, 0, 0.10)
+        rgba(0, 0, 0, 0.40),
+        rgba(0, 0, 0, 0.18)
       );
-      opacity: 0.7;
+      opacity: 0.85; /* darker by default */
       transition: opacity 0.2s ease-out;
     }
 
@@ -188,6 +189,290 @@
 
     .dest-siargao {
       background-image: url("/assets/dest-siargao.jpg");
+    }
+
+    /* Destination modal */
+    
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;          /* hidden by default */
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+    
+    .modal-panel {
+      width: min(960px, 92vw);
+      height: 80vh;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .modal-header {
+      position: relative;
+      flex: 0 0 25%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .modal-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.1)
+      );
+    }
+    
+    .modal-header-title {
+      position: absolute;
+      left: 20px;
+      bottom: 16px;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15,23,42,0.65);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    .modal-body {
+      flex: 1 1 50%;
+      padding: 18px 20px;
+      overflow-y: auto;
+    }
+    
+    .modal-body h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #064e3b;
+    }
+    
+    .modal-body p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #4b5563;
+    }
+    
+    .modal-footer {
+      flex: 0 0 25%;
+      border-top: 1px solid #e5e7eb;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .modal-footer-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    
+    .modal-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .modal-cta {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-cta-primary {
+      background: #ff6a3d;
+      color: #ffffff;
+    }
+    
+    .modal-cta-secondary {
+      background: #e5f2ff;
+      color: #064e3b;
+    }
+    
+    @media (max-width: 768px) {
+      .modal-panel {
+        height: 90vh;
+        width: 96vw;
+      }
+    }
+
+    /* Destination modal */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;          /* hidden by default */
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    
+    .modal-backdrop.is-open {
+      display: flex;
+    }
+    
+    .modal-panel {
+      width: min(960px, 92vw);
+      height: 80vh;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .modal-header {
+      position: relative;
+      flex: 0 0 25%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    
+    .modal-header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.45),
+        rgba(0, 0, 0, 0.1)
+      );
+    }
+    
+    .modal-header-title {
+      position: absolute;
+      left: 20px;
+      bottom: 16px;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: 600;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(15,23,42,0.65);
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    
+    .modal-body {
+      flex: 1 1 50%;
+      padding: 18px 20px;
+      overflow-y: auto;
+    }
+    
+    .modal-body h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      color: #064e3b;
+    }
+    
+    .modal-body p {
+      margin: 0 0 10px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #4b5563;
+    }
+    
+    .modal-footer {
+      flex: 0 0 25%;
+      border-top: 1px solid #e5e7eb;
+      padding: 14px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: center;
+    }
+    
+    .modal-footer-label {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    
+    .modal-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    
+    .modal-cta {
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-cta-primary {
+      background: #ff6a3d;
+      color: #ffffff;
+    }
+    
+    .modal-cta-secondary {
+      background: #e5f2ff;
+      color: #064e3b;
+    }
+    
+    @media (max-width: 768px) {
+      .modal-panel {
+        height: 90vh;
+        width: 96vw;
+      }
     }
 
     /* Footer */
@@ -247,33 +532,33 @@
       </section>
 
       <section class="dest-grid" aria-label="Pilot destinations">
-        <!-- Boracay -->
         <a
           class="dest-card dest-boracay"
+          data-dest="boracay"
           href="https://lolaelo-api.onrender.com/catalog.html?q=boracay"
         >
           <div class="dest-label">Boracay</div>
         </a>
-
-        <!-- El Nido -->
+        
         <a
           class="dest-card dest-el-nido"
+          data-dest="el-nido"
           href="https://lolaelo-api.onrender.com/catalog.html?q=el%20nido"
         >
           <div class="dest-label">El Nido</div>
         </a>
-
-        <!-- Coron -->
+        
         <a
           class="dest-card dest-coron"
+          data-dest="coron"
           href="https://lolaelo-api.onrender.com/catalog.html?q=coron"
         >
           <div class="dest-label">Coron</div>
         </a>
-
-        <!-- Siargao -->
+        
         <a
           class="dest-card dest-siargao"
+          data-dest="siargao"
           href="https://lolaelo-api.onrender.com/catalog.html?q=siargao"
         >
           <div class="dest-label">Siargao</div>
@@ -289,5 +574,125 @@
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
   </script>
+<div id="dest-modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="dest-modal-title">
+    <div class="modal-header" id="dest-modal-header">
+      <div class="modal-header-title" id="dest-modal-title"></div>
+      <button type="button" class="modal-close" id="dest-modal-close" aria-label="Close">
+        ×
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <h2 id="dest-modal-subtitle"></h2>
+      <p id="dest-modal-body"></p>
+    </div>
+
+    <div class="modal-footer">
+      <div class="modal-footer-label">Ready to book?</div>
+      <div class="modal-cta-row">
+        <button type="button" class="modal-cta modal-cta-primary" id="dest-modal-view-stays">
+          View stays in this destination
+        </button>
+        <button type="button" class="modal-cta modal-cta-secondary" id="dest-modal-close-secondary">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  <script>
+  (function () {
+    const modal = document.getElementById("dest-modal");
+    const headerEl = document.getElementById("dest-modal-header");
+    const titleEl = document.getElementById("dest-modal-title");
+    const subtitleEl = document.getElementById("dest-modal-subtitle");
+    const bodyEl = document.getElementById("dest-modal-body");
+    const closeBtn = document.getElementById("dest-modal-close");
+    const closeBtnSecondary = document.getElementById("dest-modal-close-secondary");
+    const viewStaysBtn = document.getElementById("dest-modal-view-stays");
+
+    // Config per destination
+    const destConfig = {
+      "boracay": {
+        name: "Boracay",
+        headerImage: "/assets/dest-boracay.jpg",
+        subtitle: "White sand, turquoise water, and island energy.",
+        body: "Boracay is all about long white-sand beaches, warm shallow water, and a mix of quiet coves and lively beachfront bars. Perfect if you want an easy island escape with plenty of food, nightlife, and family-friendly options.",
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=boracay"
+      },
+      "el-nido": {
+        name: "El Nido",
+        headerImage: "/assets/dest-el-nido.jpg",
+        subtitle: "Limestone cliffs, hidden lagoons, and slow days on the water.",
+        body: "El Nido is for travelers who want island-hopping, calm lagoons, and dramatic landscapes. Expect boat tours, quiet beaches, and small-town charm at a slower pace.",
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=el%20nido"
+      },
+      "coron": {
+        name: "Coron",
+        headerImage: "/assets/dest-coron.jpg",
+        subtitle: "Lakes, shipwrecks, and some of the clearest water in the country.",
+        body: "Coron is ideal if you like snorkeling, diving, or just being around postcard-perfect bays. Think hidden lakes, view decks, and calm island life with fewer crowds.",
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=coron"
+      },
+      "siargao": {
+        name: "Siargao",
+        headerImage: "/assets/dest-siargao.jpg",
+        subtitle: "Palm trees, surf breaks, and relaxed island living.",
+        body: "Siargao is a mix of surf culture and laid-back island life. Whether you surf or not, it’s easygoing, scenic, and a good base for island-hopping and lagoon trips.",
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?q=siargao"
+      }
+    };
+
+    let currentStaysUrl = null;
+
+    function openModal(destKey) {
+      const cfg = destConfig[destKey];
+      if (!cfg) return;
+
+      headerEl.style.backgroundImage = 'url("' + cfg.headerImage + '")';
+      titleEl.textContent = cfg.name;
+      subtitleEl.textContent = cfg.subtitle;
+      bodyEl.textContent = cfg.body;
+      currentStaysUrl = cfg.staysUrl;
+
+      modal.classList.add("is-open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      currentStaysUrl = null;
+    }
+
+    // Wire up tiles
+    document.querySelectorAll(".dest-card[data-dest]").forEach(function (card) {
+      card.addEventListener("click", function (e) {
+        e.preventDefault(); // stop direct navigation
+        const key = card.getAttribute("data-dest");
+        openModal(key);
+      });
+    });
+
+    // Close actions
+    closeBtn.addEventListener("click", closeModal);
+    closeBtnSecondary.addEventListener("click", closeModal);
+
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeModal();
+    });
+
+    viewStaysBtn.addEventListener("click", function () {
+      if (currentStaysUrl) {
+        window.location.href = currentStaysUrl;
+      }
+    });
+  })();
+</script>
 </body>
 </html>
