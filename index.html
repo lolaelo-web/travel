@@ -379,12 +379,15 @@
                 <div class="search-label">Destination</div>
                 <div class="search-input-shell">
                   <span class="icon">📍</span>
-                  <input
-                    id="hp-q"
-                    type="text"
-                    placeholder="Select destination"
-                    autocomplete="off"
-                  />
+                  <select id="hp-q">
+                    <option value="" selected disabled>Select destination</option>
+                    <option value="Siargao">Siargao</option>
+                    <option value="El Nido">El Nido</option>
+                    <option value="Coron">Coron</option>
+                    <option value="Boracay">Boracay</option>
+                    <option value="Manila">Manila</option>
+                    <option value="Cebu">Cebu</option>
+                  </select>
                 </div>
               </div>
 
@@ -484,6 +487,28 @@
       const qInput = document.getElementById("hp-q");
       const datesInput = document.getElementById("hp-dates");
       const guestsSelect = document.getElementById("hp-guests");
+
+      // Disable Search button until destination + guests are selected
+      const searchBtn = form.querySelector(".search-btn");
+
+      function updateSearchState() {
+        const hasDest = qInput.value && qInput.value.trim() !== "";
+        const hasGuests = guestsSelect.value && guestsSelect.value.trim() !== "";
+
+        searchBtn.disabled = !(hasDest && hasGuests);
+
+        if (searchBtn.disabled) {
+          searchBtn.style.opacity = "0.55";
+          searchBtn.style.cursor = "not-allowed";
+        } else {
+          searchBtn.style.opacity = "1";
+          searchBtn.style.cursor = "pointer";
+        }
+      }
+
+      qInput.addEventListener("change", updateSearchState);
+      guestsSelect.addEventListener("change", updateSearchState);
+      updateSearchState();
 
       form.addEventListener("submit", function (e) {
         e.preventDefault();
