@@ -619,130 +619,130 @@
 
   <!-- Flatpickr JS -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    // Date range picker
-    flatpickr(".date-range", {
-      mode: "range",
-      altInput: true,
-      altFormat: "M j, Y",
-      dateFormat: "Y-m-d"
-    });
-
-    (function () {
-      const form = document.getElementById("hp-search-form");
-      const qInput = document.getElementById("hp-q");
-      const datesInput = document.getElementById("hp-dates");
-      const guestsSelect = document.getElementById("hp-guests");
-
-      // Disable Search button until destination + guests are selected
-      const searchBtn = form.querySelector(".search-btn");
-
-      function updateSearchState() {
-        const hasDest = qInput.value && qInput.value.trim() !== "";
-        const hasGuests = guestsSelect.value && guestsSelect.value.trim() !== "";
-
-        searchBtn.disabled = !(hasDest && hasGuests);
-
-        if (searchBtn.disabled) {
-          searchBtn.style.opacity = "0.55";
-          searchBtn.style.cursor = "not-allowed";
-        } else {
-          searchBtn.style.opacity = "1";
-          searchBtn.style.cursor = "pointer";
-        }
-      }
-
-            // Custom select behavior for Destination + Guests
-      function initCustomSelect(wrapper) {
-        const button = wrapper.querySelector(".custom-select-toggle");
-        const labelEl = wrapper.querySelector(".custom-select-label");
-        const menu = wrapper.querySelector(".custom-select-menu");
-        const options = menu.querySelectorAll("li[data-value]");
-        const hidden = document.getElementById(wrapper.dataset.target);
-
-        function openMenu() {
-          menu.classList.add("is-open");
-          button.setAttribute("aria-expanded", "true");
-        }
-
-        function closeMenu() {
-          menu.classList.remove("is-open");
-          button.setAttribute("aria-expanded", "false");
-        }
-
-        function selectOption(li) {
-          const value = li.getAttribute("data-value") || "";
-          hidden.value = value;
-          labelEl.textContent = li.textContent;
-
-          // update aria-selected flags
-          options.forEach(opt => opt.removeAttribute("aria-selected"));
-          if (value !== "") {
-            li.setAttribute("aria-selected", "true");
-          }
-
-          closeMenu();
-          updateSearchState();
-        }
-
-        button.addEventListener("click", function () {
-          if (menu.classList.contains("is-open")) {
-            closeMenu();
-          } else {
-            openMenu();
-          }
-        });
-
-        options.forEach(li => {
-          li.addEventListener("click", function () {
-            selectOption(li);
-          });
-        });
-
-        // Close on outside click
-        document.addEventListener("click", function (evt) {
-          if (!wrapper.contains(evt.target)) {
-            closeMenu();
-          }
-        });
-      }
-
-      document.querySelectorAll(".custom-select").forEach(initCustomSelect);
-
-      qInput.addEventListener("change", updateSearchState);
-      guestsSelect.addEventListener("change", updateSearchState);
-      updateSearchState();
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const params = new URLSearchParams();
-
-        const qVal = (qInput.value || "").trim();
-        if (qVal) {
-          // Send destination under multiple keys so catalog/API can filter by city
-          params.set("q", qVal);
-          params.set("city", qVal);
-          params.set("destination", qVal);
-        }
-
-        const rawDates = (datesInput.value || "").trim();
-        if (rawDates) {
-          const parts = rawDates.split(" to ");
-          if (parts[0]) params.set("start", parts[0]);
-          if (parts[1]) params.set("end", parts[1]);
-        }
-
-        params.set("guests", guestsSelect.value || "2");
-        params.set("rooms", "1"); // default for compatibility
-
-        const target = "https://lolaelo-api.onrender.com/catalog.html?" + params.toString();
-        location.href = target;
+    <script>
+      // Footer year
+      document.getElementById("year").textContent = new Date().getFullYear();
+  
+      // Date range picker
+      flatpickr(".date-range", {
+        mode: "range",
+        altInput: true,
+        altFormat: "M j, Y",
+        dateFormat: "Y-m-d"
       });
-    })();
-  </script>
+  
+      (function () {
+        const form = document.getElementById("hp-search-form");
+  
+        // Hidden inputs that actually drive the query params
+        const qInput = document.getElementById("hp-q");
+        const datesInput = document.getElementById("hp-dates");
+        const guestsInput = document.getElementById("hp-guests");
+  
+        const searchBtn = form.querySelector(".search-btn");
+  
+        // Enable/disable Search based on destination + guests
+        function updateSearchState() {
+          const hasDest = !!(qInput.value && qInput.value.trim());
+          const hasGuests = !!(guestsInput.value && guestsInput.value.trim());
+  
+          const enabled = hasDest && hasGuests;
+          searchBtn.disabled = !enabled;
+          searchBtn.style.opacity = enabled ? "1" : "0.55";
+          searchBtn.style.cursor = enabled ? "pointer" : "not-allowed";
+        }
+  
+        // Custom select behavior for Destination + Guests
+        function initCustomSelect(wrapper) {
+          const button = wrapper.querySelector(".custom-select-toggle");
+          const labelEl = wrapper.querySelector(".custom-select-label");
+          const menu = wrapper.querySelector(".custom-select-menu");
+          const options = menu.querySelectorAll("li[data-value]");
+          const hidden = document.getElementById(wrapper.dataset.target);
+  
+          function openMenu() {
+            menu.classList.add("is-open");
+            button.setAttribute("aria-expanded", "true");
+          }
+  
+          function closeMenu() {
+            menu.classList.remove("is-open");
+            button.setAttribute("aria-expanded", "false");
+          }
+  
+          function selectOption(li) {
+            const value = li.getAttribute("data-value") || "";
+            const text = (li.textContent || "").trim();
+  
+            hidden.value = value;
+            labelEl.textContent = text;
+  
+            options.forEach(opt => opt.removeAttribute("aria-selected"));
+            if (value !== "") {
+              li.setAttribute("aria-selected", "true");
+            }
+  
+            closeMenu();
+            updateSearchState();
+          }
+  
+          button.addEventListener("click", function () {
+            if (menu.classList.contains("is-open")) {
+              closeMenu();
+            } else {
+              openMenu();
+            }
+          });
+  
+          options.forEach(li => {
+            li.addEventListener("click", function () {
+              selectOption(li);
+            });
+          });
+  
+          // Close on outside click
+          document.addEventListener("click", function (evt) {
+            if (!wrapper.contains(evt.target)) {
+              closeMenu();
+            }
+          });
+        }
+  
+        // Initialize all custom selects (Destination + Guests)
+        document.querySelectorAll(".custom-select").forEach(initCustomSelect);
+  
+        // Initial state (guests has default value "2", destination empty)
+        updateSearchState();
+  
+        // Form submit → build catalog URL with proper params
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+  
+          const params = new URLSearchParams();
+  
+          const qVal = (qInput.value || "").trim();
+          if (qVal) {
+            // Keep all three keys for flexibility downstream
+            params.set("q", qVal);
+            params.set("city", qVal);
+            params.set("destination", qVal);
+          }
+  
+          const rawDates = (datesInput.value || "").trim();
+          if (rawDates) {
+            const parts = rawDates.split(" to ");
+            if (parts[0]) params.set("start", parts[0]);
+            if (parts[1]) params.set("end", parts[1]);
+          }
+  
+          params.set("guests", guestsInput.value || "2");
+          params.set("rooms", "1"); // default for compatibility
+  
+          const target = "https://lolaelo-api.onrender.com/catalog.html?" + params.toString();
+          location.href = target;
+        });
+      })();
+    </script>
 
   <script src="assets/lolaelo-api.js"></script>
 </body>
