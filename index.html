@@ -182,6 +182,57 @@
       font-family: inherit;
     }
 
+    /* Improved dropdown styling for Destination + Guests */
+    .search-input-shell select {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #111827;
+      background: transparent;
+      border: none;
+      outline: none;
+    }
+    
+    /* Style the dropdown menu itself */
+    .search-input-shell select option {
+      font-family: inherit;
+      padding: 8px 10px;
+      border-radius: 8px;
+    }
+    
+    /* Highlight color when hovering options */
+    .search-input-shell select option:hover {
+      background: #e0f2f1;  /* light teal */
+      color: #111827;       /* dark text */
+    }
+    
+    /* Highlight color when selected inside menu */
+    .search-input-shell select option:checked {
+      background: #e0f2f1 !important;  
+      color: #111827;
+    }
+    
+    /* Make the dropdown popup (the box) rounded */
+    select {
+      border-radius: 10px;              /* round like input field */
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    
+    /* Add custom arrow alignment so it looks clean */
+    .search-input-shell {
+      position: relative;
+    }
+    
+    .search-input-shell::after {
+      content: "▾";
+      position: absolute;
+      right: 12px;
+      font-size: 12px;
+      pointer-events: none;
+      color: #6b7280;
+    }
+
     .search-input-shell input::placeholder {
       color: #9ca3af;
     }
@@ -445,7 +496,7 @@
           <div
             class="benefit"
             tabindex="0"
-            data-tooltip="Since we built our own inventory of hotels, our partners keep more of what they earn, and travelers get better prices"
+            data-tooltip="Since we built our own inventory of hotels, our partners keep more of what they earn, and travelers get better prices."
           >
             <div class="benefit-icon">$</div>
             <div class="benefit-title">Fair prices</div>
