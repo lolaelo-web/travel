@@ -165,6 +165,7 @@
       border: 1px solid var(--border);
       padding: 8px 12px;
       background: #f9fafb;
+      position: relative;
     }
 
     .search-input-shell span.icon {
@@ -182,51 +183,42 @@
       font-family: inherit;
     }
 
-    /* Improved dropdown styling for Destination + Guests */
+    .search-input-shell input::placeholder {
+      color: #9ca3af;
+    }
+
+    /* Dropdown basics for Destination + Guests */
+    select {
+      border-radius: 8px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-color: transparent;
+    }
+
     .search-input-shell select {
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       font-size: 14px;
       color: #111827;
-      background: transparent;
-      border: none;
-      outline: none;
-      width: calc(100% + 24px);  /* stretch to match shell width */
-      margin-left: -12px;        /* align left edge with pill */
-      margin-right: -12px;       /* align right edge with pill */
     }
-    
-    /* Style the dropdown menu itself */
+
+    /* Dropdown menu items */
     .search-input-shell select option {
       font-family: inherit;
       padding: 8px 10px;
-      border-radius: 8px;
     }
-    
-    /* Highlight color when hovering options */
+
     .search-input-shell select option:hover {
-      background: #e0f2f1;  /* light teal */
-      color: #111827;       /* dark text */
+      background: #e0f2f1;   /* light teal on hover */
+      color: #064e3b;
     }
-    
-    /* Highlight color when selected inside menu */
+
     .search-input-shell select option:checked {
-      background: #e0f2f1 !important;  
-      color: #111827;
+      background: #e0f2f1;
+      color: #064e3b;
     }
-    
-    /* Make the dropdown popup (the box) rounded */
-    select {
-      border-radius: 12px;              /* slightly softer */
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-    }
-    
-    /* Add custom arrow alignment so it looks clean */
-    .search-input-shell {
-      position: relative;
-    }
-    
+
+    /* Simple custom arrow for selects */
     .search-input-shell::after {
       content: "▾";
       position: absolute;
@@ -234,10 +226,6 @@
       font-size: 12px;
       pointer-events: none;
       color: #6b7280;
-    }
-
-    .search-input-shell input::placeholder {
-      color: #9ca3af;
     }
 
     .search-button-wrap {
@@ -289,14 +277,14 @@
     }
 
     .benefit-icon {
-      width: 40px;       /* half of 80px */
-      height: 40px;      /* half of 80px */
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
       background: #e5f2ff;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;   /* smaller icon glyph */
+      font-size: 18px;
     }
 
     .benefit-title {
@@ -306,7 +294,6 @@
     }
 
     /* Tooltip */
-    
     .benefit::after {
       content: attr(data-tooltip);
       position: absolute;
@@ -314,10 +301,11 @@
       bottom: -4px;
       transform: translate(-50%, 115%);
       padding: 10px 14px;
-      width: 260px;        /* wider tooltip */
-      max-width: 320px;    /* allows slight flexibility */
+      width: 260px;
+      max-width: 320px;
       background: #e5f2ff;   /* light blue bubble */
-      color: #064e3b;        /* dark teal text */      font-size: 13px;
+      color: #064e3b;        /* dark teal text */
+      font-size: 13px;
       line-height: 1.5;
       border-radius: 8px;
       opacity: 0;
@@ -325,16 +313,16 @@
       transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
       pointer-events: none;
       z-index: 10;
-      white-space: normal;  /* ensures normal wrapping */
-      text-align: center;   /* cleaner horizontal feel */
+      white-space: normal;
+      text-align: center;
     }
-    
+
     .benefit:hover::after,
     .benefit:focus-within::after {
       opacity: 1;
       visibility: visible;
     }
-    
+
     /* Footer */
 
     footer {
