@@ -190,6 +190,9 @@
       background: transparent;
       border: none;
       outline: none;
+      width: calc(100% + 24px);  /* stretch to match shell width */
+      margin-left: -12px;        /* align left edge with pill */
+      margin-right: -12px;       /* align right edge with pill */
     }
     
     /* Style the dropdown menu itself */
@@ -213,7 +216,7 @@
     
     /* Make the dropdown popup (the box) rounded */
     select {
-      border-radius: 10px;              /* round like input field */
+      border-radius: 12px;              /* slightly softer */
       appearance: none;
       -webkit-appearance: none;
       -moz-appearance: none;
