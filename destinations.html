@@ -356,6 +356,26 @@
       color: #111827;
     }
 
+    .modal-thumbs-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      padding-bottom: 4px;
+      overflow-x: auto;
+    }
+
+    .modal-thumb {
+      flex: 0 0 auto;
+      width: 64px;
+      height: 48px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+    }
+
     .modal-footer {
       flex: 0 0 10%;             /* was 25% */
       border-top: 1px solid #e5e7eb;
@@ -550,6 +570,9 @@
           <p id="dest-modal-snapshot"></p>
         </section>
       </div>
+
+      <!-- Thumbnails row (above footer) -->
+      <div class="modal-thumbs-row" id="dest-modal-thumbs"></div>
     </div>
 
     <div class="modal-footer">
@@ -574,11 +597,12 @@
     const activitiesEl = document.getElementById("dest-modal-activities");
     const eventsEl = document.getElementById("dest-modal-events");
     const snapshotEl = document.getElementById("dest-modal-snapshot");
+    const thumbsRow = document.getElementById("dest-modal-thumbs");
     const closeBtn = document.getElementById("dest-modal-close");
     const closeBtnSecondary = document.getElementById("dest-modal-close-secondary");
     const viewStaysBtn = document.getElementById("dest-modal-view-stays");
 
-    // Config per destination
+    // Config per destination (note: thumbs currently only for Boracay)
     const destConfig = {
       "boracay": {
         name: "Boracay",
@@ -613,7 +637,15 @@ Quick snapshot:
 • Trip length: 3 - 5 days
 • Known for: sunsets, island-hopping, nightlife, very fine sand
         `,
-        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Boracay&cityCode=BORACAY"
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Boracay&cityCode=BORACAY",
+        thumbs: [
+          "/assets/dest-boracay.jpg",
+          "/assets/dest-boracay-1.jpg",
+          "/assets/dest-boracay-2.jpg",
+          "/assets/dest-boracay-3.jpg",
+          "/assets/dest-boracay-4.jpg",
+          "/assets/dest-boracay-5.jpg"
+        ]
       },
 
       "el-nido": {
@@ -644,7 +676,8 @@ Quick snapshot:
 • Trip length: at least 3 - 4 days
 • Known for: limestone cliffs, lagoons, clear water, quiet nights
         `,
-        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=El%20Nido&cityCode=ELNIDO"
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=El%20Nido&cityCode=ELNIDO",
+        thumbs: []
       },
 
       "coron": {
@@ -675,7 +708,8 @@ Quick snapshot:
 • Trip length: 3 - 5 days
 • Known for: lakes, lagoons, wreck dives, clear water
         `,
-        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Coron&cityCode=CORON"
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Coron&cityCode=CORON",
+        thumbs: []
       },
 
       "siargao": {
@@ -707,7 +741,8 @@ Quick snapshot:
 • Trip length: 4 - 7 days (easy to extend)
 • Known for: surf breaks, coconut roads, island-hopping, sunsets
         `,
-        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Siargao&cityCode=SIARGAO"
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Siargao&cityCode=SIARGAO",
+        thumbs: []
       },
 
       "manila": {
@@ -735,7 +770,8 @@ Quick snapshot:
 • Trip length: 1 - 3 days
 • Known for: food, malls, traffic, city views
         `,
-        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Manila&cityCode=MANILA"
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Manila&cityCode=MANILA",
+        thumbs: []
       },
 
       "cebu": {
@@ -763,13 +799,14 @@ Quick snapshot:
 • Trip length: 3 - 5 days
 • Known for: access, food, festivals, nearby beaches and waterfalls
         `,
-        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Cebu&cityCode=CEBU"
+        staysUrl: "https://lolaelo-api.onrender.com/catalog.html?city=Cebu&cityCode=CEBU",
+        thumbs: []
       }
     };
 
     let currentStaysUrl = null;
 
-        function splitBodySections(raw) {
+    function splitBodySections(raw) {
       const text = raw || "";
 
       const ACT = "Activities I recommend:";
@@ -780,7 +817,6 @@ Quick snapshot:
       const evtIdx = text.indexOf(EVT);
       const snapIdx = text.indexOf(SNAP);
 
-      // Fallback: if markers are missing, treat everything as intro.
       if (actIdx === -1 || evtIdx === -1 || snapIdx === -1) {
         return {
           intro: text.trim(),
@@ -798,6 +834,25 @@ Quick snapshot:
       return { intro, activities, events, snapshot };
     }
 
+    function renderThumbs(list) {
+      thumbsRow.innerHTML = "";
+      if (!list || !list.length) {
+        thumbsRow.style.display = "none";
+        return;
+      }
+      thumbsRow.style.display = "flex";
+
+      list.forEach((src, idx) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "modal-thumb";
+        btn.style.backgroundImage = 'url("' + src + '")';
+        btn.setAttribute("aria-label", "View photo " + (idx + 1));
+        // Viewer wiring will be added in a later task
+        thumbsRow.appendChild(btn);
+      });
+    }
+
     function openModal(destKey) {
       const cfg = destConfig[destKey];
       if (!cfg) return;
@@ -813,16 +868,24 @@ Quick snapshot:
       eventsEl.textContent = events || "";
       snapshotEl.textContent = snapshot || "";
 
+      renderThumbs(cfg.thumbs || []);
+
       currentStaysUrl = cfg.staysUrl;
 
       modal.classList.add("is-open");
       modal.setAttribute("aria-hidden", "false");
     }
 
+    function closeModal() {
+      modal.classList.remove("is-open");
+      modal.setAttribute("aria-hidden", "true");
+      currentStaysUrl = null;
+    }
+
     // Wire up tiles
     document.querySelectorAll(".dest-card[data-dest]").forEach(function (card) {
       card.addEventListener("click", function (e) {
-        e.preventDefault(); // stop direct navigation
+        e.preventDefault();
         const key = card.getAttribute("data-dest");
         openModal(key);
       });
@@ -846,6 +909,6 @@ Quick snapshot:
       }
     });
   })();
-</script>
+  </script>
 </body>
 </html>
