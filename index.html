@@ -216,8 +216,8 @@
       padding: 4px 0;
       position: absolute;
       top: 100%;
-      left: 0;
-      right: 0;
+      left: -12px;   /* extend to cover shell padding on the left */
+      right: -12px;  /* extend to cover shell padding on the right */
       background: #ffffff;
       border-radius: 12px;
       border: 1px solid var(--border);
@@ -235,8 +235,10 @@
     .custom-select-menu li {
       padding: 8px 12px;
       font-size: 14px;
+      font-weight: 400;     /* normalize weight */
       cursor: pointer;
       color: #111827;
+      text-align: left;     /* explicit left alignment */
     }
 
     .custom-select-menu li:hover {
