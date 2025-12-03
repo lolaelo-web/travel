@@ -262,8 +262,8 @@
       padding: 10px 14px;
       width: 260px;        /* wider tooltip */
       max-width: 320px;    /* allows slight flexibility */
-      background: #111827;
-      color: #f9fafb;
+      background: rgba(255, 166, 117, 0.95); /* light orange bubble */
+      color: #ffffff;                        /* white text */
       font-size: 13px;
       line-height: 1.5;
       border-radius: 8px;
@@ -455,11 +455,8 @@
           <div
             class="benefit"
             tabindex="0"
-            data-tooltip="Book in a few clicks with a simple, secure experience that stays out of your way."
+            data-tooltip="Choose your room, review the details, and confirm with a secure, no-nonsense checkout."
           >
-            <div class="benefit-icon">✅</div>
-            <div class="benefit-title">Simple booking</div>
-          </div>
         </section>
       </section>
     </main>
@@ -516,7 +513,12 @@
         const params = new URLSearchParams();
 
         const qVal = (qInput.value || "").trim();
-        if (qVal) params.set("q", qVal);
+        if (qVal) {
+          // Send destination under multiple keys so catalog/API can filter by city
+          params.set("q", qVal);
+          params.set("city", qVal);
+          params.set("destination", qVal);
+        }
 
         const rawDates = (datesInput.value || "").trim();
         if (rawDates) {
