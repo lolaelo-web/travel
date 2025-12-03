@@ -338,6 +338,24 @@
       white-space: pre-line;
     }
 
+    .modal-columns {
+      display: flex;
+      gap: 20px;
+      margin-top: 12px;
+    }
+
+    .modal-col {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .modal-section-title {
+      margin: 0 0 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+    }
+
     .modal-footer {
       flex: 0 0 10%;             /* was 25% */
       border-top: 1px solid #e5e7eb;
@@ -516,7 +534,22 @@
 
     <div class="modal-body">
       <h2 id="dest-modal-subtitle"></h2>
-      <p id="dest-modal-body"></p>
+      <p id="dest-modal-intro"></p>
+
+      <div class="modal-columns">
+        <section class="modal-col modal-col-left">
+          <h3 class="modal-section-title">Activities I recommend</h3>
+          <p id="dest-modal-activities"></p>
+        </section>
+
+        <section class="modal-col modal-col-right">
+          <h3 class="modal-section-title">Major events and seasons</h3>
+          <p id="dest-modal-events"></p>
+
+          <h3 class="modal-section-title">Quick snapshot</h3>
+          <p id="dest-modal-snapshot"></p>
+        </section>
+      </div>
     </div>
 
     <div class="modal-footer">
@@ -537,7 +570,10 @@
     const headerEl = document.getElementById("dest-modal-header");
     const titleEl = document.getElementById("dest-modal-title");
     const subtitleEl = document.getElementById("dest-modal-subtitle");
-    const bodyEl = document.getElementById("dest-modal-body");
+    const introEl = document.getElementById("dest-modal-intro");
+    const activitiesEl = document.getElementById("dest-modal-activities");
+    const eventsEl = document.getElementById("dest-modal-events");
+    const snapshotEl = document.getElementById("dest-modal-snapshot");
     const closeBtn = document.getElementById("dest-modal-close");
     const closeBtnSecondary = document.getElementById("dest-modal-close-secondary");
     const viewStaysBtn = document.getElementById("dest-modal-view-stays");
@@ -733,24 +769,54 @@ Quick snapshot:
 
     let currentStaysUrl = null;
 
+        function splitBodySections(raw) {
+      const text = raw || "";
+
+      const ACT = "Activities I recommend:";
+      const EVT = "Major events and seasons:";
+      const SNAP = "Quick snapshot:";
+
+      const actIdx = text.indexOf(ACT);
+      const evtIdx = text.indexOf(EVT);
+      const snapIdx = text.indexOf(SNAP);
+
+      // Fallback: if markers are missing, treat everything as intro.
+      if (actIdx === -1 || evtIdx === -1 || snapIdx === -1) {
+        return {
+          intro: text.trim(),
+          activities: "",
+          events: "",
+          snapshot: ""
+        };
+      }
+
+      const intro = text.slice(0, actIdx).trim();
+      const activities = text.slice(actIdx + ACT.length, evtIdx).trim();
+      const events = text.slice(evtIdx + EVT.length, snapIdx).trim();
+      const snapshot = text.slice(snapIdx + SNAP.length).trim();
+
+      return { intro, activities, events, snapshot };
+    }
+
     function openModal(destKey) {
       const cfg = destConfig[destKey];
       if (!cfg) return;
 
+      const { intro, activities, events, snapshot } = splitBodySections(cfg.body);
+
       headerEl.style.backgroundImage = 'url("' + cfg.headerImage + '")';
       titleEl.textContent = cfg.name;
       subtitleEl.textContent = cfg.subtitle;
-      bodyEl.textContent = cfg.body;
+
+      introEl.textContent = intro || "";
+      activitiesEl.textContent = activities || "";
+      eventsEl.textContent = events || "";
+      snapshotEl.textContent = snapshot || "";
+
       currentStaysUrl = cfg.staysUrl;
 
       modal.classList.add("is-open");
       modal.setAttribute("aria-hidden", "false");
-    }
-
-    function closeModal() {
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
-      currentStaysUrl = null;
     }
 
     // Wire up tiles
