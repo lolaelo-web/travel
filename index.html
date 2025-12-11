@@ -623,38 +623,13 @@
       // Footer year
       document.getElementById("year").textContent = new Date().getFullYear();
   
-      // Date range picker with auto +1-day checkout
+      // Date range picker – let user choose any span;
+      // we only enforce "end > start" at SUBMIT time now.
       flatpickr(".date-range", {
         mode: "range",
         altInput: true,
         altFormat: "M j, Y",
-        dateFormat: "Y-m-d",
-        onChange(selectedDates, dateStr, instance) {
-          if (!Array.isArray(selectedDates) || !selectedDates.length) return;
-
-          const start = selectedDates[0];
-          const end   = selectedDates[1] || null;
-
-          // Helper: add N days using local calendar dates
-          function addDays(d, n) {
-            const copy = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-            copy.setDate(copy.getDate() + n);
-            return copy;
-          }
-
-          // Case 1: only start picked → auto set end = start + 1
-          if (selectedDates.length === 1 && start) {
-            const next = addDays(start, 1);
-            instance.setDate([start, next], true);
-            return;
-          }
-
-          // Case 2: both picked but end <= start → bump end to start + 1
-          if (start && end && end <= start) {
-            const next = addDays(start, 1);
-            instance.setDate([start, next], true);
-          }
-        }
+        dateFormat: "Y-m-d"
       });
 
       (function () {
