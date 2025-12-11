@@ -628,7 +628,9 @@
       flatpickr(".date-range", {
         mode: "range",
         altInput: true,
-        altFormat: "M j, Y",
+        // Visible format in the pill, e.g. 12/09/2025 to 12/12/2025
+        altFormat: "m/d/Y",
+        // Hidden value used for start/end params (unchanged)
         dateFormat: "Y-m-d"
       });
 
