@@ -337,7 +337,7 @@
     }
 
     /* Benefits */
-
+    
     .benefits {
       margin-top: 40px;
       display: grid;
@@ -346,34 +346,42 @@
       justify-items: center;
       text-align: center;
     }
-
+    
     .benefit {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
       position: relative;
-      padding: 4px 4px 6px;
-      cursor: default;
+      padding: 0;              /* key: remove the padded box feel */
+      cursor: pointer;         /* since it links */
+      background: none;        /* remove gradient rectangle */
+      border-radius: 0;
+      transition: transform 0.15s ease;
     }
-
+    
+    .benefit:hover,
+    .benefit-link:focus-within .benefit {
+      transform: translateY(-1px);
+    }
+    
     .benefit-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 999px;
-      background: #e5f2ff;
+      width: auto;             /* key: no icon bubble */
+      height: auto;
+      border-radius: 0;
+      background: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 18px;
     }
-
+    
     .benefit-title {
       font-size: 14px;
       font-weight: 600;
       color: var(--brand);
     }
-
+    
     /* Tooltip */
     .benefit::after {
       content: attr(data-tooltip);
@@ -397,40 +405,11 @@
       white-space: normal;
       text-align: center;
     }
-
+    
     .benefit:hover::after,
     .benefit:focus-within::after {
       opacity: 1;
       visibility: visible;
-    }
-    /* ANCHOR: BENEFIT_GRADIENT_ENHANCE */
-    .benefit {
-      background: linear-gradient(
-        180deg,
-        rgba(6, 78, 59, 0.04) 0%,
-        rgba(255, 255, 255, 0.0) 70%
-      );
-      border-radius: 12px;
-      transition: background 0.2s ease, transform 0.15s ease;
-    }
-    
-    .benefit:hover,
-    .benefit-link:focus-within .benefit {
-      background: linear-gradient(
-        180deg,
-        rgba(6, 78, 59, 0.08) 0%,
-        rgba(255, 255, 255, 0.0) 70%
-      );
-      transform: translateY(-1px);
-    }
-
-    /* ANCHOR: BENEFIT_ICON_GRADIENT */
-    .benefit-icon {
-      background: linear-gradient(
-        135deg,
-        rgba(255, 106, 61, 0.15),
-        rgba(6, 78, 59, 0.12)
-      );
     }
 
     /* Footer */
