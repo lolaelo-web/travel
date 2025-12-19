@@ -403,6 +403,26 @@
       opacity: 1;
       visibility: visible;
     }
+    /* ANCHOR: BENEFIT_GRADIENT_ENHANCE */
+    .benefit {
+      background: linear-gradient(
+        180deg,
+        rgba(6, 78, 59, 0.04) 0%,
+        rgba(255, 255, 255, 0.0) 70%
+      );
+      border-radius: 12px;
+      transition: background 0.2s ease, transform 0.15s ease;
+    }
+    
+    .benefit:hover,
+    .benefit-link:focus-within .benefit {
+      background: linear-gradient(
+        180deg,
+        rgba(6, 78, 59, 0.08) 0%,
+        rgba(255, 255, 255, 0.0) 70%
+      );
+      transform: translateY(-1px);
+    }
 
     /* Footer */
 
