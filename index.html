@@ -676,7 +676,6 @@
   
         function updateSearchState() {
           const hasDest = !!(qInput.value && qInput.value.trim());
-          const hasGuests = !!(guestsInput.value && guestsInput.value.trim());
         
           const rawDates = (datesInput.value || "").trim();
           const hasDates =
@@ -684,7 +683,8 @@
             rawDates.split(" to ")[0] &&
             rawDates.split(" to ")[1];
         
-          const enabled = hasDest && hasGuests && hasDates;
+          // Guests always has a valid default (2), so do NOT gate on it
+          const enabled = hasDest && hasDates;
         
           searchBtn.disabled = !enabled;
           searchBtn.style.opacity = enabled ? "1" : "0.55";
