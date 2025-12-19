@@ -651,19 +651,7 @@
     <script>
       // Footer year
       document.getElementById("year").textContent = new Date().getFullYear();
-  
-      // Date range picker – let user choose any span;
-      // we only enforce "end > start" at SUBMIT time now.
-      flatpickr(".date-range", {
-        mode: "range",
-        altInput: true,
-        altFormat: "m/d/Y",
-        dateFormat: "Y-m-d",
-        onChange: function () {
-          updateSearchState();
-        }
-      });
-
+      
       (function () {
         const form = document.getElementById("hp-search-form");
   
@@ -690,6 +678,17 @@
           searchBtn.style.opacity = enabled ? "1" : "0.55";
           searchBtn.style.cursor = enabled ? "pointer" : "not-allowed";
         }
+
+        // Init flatpickr AFTER updateSearchState exists (same scope)
+        flatpickr(".date-range", {
+          mode: "range",
+          altInput: true,
+          altFormat: "m/d/Y",
+          dateFormat: "Y-m-d",
+          onChange: function () {
+            updateSearchState();
+          }
+        });
 
         // Custom select behavior for Destination + Guests
         function initCustomSelect(wrapper) {
